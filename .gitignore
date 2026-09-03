@@ -1,0 +1,32 @@
+# Dependencies
+/node_modules/
+/vendor/
+
+# Build and test artifacts
+/build/
+/coverage/
+/.phpunit.cache/
+/.phpunit.result.cache
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+auth.json
+*.local
+
+# Private ROM storage must never be committed
+/storage/roms/
+/private/
+
+# Logs and operating-system files
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+/.idea/
+/.vscode/
+*.swp
+
