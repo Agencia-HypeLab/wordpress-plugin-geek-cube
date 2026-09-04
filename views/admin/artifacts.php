@@ -34,12 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<section class="geek-cube-panel">
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Import a version', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Upload only content you may legally use and redistribute.', 'geek-cube-studio' ); ?></p></div></div>
 				<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
-					<input type="hidden" name="action" value="geek_cube_create_artifact"><?php wp_nonce_field( 'geek_cube_create_artifact' ); ?>
-					<label><span><?php esc_html_e( 'Type', 'geek-cube-studio' ); ?></span><select name="type" required>
-					<?php
-					foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $import_artifact_type ) :
-						?>
-						<option value="<?php echo esc_attr( $import_artifact_type ); ?>" <?php selected( $import_artifact_type, 'all' === $artifact_type ? 'player' : $artifact_type ); ?>><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::artifact_type_label( $import_artifact_type ) ); ?></option><?php endforeach; ?></select></label>
+					<input type="hidden" name="action" value="geek_cube_create_artifact"><input type="hidden" name="type" value="<?php echo esc_attr( $artifact_type ); ?>"><?php wp_nonce_field( 'geek_cube_create_artifact' ); ?>
 					<label><span><?php esc_html_e( 'Name', 'geek-cube-studio' ); ?></span><input type="text" name="name" required></label>
 					<label><span><?php esc_html_e( 'Version', 'geek-cube-studio' ); ?></span><input type="text" name="version" placeholder="4.2.3 or 1.0.0" required></label>
 					<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform"><option value=""><?php esc_html_e( 'Any / not applicable', 'geek-cube-studio' ); ?></option>

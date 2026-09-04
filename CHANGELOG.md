@@ -7,6 +7,7 @@ All notable changes to Geek Cube Studio will be documented in this file.
 - Add a signed self-update dashboard with manual checks, native installation and patch diagnostics.
 - Retain and publish only the latest three versioned release packages.
 - Separate the artifact registry into type-specific tabs with category counts and preserved filters.
+- Scope artifact imports to the active category tab, removing the global view and redundant type selector.
 - Add the native pt-BR catalogue for the administration and public player, with PO/MO verification in every release build.
 - Add the Geek Cube Studio settings control center.
 - Add language-aware route configuration prepared for Polylang Free.

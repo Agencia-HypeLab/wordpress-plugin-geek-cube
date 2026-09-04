@@ -56,9 +56,6 @@ msgstr ""
 msgid "Administrators are recommended until a dedicated tester role exists."
 msgstr ""
 
-msgid "All artifacts"
-msgstr ""
-
 msgid "Allow guest play"
 msgstr ""
 
@@ -1074,9 +1071,6 @@ msgid "Touch controls"
 msgstr ""
 
 msgid "Translated route slugs"
-msgstr ""
-
-msgid "Type"
 msgstr ""
 
 msgid "URLs and languages"

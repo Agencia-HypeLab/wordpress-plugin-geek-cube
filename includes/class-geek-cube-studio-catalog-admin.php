@@ -80,23 +80,20 @@ final class Geek_Cube_Studio_Catalog_Admin {
 
 		foreach ( $all_artifacts as $artifact ) {
 			$type = isset( $artifact['type'] ) ? sanitize_key( (string) $artifact['type'] ) : '';
-			++$artifact_counts['all'];
 
 			if ( isset( $artifact_counts[ $type ] ) ) {
 				++$artifact_counts[ $type ];
 			}
 		}
 
-		$artifacts = 'all' === $artifact_type
-			? $all_artifacts
-			: array_values(
-				array_filter(
-					$all_artifacts,
-					static function ( $artifact ) use ( $artifact_type ) {
-						return is_array( $artifact ) && isset( $artifact['type'] ) && $artifact_type === $artifact['type'];
-					}
-				)
-			);
+		$artifacts = array_values(
+			array_filter(
+				$all_artifacts,
+				static function ( $artifact ) use ( $artifact_type ) {
+					return is_array( $artifact ) && isset( $artifact['type'] ) && $artifact_type === $artifact['type'];
+				}
+			)
+		);
 		require GEEK_CUBE_STUDIO_PLUGIN_DIR . 'views/admin/artifacts.php';
 	}
 
@@ -106,9 +103,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	 * @return array<string,string>
 	 */
 	public static function artifact_tabs() {
-		$tabs = array(
-			'all' => __( 'All artifacts', 'geek-cube-studio' ),
-		);
+		$tabs = array();
 
 		foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $type ) {
 			$tabs[ $type ] = self::artifact_type_label( $type );
@@ -126,9 +121,9 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	public static function resolve_artifact_type( $request ) {
 		$value = is_array( $request ) && isset( $request['artifact_type'] ) && is_scalar( $request['artifact_type'] )
 			? sanitize_key( (string) $request['artifact_type'] )
-			: 'all';
+			: 'player';
 
-		return isset( self::artifact_tabs()[ $value ] ) ? $value : 'all';
+		return isset( self::artifact_tabs()[ $value ] ) ? $value : 'player';
 	}
 
 	/**

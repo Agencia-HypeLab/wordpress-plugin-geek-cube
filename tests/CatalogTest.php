@@ -26,10 +26,12 @@ final class CatalogTest extends TestCase {
 	}
 
 	public function test_artifact_tab_resolution_accepts_only_known_categories(): void {
-		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array() ) );
+		$this->assertCount( 7, Geek_Cube_Studio_Catalog_Admin::artifact_tabs() );
+		$this->assertArrayNotHasKey( 'all', Geek_Cube_Studio_Catalog_Admin::artifact_tabs() );
+		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array() ) );
 		$this->assertSame( 'rom', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'rom' ) ) );
-		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'unknown' ) ) );
-		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => array( 'rom' ) ) ) );
+		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'unknown' ) ) );
+		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => array( 'rom' ) ) ) );
 		$this->assertSame( 'Pending', Geek_Cube_Studio_Catalog_Admin::status_label( 'pending' ) );
 		$this->assertSame( 'Draft', Geek_Cube_Studio_Catalog_Admin::status_label( 'draft' ) );
 	}

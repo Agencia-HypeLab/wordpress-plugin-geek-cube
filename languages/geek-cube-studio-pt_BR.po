@@ -61,9 +61,6 @@ msgstr "Ações"
 msgid "Administrators are recommended until a dedicated tester role exists."
 msgstr "Administradores são recomendados até que exista uma função exclusiva de testador."
 
-msgid "All artifacts"
-msgstr "Todos os artefatos"
-
 msgid "Allow guest play"
 msgstr "Permitir jogo como visitante"
 
@@ -1080,9 +1077,6 @@ msgstr "Controles de toque"
 
 msgid "Translated route slugs"
 msgstr "Slugs de rota traduzidos"
-
-msgid "Type"
-msgstr "Tipo"
 
 msgid "URLs and languages"
 msgstr "URLs e idiomas"
