@@ -117,16 +117,30 @@
 .geek-cube-lab-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(330px, .6fr); align-items: start; gap: 18px; margin-top: 18px; }
 .geek-cube-lab-player iframe { display: block; width: 100%; min-height: 620px; background: #090711; border: 0; border-radius: 8px; }
 .geek-cube-history { margin-top: 18px; }
+.geek-cube-update-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.geek-cube-update-grid article { padding: 17px; background: #faf9fd; border: 1px solid #e7e3f1; border-radius: 8px; }
+.geek-cube-update-grid span { display: block; margin-bottom: 7px; color: var(--gc-muted); font-size: 12px; }
+.geek-cube-update-grid strong { color: var(--gc-ink); font-size: 16px; }
+.geek-cube-update-grid .is-ok { color: #0b6338; }
+.geek-cube-update-grid .is-bad, .geek-cube-update-error { color: #a12626; }
+.geek-cube-update-actions { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+.geek-cube-update-actions form { margin: 0; }
+.geek-cube-update-checked { margin-top: 14px; }
+.geek-cube-update-details { margin-top: 20px; }
+.geek-cube-update-details summary { margin-bottom: 12px; color: var(--gc-accent-dark); font-weight: 600; cursor: pointer; }
+.geek-cube-update-details th { width: 210px; }
+.geek-cube-update-hash { word-break: break-all; }
+.geek-cube-update-patches { margin-top: 18px; }
 
 @media (max-width: 1000px) {
-	.geek-cube-status-grid, .geek-cube-route-card__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.geek-cube-status-grid, .geek-cube-route-card__grid, .geek-cube-update-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.geek-cube-workspace, .geek-cube-lab-layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 782px) {
 	.geek-cube-admin__header { padding: 22px; }
 	.geek-cube-panel { padding: 20px; }
-	.geek-cube-status-grid, .geek-cube-route-card__grid { grid-template-columns: 1fr; }
+	.geek-cube-status-grid, .geek-cube-route-card__grid, .geek-cube-update-grid { grid-template-columns: 1fr; }
 	.geek-cube-setting-row { grid-template-columns: 1fr; gap: 12px; }
 	.geek-cube-setting-row > input, .geek-cube-setting-row > select, .geek-cube-setting-row > div:last-child { justify-self: start; max-width: none; }
 	.geek-cube-switch { justify-self: start; }
@@ -136,4 +150,6 @@
 	.geek-cube-picker { align-items: stretch; flex-direction: column; }
 	.geek-cube-picker select { width: 100%; min-width: 0; }
 	.geek-cube-lab-player iframe { min-height: 480px; }
+	.geek-cube-update-actions { align-items: stretch; flex-direction: column; }
+	.geek-cube-update-actions .button { width: 100%; text-align: center; }
 }

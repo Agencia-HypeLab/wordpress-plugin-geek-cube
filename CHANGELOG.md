@@ -4,6 +4,7 @@ All notable changes to Geek Cube Studio will be documented in this file.
 
 ## Unreleased
 
+- Add a signed self-update dashboard with manual checks, native installation and patch diagnostics.
 - Add the Geek Cube Studio settings control center.
 - Add language-aware route configuration prepared for Polylang Free.
 - Add player, artifact, laboratory, save and account policy controls.

@@ -49,6 +49,7 @@ class Geek_Cube_Studio_Admin {
 		add_action( 'admin_init', array( 'Geek_Cube_Studio_Settings', 'register' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'admin_post_geek_cube_check_updates', array( $this, 'handle_update_check' ) );
 		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 	}
 
@@ -124,6 +125,7 @@ class Geek_Cube_Studio_Admin {
 	public static function get_tabs() {
 		return array(
 			'overview'  => __( 'Overview', 'geek-cube-studio' ),
+			'updates'   => __( 'Updates', 'geek-cube-studio' ),
 			'urls'      => __( 'URLs and languages', 'geek-cube-studio' ),
 			'player'    => __( 'Player', 'geek-cube-studio' ),
 			'artifacts' => __( 'Artifacts', 'geek-cube-studio' ),
@@ -181,8 +183,60 @@ class Geek_Cube_Studio_Admin {
 
 		$google_configured = defined( 'GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID' ) && '' !== (string) GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID;
 		$apple_configured  = defined( 'GEEK_CUBE_STUDIO_APPLE_CLIENT_ID' ) && '' !== (string) GEEK_CUBE_STUDIO_APPLE_CLIENT_ID;
+		$update_status     = 'updates' === $active_tab ? Geek_Cube_Studio_Updater::get_update_status() : array();
+		$native_update_url = ! empty( $update_status['update_available'] ) ? Geek_Cube_Studio_Updater::native_update_url() : '';
+		$patch_inventory   = 'updates' === $active_tab ? Geek_Cube_Studio_Update_Patches::inventory() : array();
 
 		require GEEK_CUBE_STUDIO_PLUGIN_DIR . 'views/admin/settings.php';
+	}
+
+	/**
+	 * Force a signed manifest refresh and prime WordPress' native update state.
+	 *
+	 * @return void
+	 */
+	public function handle_update_check() {
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			wp_die( esc_html__( 'You do not have permission to update plugins.', 'geek-cube-studio' ), '', array( 'response' => 403 ) );
+		}
+
+		check_admin_referer( 'geek_cube_check_updates' );
+		delete_site_transient( Geek_Cube_Studio_Updater::MANIFEST_CACHE_KEY );
+		$status = Geek_Cube_Studio_Updater::get_update_status( true );
+
+		if ( 'unavailable' !== $status['state'] ) {
+			$transient = get_site_transient( 'update_plugins' );
+			if ( ! is_object( $transient ) ) {
+				$transient = (object) array(
+					'last_checked' => time(),
+					'checked'      => array( plugin_basename( GEEK_CUBE_STUDIO_PLUGIN_FILE ) => GEEK_CUBE_STUDIO_VERSION ),
+					'response'     => array(),
+					'no_update'    => array(),
+				);
+			}
+
+			$transient = Geek_Cube_Studio_Updater::inject_update_transient( $transient );
+			set_site_transient( 'update_plugins', $transient );
+		}
+
+		$args = array(
+			'page' => 'geek-cube-studio',
+			'tab'  => 'updates',
+		);
+		if ( 'unavailable' === $status['state'] ) {
+			$args['gc_error'] = ! empty( $status['last_check_message'] ) ? $status['last_check_message'] : __( 'The signed update manifest is unavailable.', 'geek-cube-studio' );
+		} elseif ( ! empty( $status['update_available'] ) ) {
+			$args['gc_notice'] = sprintf(
+				/* translators: %s: available version. */
+				__( 'Version %s is available and ready for the native WordPress updater.', 'geek-cube-studio' ),
+				$status['remote_version']
+			);
+		} else {
+			$args['gc_notice'] = __( 'Update check completed. The installed version is current.', 'geek-cube-studio' );
+		}
+
+		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
+		exit;
 	}
 
 	/**
@@ -192,6 +246,12 @@ class Geek_Cube_Studio_Admin {
 	 */
 	private function get_search_index() {
 		$items = array(
+			array(
+				'field'    => 'plugin-updates',
+				'tab'      => 'updates',
+				'label'    => __( 'Plugin updates', 'geek-cube-studio' ),
+				'keywords' => 'atualização update versão manifesto assinatura sha256',
+			),
 			array(
 				'field'    => 'url-slugs',
 				'tab'      => 'urls',

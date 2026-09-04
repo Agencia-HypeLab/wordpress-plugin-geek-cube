@@ -25,6 +25,9 @@ final class Geek_Cube_Studio_Updater {
 	/** Failed request cache duration. */
 	const ERROR_CACHE_TTL = 10 * MINUTE_IN_SECONDS;
 
+	/** Last manifest request diagnostic option. */
+	const LAST_CHECK_OPTION = 'geek_cube_studio_update_last_check';
+
 	/** Signature algorithm accepted by this client. */
 	const SIGNATURE_ALGORITHM = 'Ed25519';
 
@@ -315,7 +318,24 @@ final class Geek_Cube_Studio_Updater {
 			)
 		);
 
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+		if ( is_wp_error( $response ) ) {
+			self::record_manifest_check( 'request_error', $response->get_error_message(), 0 );
+			set_site_transient( self::MANIFEST_CACHE_KEY, array( '__fetch_error' => true ), self::ERROR_CACHE_TTL );
+
+			return false;
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $response_code ) {
+			self::record_manifest_check(
+				'http_error',
+				sprintf(
+					/* translators: %d: HTTP status code. */
+					__( 'The update server returned HTTP %d.', 'geek-cube-studio' ),
+					$response_code
+				),
+				$response_code
+			);
 			set_site_transient( self::MANIFEST_CACHE_KEY, array( '__fetch_error' => true ), self::ERROR_CACHE_TTL );
 
 			return false;
@@ -324,14 +344,116 @@ final class Geek_Cube_Studio_Updater {
 		$manifest = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! self::validate_manifest( $manifest ) ) {
+			self::record_manifest_check( 'invalid_manifest', __( 'The update manifest or its Ed25519 signature is invalid.', 'geek-cube-studio' ), $response_code );
 			set_site_transient( self::MANIFEST_CACHE_KEY, array( '__fetch_error' => true ), self::ERROR_CACHE_TTL );
 
 			return false;
 		}
 
 		set_site_transient( self::MANIFEST_CACHE_KEY, $manifest, self::CACHE_TTL );
+		self::record_manifest_check( 'ok', __( 'Signed update manifest verified.', 'geek-cube-studio' ), $response_code );
 
 		return $manifest;
+	}
+
+	/**
+	 * Return the update state consumed by the settings screen.
+	 *
+	 * @param bool $force Whether to bypass the manifest cache.
+	 * @return array<string,mixed>
+	 */
+	public static function get_update_status( $force = false ) {
+		$manifest   = self::get_manifest( $force );
+		$last_check = get_option( self::LAST_CHECK_OPTION, array() );
+		$last_check = is_array( $last_check ) ? $last_check : array();
+		$status     = array(
+			'state'                => 'unavailable',
+			'current_version'      => GEEK_CUBE_STUDIO_VERSION,
+			'remote_version'       => '',
+			'update_available'     => false,
+			'signature_verified'   => false,
+			'environment_ok'       => false,
+			'channel_accepted'     => false,
+			'auto_update_eligible' => false,
+			'last_checked_at'      => isset( $last_check['checked_at'] ) ? absint( $last_check['checked_at'] ) : 0,
+			'last_check_status'    => isset( $last_check['status'] ) ? sanitize_key( $last_check['status'] ) : '',
+			'last_check_message'   => isset( $last_check['message'] ) ? sanitize_text_field( $last_check['message'] ) : '',
+			'manifest_url'         => GEEK_CUBE_STUDIO_UPDATE_MANIFEST_URL,
+			'manifest'             => array(),
+		);
+
+		if ( ! is_array( $manifest ) ) {
+			return $status;
+		}
+
+		$remote_version   = (string) $manifest['version'];
+		$is_newer         = version_compare( $remote_version, GEEK_CUBE_STUDIO_VERSION, '>' );
+		$environment_ok   = self::environment_meets_requirements( $manifest );
+		$channel_accepted = self::channel_is_accepted( $manifest );
+		$available        = $is_newer && $environment_ok && $channel_accepted;
+		$state            = 'latest';
+
+		if ( $is_newer && ! $channel_accepted ) {
+			$state = 'channel_blocked';
+		} elseif ( $is_newer && ! $environment_ok ) {
+			$state = 'incompatible';
+		} elseif ( $available ) {
+			$state = 'available';
+		} elseif ( version_compare( $remote_version, GEEK_CUBE_STUDIO_VERSION, '<' ) ) {
+			$state = 'ahead';
+		}
+
+		$major_allowed = self::version_major( $remote_version ) <= self::version_major( GEEK_CUBE_STUDIO_VERSION ) || true === $manifest['auto_update_major'];
+
+		$status['state']                = $state;
+		$status['remote_version']       = $remote_version;
+		$status['update_available']     = $available;
+		$status['signature_verified']   = true;
+		$status['environment_ok']       = $environment_ok;
+		$status['channel_accepted']     = $channel_accepted;
+		$status['auto_update_eligible'] = $available
+			&& 'stable' === $manifest['channel']
+			&& true === $manifest['auto_update']
+			&& $major_allowed
+			&& self::site_is_in_rollout( $manifest );
+		$status['manifest']             = array(
+			'channel'           => $manifest['channel'],
+			'release_type'      => $manifest['release_type'],
+			'last_updated'      => $manifest['last_updated'],
+			'requires'          => $manifest['requires'],
+			'requires_php'      => $manifest['requires_php'],
+			'tested'            => $manifest['tested'],
+			'rollout_percent'   => $manifest['rollout_percent'],
+			'auto_update'       => $manifest['auto_update'],
+			'auto_update_major' => $manifest['auto_update_major'],
+			'sha256'            => $manifest['sha256'],
+			'signature_key_id'  => isset( $manifest['signature_key_id'] ) ? sanitize_text_field( $manifest['signature_key_id'] ) : '',
+			'download_url'      => $manifest['download_url'],
+		);
+
+		return $status;
+	}
+
+	/**
+	 * Build the nonce-protected native WordPress self-update URL.
+	 *
+	 * @return string
+	 */
+	public static function native_update_url() {
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return '';
+		}
+
+		$plugin_file = self::plugin_basename();
+		$url         = add_query_arg(
+			array(
+				'action' => 'upgrade-plugin',
+				'plugin' => $plugin_file,
+			),
+			self_admin_url( 'update.php' )
+		);
+
+		return wp_nonce_url( $url, 'upgrade-plugin_' . $plugin_file );
 	}
 
 	/**
@@ -541,6 +663,27 @@ final class Geek_Cube_Studio_Updater {
 		return array(
 			'key_id'            => $key_id,
 			'public_key_base64' => $public_b64,
+		);
+	}
+
+	/**
+	 * Persist a safe diagnostic for the most recent remote manifest request.
+	 *
+	 * @param string $status    Result identifier.
+	 * @param string $message   Safe diagnostic message.
+	 * @param int    $http_code HTTP response code, or zero for transport errors.
+	 * @return void
+	 */
+	private static function record_manifest_check( $status, $message, $http_code ) {
+		update_option(
+			self::LAST_CHECK_OPTION,
+			array(
+				'status'     => sanitize_key( (string) $status ),
+				'message'    => sanitize_text_field( (string) $message ),
+				'http_code'  => absint( $http_code ),
+				'checked_at' => time(),
+			),
+			false
 		);
 	}
 

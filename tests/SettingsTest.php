@@ -117,6 +117,7 @@ final class SettingsTest extends TestCase {
 
 	public function test_admin_tab_resolution_rejects_unknown_values(): void {
 		$this->assertSame( 'saves', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => 'saves' ) ) );
+		$this->assertSame( 'updates', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => 'updates' ) ) );
 		$this->assertSame( 'overview', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => 'unknown' ) ) );
 		$this->assertSame( 'overview', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => array( 'saves' ) ) ) );
 	}

@@ -164,3 +164,22 @@ php tools\build.php --no-bump
 
 Não use `--no-bump` para sobrescrever uma versão que já foi publicada com outro
 conteúdo.
+
+## 5. Atualização pelo painel do WordPress
+
+No WordPress, acesse **Geek Cube > Configurações > Atualizações**. A tela
+mostra as versões instalada e publicada, o resultado da assinatura Ed25519, a
+compatibilidade do servidor, a elegibilidade para atualização automática e o
+histórico dos patches de dados.
+
+O botão **Verificar novamente** ignora o cache local, consulta o manifesto
+assinado e atualiza o estado nativo de plugins do WordPress. Quando existir uma
+versão compatível, **Atualizar agora** entrega a instalação ao atualizador
+nativo. Antes da substituição dos arquivos, o plugin exige que a URL do pacote
+seja a mesma do manifesto assinado e que o SHA-256 do ZIP baixado coincida com o
+fingerprint publicado.
+
+Se a consulta falhar, a tela exibe o diagnóstico da última tentativa e não
+oferece o pacote para instalação. Redirecionamentos HTTP, manifesto inválido,
+assinatura incorreta, canal recusado e requisitos incompatíveis falham de forma
+segura.

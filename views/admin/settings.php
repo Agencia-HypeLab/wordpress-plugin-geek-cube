@@ -37,6 +37,7 @@ $tab_url       = static function ( $tab ) {
 	</header>
 
 	<?php settings_errors(); ?>
+	<?php Geek_Cube_Studio_Catalog_Admin::render_notice(); ?>
 
 	<div class="geek-cube-search" data-geek-cube-search>
 		<label class="screen-reader-text" for="geek-cube-settings-search"><?php esc_html_e( 'Search settings', 'geek-cube-studio' ); ?></label>
@@ -85,6 +86,100 @@ $tab_url       = static function ( $tab ) {
 					<p><?php esc_html_e( 'Geek Cube emits immutable artifact URLs and does not manage cache policy.', 'geek-cube-studio' ); ?></p>
 				</article>
 			</div>
+		</section>
+	<?php elseif ( 'updates' === $active_tab ) : ?>
+		<?php
+		$update_state = isset( $update_status['state'] ) ? $update_status['state'] : 'unavailable';
+		$state_labels = array(
+			'available'       => __( 'Update available', 'geek-cube-studio' ),
+			'latest'          => __( 'Latest version installed', 'geek-cube-studio' ),
+			'ahead'           => __( 'Installed version is ahead', 'geek-cube-studio' ),
+			'incompatible'    => __( 'Server requirements not met', 'geek-cube-studio' ),
+			'channel_blocked' => __( 'Release channel not accepted', 'geek-cube-studio' ),
+			'unavailable'     => __( 'Manifest unavailable', 'geek-cube-studio' ),
+		);
+		$state_label  = isset( $state_labels[ $update_state ] ) ? $state_labels[ $update_state ] : $state_labels['unavailable'];
+		$state_class  = in_array( $update_state, array( 'available', 'latest' ), true ) ? 'is-ready' : ( in_array( $update_state, array( 'unavailable', 'incompatible' ), true ) ? 'is-error' : 'is-warning' );
+		$manifest     = isset( $update_status['manifest'] ) && is_array( $update_status['manifest'] ) ? $update_status['manifest'] : array();
+		$last_checked = ! empty( $update_status['last_checked_at'] ) ? wp_date( 'd/m/Y H:i:s', (int) $update_status['last_checked_at'] ) : __( 'Not checked yet', 'geek-cube-studio' );
+		?>
+		<section id="plugin-updates" class="geek-cube-panel">
+			<div class="geek-cube-panel__heading">
+				<div><h2><?php esc_html_e( 'Geek Cube Studio updates', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Signed releases are installed through the native WordPress updater.', 'geek-cube-studio' ); ?></p></div>
+				<strong class="geek-cube-badge <?php echo esc_attr( $state_class ); ?>"><?php echo esc_html( $state_label ); ?></strong>
+			</div>
+
+			<div class="geek-cube-update-grid">
+				<article><span><?php esc_html_e( 'Installed version', 'geek-cube-studio' ); ?></span><strong><?php echo esc_html( $update_status['current_version'] ); ?></strong></article>
+				<article><span><?php esc_html_e( 'Available version', 'geek-cube-studio' ); ?></span><strong><?php echo esc_html( $update_status['remote_version'] ? $update_status['remote_version'] : '—' ); ?></strong></article>
+				<article><span><?php esc_html_e( 'Ed25519 signature', 'geek-cube-studio' ); ?></span><strong class="<?php echo ! empty( $update_status['signature_verified'] ) ? 'is-ok' : 'is-bad'; ?>"><?php echo esc_html( ! empty( $update_status['signature_verified'] ) ? __( 'Verified', 'geek-cube-studio' ) : __( 'Not verified', 'geek-cube-studio' ) ); ?></strong></article>
+				<article><span><?php esc_html_e( 'Server compatibility', 'geek-cube-studio' ); ?></span><strong class="<?php echo ! empty( $update_status['environment_ok'] ) ? 'is-ok' : 'is-bad'; ?>"><?php echo esc_html( ! empty( $update_status['environment_ok'] ) ? __( 'Compatible', 'geek-cube-studio' ) : __( 'Unknown or incompatible', 'geek-cube-studio' ) ); ?></strong></article>
+			</div>
+
+			<div class="geek-cube-update-actions">
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="geek_cube_check_updates">
+					<?php wp_nonce_field( 'geek_cube_check_updates' ); ?>
+					<button type="submit" class="button button-secondary" <?php disabled( current_user_can( 'update_plugins' ), false ); ?>><?php esc_html_e( 'Check again', 'geek-cube-studio' ); ?></button>
+				</form>
+				<?php if ( ! empty( $update_status['update_available'] ) && $native_update_url ) : ?>
+					<a class="button button-primary" href="<?php echo esc_url( $native_update_url ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Update Geek Cube Studio now? WordPress will temporarily enable maintenance mode while replacing the plugin files.', 'geek-cube-studio' ) ); ?>');"><?php esc_html_e( 'Update now', 'geek-cube-studio' ); ?></a>
+				<?php elseif ( ! current_user_can( 'update_plugins' ) ) : ?>
+					<span class="description"><?php esc_html_e( 'Your account cannot install plugin updates.', 'geek-cube-studio' ); ?></span>
+				<?php endif; ?>
+			</div>
+
+			<p class="description geek-cube-update-checked">
+				<?php
+				printf(
+					/* translators: %s: last manifest check date. */
+					esc_html__( 'Last signed-manifest check: %s.', 'geek-cube-studio' ),
+					esc_html( $last_checked )
+				);
+				?>
+			</p>
+
+			<?php
+			if ( ! empty( $update_status['last_check_message'] ) ) :
+				?>
+				<div class="geek-cube-callout"><strong><?php esc_html_e( 'Last verification', 'geek-cube-studio' ); ?></strong><p><?php echo esc_html( $update_status['last_check_message'] ); ?></p></div><?php endif; ?>
+
+			<?php if ( ! empty( $manifest ) ) : ?>
+				<details class="geek-cube-update-details">
+					<summary><?php esc_html_e( 'Release and security details', 'geek-cube-studio' ); ?></summary>
+					<table class="widefat striped"><tbody>
+						<tr><th><?php esc_html_e( 'Channel', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( $manifest['channel'] ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Release type', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( $manifest['release_type'] ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Published', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( $manifest['last_updated'] ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Minimums', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( 'WordPress ' . $manifest['requires'] . ' · PHP ' . $manifest['requires_php'] ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Automatic update', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( ! empty( $update_status['auto_update_eligible'] ) ? __( 'Eligible on this site', 'geek-cube-studio' ) : __( 'Not eligible on this site', 'geek-cube-studio' ) ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Rollout', 'geek-cube-studio' ); ?></th><td><?php echo esc_html( $manifest['rollout_percent'] . '%' ); ?></td></tr>
+						<tr><th><?php esc_html_e( 'Signing key', 'geek-cube-studio' ); ?></th><td><code><?php echo esc_html( $manifest['signature_key_id'] ); ?></code></td></tr>
+						<tr><th>SHA-256</th><td><code class="geek-cube-update-hash"><?php echo esc_html( $manifest['sha256'] ); ?></code></td></tr>
+						<tr><th><?php esc_html_e( 'Manifest', 'geek-cube-studio' ); ?></th><td><a href="<?php echo esc_url( $update_status['manifest_url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Open endpoint', 'geek-cube-studio' ); ?></a></td></tr>
+					</tbody></table>
+				</details>
+			<?php endif; ?>
+
+			<div class="geek-cube-callout"><strong><?php esc_html_e( 'Protected update flow', 'geek-cube-studio' ); ?></strong><p><?php esc_html_e( 'Before WordPress installs the package, Geek Cube verifies that its URL matches the signed manifest and that the downloaded ZIP matches the signed SHA-256 fingerprint.', 'geek-cube-studio' ); ?></p></div>
+		</section>
+
+		<section class="geek-cube-panel geek-cube-update-patches">
+			<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Post-update patches', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Data migrations run separately, with locks and automatic retries.', 'geek-cube-studio' ); ?></p></div></div>
+			<div class="geek-cube-table-wrap"><table class="widefat striped"><thead><tr><th><?php esc_html_e( 'Patch', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Introduced in', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Status', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Attempts', 'geek-cube-studio' ); ?></th></tr></thead><tbody>
+			<?php
+			if ( empty( $patch_inventory ) ) :
+				?>
+				<tr><td colspan="4"><?php esc_html_e( 'No patches apply to this installed version.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
+			<?php
+			foreach ( $patch_inventory as $patch ) :
+				?>
+				<tr><td><strong><code><?php echo esc_html( $patch['id'] ); ?></code></strong><br><small><?php echo esc_html( $patch['description'] ); ?></small>
+				<?php
+				if ( $patch['error'] ) :
+					?>
+				<br><span class="geek-cube-update-error"><?php echo esc_html( $patch['error'] ); ?></span><?php endif; ?></td><td><?php echo esc_html( $patch['introduced_in'] ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $patch['status'] ) ); ?>"><?php echo esc_html( $patch['status'] ); ?></span></td><td><?php echo esc_html( $patch['attempts'] ); ?></td></tr><?php endforeach; ?>
+			</tbody></table></div>
 		</section>
 	<?php elseif ( 'urls' === $active_tab ) : ?>
 		<form method="post" action="options.php" class="geek-cube-panel">

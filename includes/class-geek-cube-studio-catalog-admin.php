@@ -229,7 +229,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	 * @return string
 	 */
 	public static function badge_class( $status ) {
-		if ( in_array( $status, array( 'verified', 'approved', 'production', 'published', 'passed' ), true ) ) {
+		if ( in_array( $status, array( 'verified', 'approved', 'production', 'published', 'passed', 'completed' ), true ) ) {
 			return 'is-ready';
 		}
 

@@ -3,6 +3,12 @@
 use PHPUnit\Framework\TestCase;
 
 final class UpdaterTest extends TestCase {
+	protected function setUp(): void {
+		$GLOBALS['test_options']       = array();
+		$GLOBALS['test_transients']    = array();
+		$GLOBALS['test_remote_result'] = null;
+	}
+
 	private function manifest(): array {
 		$manifest = array(
 			'name'                => 'Geek Cube Studio',
@@ -55,5 +61,34 @@ final class UpdaterTest extends TestCase {
 
 		$manifest['rollout_percent'] = 100;
 		$this->assertTrue( Geek_Cube_Studio_Updater::site_is_in_rollout( $manifest ) );
+	}
+
+	public function test_update_status_exposes_a_verified_available_release(): void {
+		$GLOBALS['test_remote_result'] = array(
+			'response' => array( 'code' => 200 ),
+			'body'     => wp_json_encode( $this->manifest() ),
+		);
+
+		$status = Geek_Cube_Studio_Updater::get_update_status( true );
+
+		$this->assertSame( 'available', $status['state'] );
+		$this->assertSame( '0.1.1', $status['remote_version'] );
+		$this->assertTrue( $status['signature_verified'] );
+		$this->assertTrue( $status['environment_ok'] );
+		$this->assertTrue( $status['auto_update_eligible'] );
+		$this->assertSame( 'ok', $status['last_check_status'] );
+	}
+
+	public function test_update_status_reports_a_redirecting_manifest_as_unavailable(): void {
+		$GLOBALS['test_remote_result'] = array(
+			'response' => array( 'code' => 301 ),
+			'body'     => '',
+		);
+
+		$status = Geek_Cube_Studio_Updater::get_update_status( true );
+
+		$this->assertSame( 'unavailable', $status['state'] );
+		$this->assertSame( 'http_error', $status['last_check_status'] );
+		$this->assertStringContainsString( '301', $status['last_check_message'] );
 	}
 }
