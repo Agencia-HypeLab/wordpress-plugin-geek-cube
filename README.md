@@ -29,5 +29,8 @@ php tools\build.php
 As migrações persistentes executadas depois de uma atualização estão descritas
 em [`docs/PATCHES.md`](docs/PATCHES.md).
 
+O cadastro inicial seguro e o roteiro do primeiro jogo estão em
+[`docs/FIRST-PLAYABLE-TEST.md`](docs/FIRST-PLAYABLE-TEST.md).
+
 Credenciais, chaves privadas, builds e ROMs privadas nunca devem ser enviados
 ao repositório.

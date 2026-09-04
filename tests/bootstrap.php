@@ -70,6 +70,10 @@ function sanitize_text_field( $value ) {
 	return trim( strip_tags( (string) $value ) );
 }
 
+function sanitize_textarea_field( $value ) {
+	return sanitize_text_field( $value );
+}
+
 function sanitize_key( $value ) {
 	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $value ) );
 }
@@ -120,6 +124,10 @@ function trailingslashit( $value ) {
 
 function user_trailingslashit( $value ) {
 	return trailingslashit( $value );
+}
+
+function wp_mkdir_p( $directory ) {
+	return is_dir( $directory ) || mkdir( $directory, 0777, true );
 }
 
 function get_locale() {
@@ -217,4 +225,10 @@ require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-updater.php'
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-update-patches.php';
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-settings.php';
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-urls.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-schema.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-artifact-storage.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-repository.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-seed.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-player.php';
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-admin.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-catalog-admin.php';

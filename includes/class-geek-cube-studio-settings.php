@@ -48,6 +48,7 @@ class Geek_Cube_Studio_Settings {
 					'catalog' => 'jogos',
 					'game'    => 'jogo',
 					'play'    => 'jogar',
+					'lab'     => 'laboratorio',
 					'profile' => 'perfil',
 				),
 			),

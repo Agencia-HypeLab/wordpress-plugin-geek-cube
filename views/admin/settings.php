@@ -104,6 +104,7 @@ $tab_url       = static function ( $tab ) {
 					'catalog' => __( 'Catalog', 'geek-cube-studio' ),
 					'game'    => __( 'Game detail', 'geek-cube-studio' ),
 					'play'    => __( 'Playable URL', 'geek-cube-studio' ),
+					'lab'     => __( 'Test laboratory', 'geek-cube-studio' ),
 					'profile' => __( 'Player profile', 'geek-cube-studio' ),
 				);
 				$route_languages = array_merge(

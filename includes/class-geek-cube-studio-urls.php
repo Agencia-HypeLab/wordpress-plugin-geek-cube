@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Geek_Cube_Studio_URLs {
 
 	/** Supported public route names. */
-	const ROUTES = array( 'catalog', 'game', 'play', 'profile' );
+	const ROUTES = array( 'catalog', 'game', 'play', 'lab', 'profile' );
 
 	/**
 	 * Register URL lifecycle hooks.
@@ -121,9 +121,9 @@ class Geek_Cube_Studio_URLs {
 	/**
 	 * Build a language-aware route URL.
 	 *
-	 * @param string $route      Route identifier.
-	 * @param string $object_slug Optional game/profile slug appended to route.
-	 * @param string $language   Optional Polylang language slug.
+	 * @param string          $route      Route identifier.
+	 * @param string|string[] $object_slug Optional path segments appended to route.
+	 * @param string          $language   Optional Polylang language slug.
 	 *
 	 * @return string
 	 */
@@ -143,9 +143,13 @@ class Geek_Cube_Studio_URLs {
 			}
 		}
 
-		$path = $route_slug;
-		if ( '' !== $object_slug ) {
-			$path .= '/' . sanitize_title( (string) $object_slug );
+		$path     = $route_slug;
+		$segments = is_array( $object_slug ) ? $object_slug : array( $object_slug );
+		foreach ( $segments as $segment ) {
+			$segment = is_scalar( $segment ) ? sanitize_title( (string) $segment ) : '';
+			if ( '' !== $segment ) {
+				$path .= '/' . $segment;
+			}
 		}
 
 		$url = trailingslashit( $home ) . user_trailingslashit( ltrim( $path, '/' ) );

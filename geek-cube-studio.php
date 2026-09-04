@@ -4,7 +4,7 @@
  * Plugin URI:        https://www.hypelab.com.br/
  * Update URI:        https://www.hypelab.com.br/wordpress-plugin-geek-cube/geek-cube-studio-update.php
  * Description:       Connects Geek Cube Studio game pages to its browser-based player experience.
- * Version:           0.1.2
+ * Version:           0.1.3
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Agência HypeLab
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.2' );
+define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.3' );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_FILE', __FILE__ );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -34,7 +34,13 @@ require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-upda
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-update-patches.php';
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-settings.php';
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-urls.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-schema.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-artifact-storage.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-repository.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-seed.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-player.php';
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-admin.php';
+require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-catalog-admin.php';
 
 /**
  * Bootstrap infrastructure shared by every Geek Cube Studio feature.
@@ -42,12 +48,16 @@ require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-admi
  * @return void
  */
 function geek_cube_studio_boot() {
+	Geek_Cube_Studio_Schema::boot();
+	Geek_Cube_Studio_Seed::boot();
 	Geek_Cube_Studio_Updater::boot();
 	Geek_Cube_Studio_Update_Patches::boot();
 	Geek_Cube_Studio_URLs::boot();
+	Geek_Cube_Studio_Player::boot();
 
 	if ( is_admin() ) {
 		Geek_Cube_Studio_Admin::boot();
+		Geek_Cube_Studio_Catalog_Admin::boot();
 	}
 }
 
@@ -59,9 +69,14 @@ add_action( 'plugins_loaded', 'geek_cube_studio_boot', 5 );
  * @return void
  */
 function geek_cube_studio_activate() {
+	Geek_Cube_Studio_Schema::boot();
+	Geek_Cube_Studio_Seed::boot();
 	add_option( 'geek_cube_studio_version', '0.0.0', '', false );
 	add_option( Geek_Cube_Studio_Settings::OPTION_KEY, Geek_Cube_Studio_Settings::defaults(), '', false );
 	delete_site_transient( Geek_Cube_Studio_Updater::MANIFEST_CACHE_KEY );
+	Geek_Cube_Studio_Schema::install();
+	Geek_Cube_Studio_Player::register_rewrite_rules();
+	flush_rewrite_rules( false );
 	Geek_Cube_Studio_Update_Patches::maybe_schedule();
 }
 

@@ -34,6 +34,7 @@ final class SettingsTest extends TestCase {
 						'catalog' => 'Meus Jogos',
 						'game'    => 'Jogo',
 						'play'    => 'Jogar Agora',
+						'lab'     => 'Laboratorio',
 						'profile' => 'Perfil',
 					),
 				),
@@ -69,6 +70,7 @@ final class SettingsTest extends TestCase {
 						'catalog' => 'jogos',
 						'game'    => 'jogos',
 						'play'    => 'jogar',
+						'lab'     => 'laboratorio',
 						'profile' => 'perfil',
 					),
 				),
@@ -85,6 +87,7 @@ final class SettingsTest extends TestCase {
 			'catalog' => 'games',
 			'game'    => 'game',
 			'play'    => 'play',
+			'lab'     => 'laboratory',
 			'profile' => 'profile',
 		);
 		update_option( Geek_Cube_Studio_Settings::OPTION_KEY, $settings );
@@ -93,6 +96,10 @@ final class SettingsTest extends TestCase {
 		$this->assertSame(
 			'https://site.example.test/play/demo-game/',
 			Geek_Cube_Studio_URLs::build( 'play', 'Demo Game', 'en' )
+		);
+		$this->assertSame(
+			'https://site.example.test/laboratory/profile-id/',
+			Geek_Cube_Studio_URLs::build( 'lab', array( 'Profile ID' ), 'en' )
 		);
 	}
 

@@ -71,4 +71,21 @@
 			} );
 		}
 	} );
+
+	const testForm = document.querySelector( '[data-geek-cube-test-form]' );
+	if ( testForm ) {
+		const values = {
+			userAgent: navigator.userAgent || '',
+			platform: navigator.userAgentData && navigator.userAgentData.platform ? navigator.userAgentData.platform : ( navigator.platform || '' ),
+			language: navigator.language || '',
+			viewport: `${ window.innerWidth }x${ window.innerHeight }@${ window.devicePixelRatio || 1 }`,
+		};
+
+		Object.entries( values ).forEach( ( [ key, value ] ) => {
+			const field = testForm.querySelector( `[data-env="${ key }"]` );
+			if ( field ) {
+				field.value = value;
+			}
+		} );
+	}
 }() );

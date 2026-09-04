@@ -4,14 +4,20 @@ O patcher separa a troca dos arquivos do plugin das migrações de dados. Ele
 mantém estado por patch, usa lock, processa lotes pequenos pelo WP-Cron e tenta
 novamente com espera progressiva quando há uma falha transitória.
 
-O registro começa vazio. Quando uma versão precisar migrar opções, tabelas ou
-metadados, adicione uma entrada permanente:
+O registro permanente começou com estes patches da versão 0.1.3:
+
+- `001-create-content-schema`: cria as tabelas do catálogo e laboratório;
+- `002-seed-initial-nes-catalog`: cadastra Falling e o preset FCEUmm sem baixar
+  arquivos remotos.
+
+Quando uma versão precisar migrar opções, tabelas ou metadados, adicione uma
+nova entrada permanente:
 
 ```php
 add_filter(
 	'geek_cube_studio_update_patch_registry',
 	static function ( $patches ) {
-		$patches['001-normalize-game-slugs'] = array(
+		$patches['003-normalize-game-slugs'] = array(
 			'introduced_in' => '0.2.0',
 			'description'   => 'Normaliza slugs de jogos existentes.',
 			'callback'      => 'geek_cube_studio_patch_normalize_game_slugs',
