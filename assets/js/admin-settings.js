@@ -110,7 +110,7 @@
 					input.value = value;
 				}
 				if ( output ) {
-					output.value = `${ value } FPS`;
+					output.value = value + ' FPS';
 					output.textContent = output.value;
 				}
 			} );

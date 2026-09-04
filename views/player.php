@@ -76,7 +76,7 @@ $runtime = array(
 					if ( Number.isFinite( frame ) && previousFrame !== null && now - previousTime >= 750 ) {
 						const fps = Math.max( 0, ( frame - previousFrame ) * 1000 / ( now - previousTime ) );
 						if ( fpsOutput ) {
-							fpsOutput.value = `FPS: ${ fps.toFixed( 1 ) }`;
+							fpsOutput.value = 'FPS: ' + fps.toFixed( 1 );
 							fpsOutput.textContent = fpsOutput.value;
 						}
 						if ( window.parent !== window ) {

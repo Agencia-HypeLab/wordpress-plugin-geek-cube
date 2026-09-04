@@ -6,8 +6,8 @@ O comando padrão é o fluxo completo:
 php tools\build.php
 ```
 
-Ele pede logo no início a passphrase da chave SSH exclusiva deste repositório,
-valida o projeto, testa os acessos, incrementa a versão patch, gera o ZIP,
+Ele pede logo no início, uma única vez, a passphrase da chave SSH exclusiva deste
+repositório; depois valida o projeto, testa os acessos, incrementa a versão patch, gera o ZIP,
 assina o manifesto, cria o commit, faz o push da branch atual, envia os artefatos
 por FTP e, somente após confirmar a publicação HTTPS, cria e envia a tag da
 versão. A pasta local `build` mantém os três ZIPs versionados mais recentes para

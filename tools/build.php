@@ -190,6 +190,33 @@ function geek_cube_studio_build_git_preflight( $root_dir ) {
 }
 
 /**
+ * Use the Windows OpenSSH client paired with the Windows ssh-agent service.
+ *
+ * Git for Windows can otherwise choose its bundled SSH client, which cannot
+ * read keys cached by the Windows agent and prompts once for every Git call.
+ *
+ * @return string
+ */
+function geek_cube_studio_build_configure_ssh_agent() {
+	if ( 'Windows' !== PHP_OS_FAMILY ) {
+		return 'ssh';
+	}
+
+	$windows_dir = rtrim( (string) getenv( 'WINDIR' ), '/\\' );
+	$ssh_path    = $windows_dir . '\\System32\\OpenSSH\\ssh.exe';
+
+	if ( '' === $windows_dir || ! is_file( $ssh_path ) || ! is_readable( $ssh_path ) ) {
+		fwrite( STDERR, "Git SSH setup failed: Windows OpenSSH was not found.\n" );
+		exit( 1 );
+	}
+
+	putenv( 'GIT_SSH=' . $ssh_path );
+	putenv( 'GIT_SSH_COMMAND' );
+
+	return $ssh_path;
+}
+
+/**
  * Resolve the project-specific SSH identity configured for the Git remote.
  *
  * @param string $root_dir Project root.
@@ -211,9 +238,10 @@ function geek_cube_studio_build_ssh_identity_file( $root_dir ) {
 	}
 
 	$host   = ! empty( $matches[1] ) ? $matches[1] : $matches[2];
+	$ssh    = geek_cube_studio_build_configure_ssh_agent();
 	$output = array();
 	$status = 1;
-	exec( 'ssh -G ' . escapeshellarg( $host ) . ' 2>&1', $output, $status );
+	exec( escapeshellarg( $ssh ) . ' -G ' . escapeshellarg( $host ) . ' 2>&1', $output, $status );
 
 	if ( 0 !== $status ) {
 		fwrite( STDERR, "Git SSH setup failed: unable to read the SSH host configuration.\n" );
