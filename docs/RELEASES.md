@@ -9,7 +9,9 @@ php tools\build.php
 Ele valida o projeto, testa os acessos, incrementa a versão patch, gera o ZIP,
 assina o manifesto, cria o commit, faz o push da branch atual, envia os artefatos
 por FTP e, somente após confirmar a publicação HTTPS, cria e envia a tag da
-versão.
+versão. A pasta local `build` e o diretório remoto mantêm somente os três ZIPs
+versionados mais recentes do Geek Cube Studio; manifesto e endpoint não entram
+nessa contagem.
 
 ## 1. Credenciais de FTP
 
@@ -183,3 +185,7 @@ Se a consulta falhar, a tela exibe o diagnóstico da última tentativa e não
 oferece o pacote para instalação. Redirecionamentos HTTP, manifesto inválido,
 assinatura incorreta, canal recusado e requisitos incompatíveis falham de forma
 segura.
+
+A retenção remota automática acompanha o fluxo do HypeLab para FTP e FTPS. No
+modo SFTP, os pacotes são enviados, mas a exclusão remota automática permanece
+desativada.

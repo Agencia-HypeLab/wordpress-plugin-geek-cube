@@ -12,6 +12,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap geek-cube-admin">
 	<header class="geek-cube-admin__header"><div><p class="geek-cube-admin__eyebrow"><?php esc_html_e( 'Versioned files', 'geek-cube-studio' ); ?></p><h1><?php esc_html_e( 'Artifacts', 'geek-cube-studio' ); ?></h1><p><?php esc_html_e( 'Every uploaded byte is stored under its SHA-256 and never overwritten.', 'geek-cube-studio' ); ?></p></div><span class="geek-cube-admin__version"><?php echo esc_html( GEEK_CUBE_STUDIO_VERSION ); ?></span></header>
 	<?php Geek_Cube_Studio_Catalog_Admin::render_notice(); ?>
+	<nav class="nav-tab-wrapper geek-cube-tabs geek-cube-artifact-tabs" aria-label="<?php esc_attr_e( 'Artifact categories', 'geek-cube-studio' ); ?>">
+		<?php
+		foreach ( $artifact_tabs as $tab_type => $tab_label ) :
+			$tab_url = add_query_arg(
+				array(
+					'page'          => 'geek-cube-studio-artifacts',
+					'artifact_type' => $tab_type,
+				),
+				admin_url( 'admin.php' )
+			);
+			$count   = isset( $artifact_counts[ $tab_type ] ) ? (int) $artifact_counts[ $tab_type ] : 0;
+			?>
+			<a class="nav-tab <?php echo $artifact_type === $tab_type ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $tab_url ); ?>"><?php echo esc_html( $tab_label ); ?> <span class="count">(<?php echo esc_html( $count ); ?>)</span></a>
+		<?php endforeach; ?>
+	</nav>
 	<?php if ( ! $schema_ready ) : ?>
 		<div class="notice notice-warning"><p><?php esc_html_e( 'The catalog patch is pending. WP-Cron will retry it automatically.', 'geek-cube-studio' ); ?></p></div>
 	<?php else : ?>
@@ -22,9 +37,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="hidden" name="action" value="geek_cube_create_artifact"><?php wp_nonce_field( 'geek_cube_create_artifact' ); ?>
 					<label><span><?php esc_html_e( 'Type', 'geek-cube-studio' ); ?></span><select name="type" required>
 					<?php
-					foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $artifact_type ) :
+					foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $import_artifact_type ) :
 						?>
-						<option value="<?php echo esc_attr( $artifact_type ); ?>"><?php echo esc_html( strtoupper( $artifact_type ) ); ?></option><?php endforeach; ?></select></label>
+						<option value="<?php echo esc_attr( $import_artifact_type ); ?>" <?php selected( $import_artifact_type, 'all' === $artifact_type ? 'player' : $artifact_type ); ?>><?php echo esc_html( strtoupper( $import_artifact_type ) ); ?></option><?php endforeach; ?></select></label>
 					<label><span><?php esc_html_e( 'Name', 'geek-cube-studio' ); ?></span><input type="text" name="name" required></label>
 					<label><span><?php esc_html_e( 'Version', 'geek-cube-studio' ); ?></span><input type="text" name="version" placeholder="4.2.3 or 1.0.0" required></label>
 					<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform"><option value=""><?php esc_html_e( 'Any / not applicable', 'geek-cube-studio' ); ?></option>
@@ -49,11 +64,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				if ( empty( $artifacts ) ) :
 					?>
-					<tr><td colspan="5"><?php esc_html_e( 'No artifacts imported.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
+					<tr><td colspan="5"><?php esc_html_e( 'No artifacts have been imported in this category.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
 				<?php
 				foreach ( $artifacts as $artifact ) :
 					?>
-					<tr><td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::artifact_title( $artifact ) ); ?></strong><br><?php echo esc_html( $artifact['platform'] ? strtoupper( $artifact['platform'] ) : 'GLOBAL' ); ?></td><td><code title="<?php echo esc_attr( $artifact['sha256'] ); ?>"><?php echo esc_html( substr( $artifact['sha256'], 0, 12 ) . '…' ); ?></code><br><?php echo esc_html( size_format( (int) $artifact['file_size'] ) ); ?></td><td><?php echo esc_html( $artifact['license_name'] ); ?><br><small><?php echo esc_html( 'yes' === $artifact['commercial_use'] ? __( 'Commercial use allowed', 'geek-cube-studio' ) : __( 'Not cleared', 'geek-cube-studio' ) ); ?></small></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $artifact['status'] ) ); ?>"><?php echo esc_html( $artifact['status'] ); ?></span></td><td><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-inline-form"><input type="hidden" name="action" value="geek_cube_artifact_status"><input type="hidden" name="artifact_id" value="<?php echo esc_attr( $artifact['id'] ); ?>"><?php wp_nonce_field( 'geek_cube_artifact_status' ); ?><select name="status"><option value="verified"><?php esc_html_e( 'Verify', 'geek-cube-studio' ); ?></option><option value="blocked"><?php esc_html_e( 'Block', 'geek-cube-studio' ); ?></option><option value="deprecated"><?php esc_html_e( 'Deprecate', 'geek-cube-studio' ); ?></option><option value="pending"><?php esc_html_e( 'Pending', 'geek-cube-studio' ); ?></option></select><button class="button"><?php esc_html_e( 'Apply', 'geek-cube-studio' ); ?></button></form></td></tr><?php endforeach; ?>
+					<tr><td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::artifact_title( $artifact ) ); ?></strong><br><?php echo esc_html( $artifact['platform'] ? strtoupper( $artifact['platform'] ) : 'GLOBAL' ); ?></td><td><code title="<?php echo esc_attr( $artifact['sha256'] ); ?>"><?php echo esc_html( substr( $artifact['sha256'], 0, 12 ) . '…' ); ?></code><br><?php echo esc_html( size_format( (int) $artifact['file_size'] ) ); ?></td><td><?php echo esc_html( $artifact['license_name'] ); ?><br><small><?php echo esc_html( 'yes' === $artifact['commercial_use'] ? __( 'Commercial use allowed', 'geek-cube-studio' ) : __( 'Not cleared', 'geek-cube-studio' ) ); ?></small></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $artifact['status'] ) ); ?>"><?php echo esc_html( $artifact['status'] ); ?></span></td><td><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-inline-form"><input type="hidden" name="action" value="geek_cube_artifact_status"><input type="hidden" name="artifact_id" value="<?php echo esc_attr( $artifact['id'] ); ?>"><input type="hidden" name="artifact_type" value="<?php echo esc_attr( $artifact_type ); ?>"><?php wp_nonce_field( 'geek_cube_artifact_status' ); ?><select name="status"><option value="verified"><?php esc_html_e( 'Verify', 'geek-cube-studio' ); ?></option><option value="blocked"><?php esc_html_e( 'Block', 'geek-cube-studio' ); ?></option><option value="deprecated"><?php esc_html_e( 'Deprecate', 'geek-cube-studio' ); ?></option><option value="pending"><?php esc_html_e( 'Pending', 'geek-cube-studio' ); ?></option></select><button class="button"><?php esc_html_e( 'Apply', 'geek-cube-studio' ); ?></button></form></td></tr><?php endforeach; ?>
 				</tbody></table></div>
 			</section>
 		</div>

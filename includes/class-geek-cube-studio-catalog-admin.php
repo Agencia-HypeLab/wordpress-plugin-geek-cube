@@ -72,9 +72,63 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	/** Render artifacts screen. */
 	public function render_artifacts() {
 		$this->authorize();
-		$schema_ready = $this->schema_ready();
-		$artifacts    = $schema_ready ? Geek_Cube_Studio_Repository::get_artifacts() : array();
+		$schema_ready    = $this->schema_ready();
+		$artifact_type   = self::resolve_artifact_type( $_GET ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen filter.
+		$artifact_tabs   = self::artifact_tabs();
+		$all_artifacts   = $schema_ready ? Geek_Cube_Studio_Repository::get_artifacts() : array();
+		$artifact_counts = array_fill_keys( array_keys( $artifact_tabs ), 0 );
+
+		foreach ( $all_artifacts as $artifact ) {
+			$type = isset( $artifact['type'] ) ? sanitize_key( (string) $artifact['type'] ) : '';
+			++$artifact_counts['all'];
+
+			if ( isset( $artifact_counts[ $type ] ) ) {
+				++$artifact_counts[ $type ];
+			}
+		}
+
+		$artifacts = 'all' === $artifact_type
+			? $all_artifacts
+			: array_values(
+				array_filter(
+					$all_artifacts,
+					static function ( $artifact ) use ( $artifact_type ) {
+						return is_array( $artifact ) && isset( $artifact['type'] ) && $artifact_type === $artifact['type'];
+					}
+				)
+			);
 		require GEEK_CUBE_STUDIO_PLUGIN_DIR . 'views/admin/artifacts.php';
+	}
+
+	/**
+	 * Return the artifact categories shown as tabs on the operational screen.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function artifact_tabs() {
+		$tabs = array(
+			'all' => __( 'All artifacts', 'geek-cube-studio' ),
+		);
+
+		foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $type ) {
+			$tabs[ $type ] = strtoupper( $type );
+		}
+
+		return $tabs;
+	}
+
+	/**
+	 * Resolve an allow-listed artifact category from a read-only request.
+	 *
+	 * @param mixed $request Request data.
+	 * @return string
+	 */
+	public static function resolve_artifact_type( $request ) {
+		$value = is_array( $request ) && isset( $request['artifact_type'] ) && is_scalar( $request['artifact_type'] )
+			? sanitize_key( (string) $request['artifact_type'] )
+			: 'all';
+
+		return isset( self::artifact_tabs()[ $value ] ) ? $value : 'all';
 	}
 
 	/** Render profiles screen. */
@@ -129,17 +183,18 @@ final class Geek_Cube_Studio_Catalog_Admin {
 			Geek_Cube_Studio_Artifact_Storage::cleanup( $stored );
 		}
 
-		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Immutable artifact imported. Review its rights and verify it before use.', 'geek-cube-studio' ) );
+		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Immutable artifact imported. Review its rights and verify it before use.', 'geek-cube-studio' ), array( 'artifact_type' => self::resolve_artifact_type( array( 'artifact_type' => $type ) ) ) );
 	}
 
 	/** Handle an artifact lifecycle transition. */
 	public function update_artifact_status() {
 		$this->authorize_action();
 		check_admin_referer( 'geek_cube_artifact_status' );
-		$artifact_id = isset( $_POST['artifact_id'] ) ? absint( wp_unslash( $_POST['artifact_id'] ) ) : 0;
-		$status      = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
-		$result      = Geek_Cube_Studio_Repository::update_artifact_status( $artifact_id, $status );
-		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Artifact status updated.', 'geek-cube-studio' ) );
+		$artifact_id   = isset( $_POST['artifact_id'] ) ? absint( wp_unslash( $_POST['artifact_id'] ) ) : 0;
+		$status        = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
+		$artifact_type = self::resolve_artifact_type( $_POST );
+		$result        = Geek_Cube_Studio_Repository::update_artifact_status( $artifact_id, $status );
+		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Artifact status updated.', 'geek-cube-studio' ), array( 'artifact_type' => $artifact_type ) );
 	}
 
 	/** Handle execution profile creation. */

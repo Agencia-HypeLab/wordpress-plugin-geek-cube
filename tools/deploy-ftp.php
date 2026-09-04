@@ -13,6 +13,7 @@ if ( false === $root_dir ) {
 }
 
 require_once __DIR__ . '/release-signing.php';
+require_once __DIR__ . '/release-retention.php';
 
 $autoload = $root_dir . '/vendor/autoload.php';
 
@@ -116,10 +117,10 @@ function geek_cube_studio_deploy_ca_bundle( array $config ) {
  * @return string
  */
 function geek_cube_studio_deploy_transfer_url( array $config ) {
-	$host = trim( (string) $config['host'], "/\\ \t\n\r\0\x0B" );
-	$port = ! empty( $config['port'] ) ? ':' . (int) $config['port'] : '';
-	$path = trim( str_replace( '\\', '/', (string) $config['remote_dir'] ), '/' );
-	$path = implode( '/', array_map( 'rawurlencode', array_filter( explode( '/', $path ), 'strlen' ) ) );
+	$host   = trim( (string) $config['host'], "/\\ \t\n\r\0\x0B" );
+	$port   = ! empty( $config['port'] ) ? ':' . (int) $config['port'] : '';
+	$path   = trim( str_replace( '\\', '/', (string) $config['remote_dir'] ), '/' );
+	$path   = implode( '/', array_map( 'rawurlencode', array_filter( explode( '/', $path ), 'strlen' ) ) );
 	$scheme = 'ftps' === $config['protocol'] ? 'ftp' : $config['protocol'];
 
 	return $scheme . '://' . $host . $port . '/' . ( '' !== $path ? $path . '/' : '' );
@@ -226,6 +227,121 @@ function geek_cube_studio_deploy_upload( array $config, $local_path, $remote_nam
 }
 
 /**
+ * List entries in the configured remote release directory.
+ *
+ * @param array<string,mixed> $config Transfer configuration.
+ * @return string[]
+ * @throws RuntimeException When the directory cannot be listed.
+ */
+function geek_cube_studio_deploy_list_remote( array $config ) {
+	$handle = curl_init( geek_cube_studio_deploy_transfer_url( $config ) );
+
+	if ( false === $handle ) {
+		throw new RuntimeException( 'Unable to initialize remote release listing.' );
+	}
+
+	geek_cube_studio_deploy_configure_curl( $handle, $config );
+	curl_setopt( $handle, CURLOPT_DIRLISTONLY, true );
+	$result = curl_exec( $handle );
+	$error  = curl_error( $handle );
+	curl_close( $handle );
+
+	if ( false === $result ) {
+		throw new RuntimeException( 'Unable to list remote release builds: ' . $error );
+	}
+
+	$lines = preg_split( '/\r\n|\r|\n/', trim( (string) $result ) );
+
+	if ( ! is_array( $lines ) ) {
+		return array();
+	}
+
+	return array_values(
+		array_filter(
+			array_map( 'trim', $lines ),
+			static function ( $line ) {
+				return '' !== $line;
+			}
+		)
+	);
+}
+
+/**
+ * Delete one package from the configured FTP or FTPS release directory.
+ *
+ * @param array<string,mixed> $config      Transfer configuration.
+ * @param string              $remote_name Safe versioned package filename.
+ * @return void
+ * @throws RuntimeException When deletion fails.
+ */
+function geek_cube_studio_deploy_delete_remote( array $config, $remote_name ) {
+	$handle = curl_init( geek_cube_studio_deploy_transfer_url( $config ) );
+
+	if ( false === $handle ) {
+		throw new RuntimeException( 'Unable to initialize remote build cleanup.' );
+	}
+
+	geek_cube_studio_deploy_configure_curl( $handle, $config );
+	curl_setopt( $handle, CURLOPT_NOBODY, true );
+	curl_setopt( $handle, CURLOPT_POSTQUOTE, array( 'DELE ' . (string) $remote_name ) );
+	$result = curl_exec( $handle );
+	$error  = curl_error( $handle );
+	curl_close( $handle );
+
+	if ( false === $result ) {
+		throw new RuntimeException( "Unable to remove old remote build {$remote_name}: {$error}" );
+	}
+}
+
+/**
+ * Mirror the local retention set and verify that no old remote package remains.
+ *
+ * @param array<string,mixed>                                     $config      Transfer configuration.
+ * @param string                                                  $plugin_slug Plugin slug.
+ * @param array<int,array{path:string,filename:string,mtime:int}> $builds      Local builds to retain.
+ * @return string[] Deleted filenames.
+ * @throws RuntimeException When remote cleanup cannot be completed.
+ */
+function geek_cube_studio_deploy_prune_remote_builds( array $config, $plugin_slug, array $builds ) {
+	if ( 'sftp' === $config['protocol'] ) {
+		echo "Remote cleanup skipped for SFTP, matching the HypeLab deployment flow.\n";
+		return array();
+	}
+
+	$keep = array();
+
+	foreach ( $builds as $build ) {
+		$keep[ $build['filename'] ] = true;
+	}
+
+	$deleted = array();
+	$remote  = geek_cube_studio_release_build_filenames( geek_cube_studio_deploy_list_remote( $config ), $plugin_slug );
+
+	foreach ( $remote as $filename ) {
+		if ( isset( $keep[ $filename ] ) ) {
+			continue;
+		}
+
+		geek_cube_studio_deploy_delete_remote( $config, $filename );
+		$deleted[] = $filename;
+	}
+
+	$remaining = geek_cube_studio_release_build_filenames( geek_cube_studio_deploy_list_remote( $config ), $plugin_slug );
+
+	foreach ( $remaining as $filename ) {
+		if ( ! isset( $keep[ $filename ] ) ) {
+			throw new RuntimeException( "Remote retention verification failed; old build remains: {$filename}" );
+		}
+	}
+
+	if ( count( $remaining ) > GEEK_CUBE_STUDIO_RELEASE_RETENTION ) {
+		throw new RuntimeException( 'Remote retention verification found more than three plugin builds.' );
+	}
+
+	return $deleted;
+}
+
+/**
  * Verify the newly published public manifest through HTTPS.
  *
  * @param array<string,mixed> $config Transfer configuration.
@@ -299,8 +415,8 @@ try {
 		exit( 0 );
 	}
 
-	$build_dir    = $root_dir . '/build';
-	$slug         = (string) $project['slug'];
+	$build_dir     = $root_dir . '/build';
+	$slug          = (string) $project['slug'];
 	$manifest_name = $slug . '-update.json';
 	$endpoint_name = $slug . '-update.php';
 	$manifest_path = $build_dir . '/' . $manifest_name;
@@ -312,28 +428,46 @@ try {
 		throw new RuntimeException( 'The local release manifest is missing or has an invalid signature.' );
 	}
 
-	$version  = isset( $manifest['version'] ) ? (string) $manifest['version'] : '';
-	$sha256   = isset( $manifest['sha256'] ) ? strtolower( (string) $manifest['sha256'] ) : '';
-	$zip_name = $slug . '-' . $version . '.zip';
-	$zip_path = $build_dir . '/' . $zip_name;
-	$zip_hash = is_file( $zip_path ) ? hash_file( 'sha256', $zip_path ) : false;
+	$version     = isset( $manifest['version'] ) ? (string) $manifest['version'] : '';
+	$sha256      = isset( $manifest['sha256'] ) ? strtolower( (string) $manifest['sha256'] ) : '';
+	$zip_name    = $slug . '-' . $version . '.zip';
+	$zip_path    = $build_dir . '/' . $zip_name;
+	$zip_hash    = is_file( $zip_path ) ? hash_file( 'sha256', $zip_path ) : false;
+	$builds      = geek_cube_studio_release_list_local_builds( $build_dir, $slug );
+	$build_names = array_column( $builds, 'filename' );
 
 	if ( ! is_string( $zip_hash ) || ! hash_equals( $sha256, strtolower( $zip_hash ) ) ) {
 		throw new RuntimeException( 'The local release package does not match the signed manifest checksum.' );
 	}
 
-	foreach (
-		array(
-			$zip_name      => $zip_path,
-			$manifest_name => $manifest_path,
-			$endpoint_name => $endpoint_path,
-		) as $remote_name => $local_path
-	) {
+	if ( ! in_array( $zip_name, $build_names, true ) ) {
+		throw new RuntimeException( 'The signed release package is missing from the local retention set.' );
+	}
+
+	foreach ( $builds as $build ) {
+		geek_cube_studio_deploy_upload( $config, $build['path'], $build['filename'] );
+		echo 'Uploaded ' . $build['filename'] . ".\n";
+	}
+
+	foreach ( array(
+		$manifest_name => $manifest_path,
+		$endpoint_name => $endpoint_path,
+	) as $remote_name => $local_path ) {
 		geek_cube_studio_deploy_upload( $config, $local_path, $remote_name );
 		echo "Uploaded {$remote_name}.\n";
 	}
 
 	geek_cube_studio_deploy_verify_public_manifest( $config, $endpoint_name, $version, $sha256 );
+	$deleted = geek_cube_studio_deploy_prune_remote_builds( $config, $slug, $builds );
+
+	if ( ! empty( $deleted ) ) {
+		echo "Removed old remote builds:\n - " . implode( "\n - ", $deleted ) . PHP_EOL;
+	}
+
+	if ( 'sftp' !== $config['protocol'] ) {
+		echo 'Remote retention verified: the latest ' . GEEK_CUBE_STUDIO_RELEASE_RETENTION . " builds are available.\n";
+	}
+
 	echo "Published signed Geek Cube Studio release {$version}.\n";
 } catch ( RuntimeException $exception ) {
 	fwrite( STDERR, 'Deploy error: ' . $exception->getMessage() . PHP_EOL );

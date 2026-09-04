@@ -25,12 +25,34 @@ final class CatalogTest extends TestCase {
 		$this->assertContains( 'nes', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
 	}
 
+	public function test_artifact_tab_resolution_accepts_only_known_categories(): void {
+		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array() ) );
+		$this->assertSame( 'rom', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'rom' ) ) );
+		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'unknown' ) ) );
+		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => array( 'rom' ) ) ) );
+	}
+
 	public function test_verified_nes_profile_without_bios_is_valid(): void {
-		$game = array( 'platform' => 'nes' );
+		$game      = array( 'platform' => 'nes' );
 		$artifacts = array(
-			'player'   => array( 'type' => 'player', 'status' => 'verified', 'platform' => '', 'entrypoint_path' => 'data/loader.js' ),
-			'core'     => array( 'type' => 'core', 'status' => 'verified', 'platform' => 'nes', 'runtime_key' => 'fceumm' ),
-			'rom'      => array( 'type' => 'rom', 'status' => 'verified', 'platform' => 'nes', 'relative_path' => 'rom/falling.nes' ),
+			'player'   => array(
+				'type'            => 'player',
+				'status'          => 'verified',
+				'platform'        => '',
+				'entrypoint_path' => 'data/loader.js',
+			),
+			'core'     => array(
+				'type'        => 'core',
+				'status'      => 'verified',
+				'platform'    => 'nes',
+				'runtime_key' => 'fceumm',
+			),
+			'rom'      => array(
+				'type'          => 'rom',
+				'status'        => 'verified',
+				'platform'      => 'nes',
+				'relative_path' => 'rom/falling.nes',
+			),
 			'bios'     => null,
 			'config'   => null,
 			'controls' => null,
@@ -40,11 +62,26 @@ final class CatalogTest extends TestCase {
 	}
 
 	public function test_unverified_rom_cannot_be_frozen_into_a_profile(): void {
-		$game = array( 'platform' => 'nes' );
+		$game      = array( 'platform' => 'nes' );
 		$artifacts = array(
-			'player'   => array( 'type' => 'player', 'status' => 'verified', 'platform' => '', 'entrypoint_path' => 'data/loader.js' ),
-			'core'     => array( 'type' => 'core', 'status' => 'verified', 'platform' => 'nes', 'runtime_key' => 'fceumm' ),
-			'rom'      => array( 'type' => 'rom', 'status' => 'blocked', 'platform' => 'nes', 'relative_path' => 'rom/test.nes' ),
+			'player'   => array(
+				'type'            => 'player',
+				'status'          => 'verified',
+				'platform'        => '',
+				'entrypoint_path' => 'data/loader.js',
+			),
+			'core'     => array(
+				'type'        => 'core',
+				'status'      => 'verified',
+				'platform'    => 'nes',
+				'runtime_key' => 'fceumm',
+			),
+			'rom'      => array(
+				'type'          => 'rom',
+				'status'        => 'blocked',
+				'platform'      => 'nes',
+				'relative_path' => 'rom/test.nes',
+			),
 			'bios'     => null,
 			'config'   => null,
 			'controls' => null,
@@ -56,8 +93,8 @@ final class CatalogTest extends TestCase {
 	}
 
 	public function test_player_archive_is_extracted_to_a_frozen_entrypoint(): void {
-		$directory = $this->temporaryDirectory();
-		$archive = $directory . '/player.zip';
+		$directory    = $this->temporaryDirectory();
+		$archive      = $directory . '/player.zip';
 		$artifactRoot = $directory . '/artifact';
 		mkdir( $artifactRoot );
 
@@ -74,8 +111,8 @@ final class CatalogTest extends TestCase {
 	}
 
 	public function test_player_archive_rejects_directory_traversal(): void {
-		$directory = $this->temporaryDirectory();
-		$archive = $directory . '/unsafe.zip';
+		$directory    = $this->temporaryDirectory();
+		$archive      = $directory . '/unsafe.zip';
 		$artifactRoot = $directory . '/artifact';
 		mkdir( $artifactRoot );
 

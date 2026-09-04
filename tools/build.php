@@ -19,6 +19,7 @@ $project = require $root_dir . '/config/project.php';
 
 require_once __DIR__ . '/release-signing.php';
 require_once __DIR__ . '/release-vault-note.php';
+require_once __DIR__ . '/release-retention.php';
 
 /**
  * Parse supported build options.
@@ -28,13 +29,13 @@ require_once __DIR__ . '/release-vault-note.php';
  */
 function geek_cube_studio_build_options( array $arguments ) {
 	$options = array(
-		'bump'            => true,
-		'bump_type'       => 'patch',
-		'auto_update'     => false,
+		'bump'              => true,
+		'bump_type'         => 'patch',
+		'auto_update'       => false,
 		'auto_update_major' => false,
-		'channel'         => 'stable',
-		'rollout_percent' => 100,
-		'validate_only'   => false,
+		'channel'           => 'stable',
+		'rollout_percent'   => 100,
+		'validate_only'     => false,
 	);
 
 	foreach ( $arguments as $argument ) {
@@ -484,13 +485,21 @@ function geek_cube_studio_build_metadata( $plugin_file, $readme_file ) {
 		'requires_php' => '',
 	);
 
-	foreach ( array( 'Plugin Name' => 'name', 'Author' => 'author', 'Plugin URI' => 'homepage' ) as $header => $key ) {
+	foreach ( array(
+		'Plugin Name' => 'name',
+		'Author'      => 'author',
+		'Plugin URI'  => 'homepage',
+	) as $header => $key ) {
 		if ( is_string( $plugin ) && preg_match( '/^\s*\*\s*' . preg_quote( $header, '/' ) . ':\s*(.+)$/mi', $plugin, $matches ) ) {
 			$data[ $key ] = trim( $matches[1] );
 		}
 	}
 
-	foreach ( array( 'Requires at least' => 'requires', 'Tested up to' => 'tested', 'Requires PHP' => 'requires_php' ) as $header => $key ) {
+	foreach ( array(
+		'Requires at least' => 'requires',
+		'Tested up to'      => 'tested',
+		'Requires PHP'      => 'requires_php',
+	) as $header => $key ) {
 		if ( is_string( $readme ) && preg_match( '/^' . preg_quote( $header, '/' ) . ':\s*(.+)$/mi', $readme, $matches ) ) {
 			$data[ $key ] = trim( $matches[1] );
 		}
@@ -556,7 +565,7 @@ function geek_cube_studio_build_manifest( $root_dir, array $project, array $opti
 	$build_dir = $root_dir . '/build';
 	$json_name = $project['slug'] . '-update.json';
 	$php_name  = $project['slug'] . '-update.php';
-	$json       = json_encode( $manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+	$json      = json_encode( $manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 
 	if ( ! is_string( $json ) || false === file_put_contents( $build_dir . '/' . $json_name, $json . PHP_EOL, LOCK_EX ) ) {
 		fwrite( STDERR, "Unable to write the signed update manifest.\n" );
@@ -599,8 +608,8 @@ function geek_cube_studio_build_commit_and_push( $root_dir, $branch, $version ) 
 	}
 
 	foreach ( $files as $file ) {
-		$normalized = strtolower( str_replace( '\\', '/', $file ) );
-		$is_example = in_array(
+		$normalized          = strtolower( str_replace( '\\', '/', $file ) );
+		$is_example          = in_array(
 			$normalized,
 			array(
 				'tools/.ftp-credentials.example.json',
@@ -730,9 +739,16 @@ if ( $options['bump'] ) {
 
 $zip_path = geek_cube_studio_build_package( $root_dir, $project, $version );
 $manifest = geek_cube_studio_build_manifest( $root_dir, $project, $options, $version, $zip_path );
+$pruned   = geek_cube_studio_release_prune_local_builds( $root_dir . '/build', $project['slug'] );
 
 echo 'Build created: ' . $zip_path . PHP_EOL;
 echo 'SHA-256: ' . $manifest['sha256'] . PHP_EOL;
+
+if ( ! empty( $pruned ) ) {
+	echo "Removed old local builds:\n - " . implode( "\n - ", $pruned ) . PHP_EOL;
+}
+
+echo 'Local retention verified: the latest ' . GEEK_CUBE_STUDIO_RELEASE_RETENTION . " builds are available.\n";
 
 geek_cube_studio_build_commit_and_push( $root_dir, $branch, $version );
 geek_cube_studio_build_run(
