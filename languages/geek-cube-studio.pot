@@ -1,0 +1,1158 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Geek Cube Studio\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-04 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: geek-cube-studio\n"
+
+msgid "%d catalog identities"
+msgstr ""
+
+msgid "30-minute endurance"
+msgstr ""
+
+msgid "A central view of the controls already prepared for the playable prototype."
+msgstr ""
+
+msgid "A game is the stable identity that receives versioned execution profiles."
+msgstr ""
+
+msgid "A integridade do pacote de atualização não pôde ser confirmada."
+msgstr ""
+
+msgid "A passing test requires boot, video and audio to pass."
+msgstr ""
+
+msgid "A profile needs at least one passing test before approval."
+msgstr ""
+
+msgid "A profile permanently binds one game to exact player, core, ROM and optional BIOS versions."
+msgstr ""
+
+msgid "A reminder does not invalidate the original test record."
+msgstr ""
+
+msgid "A test with a failed checklist item cannot receive a passing result."
+msgstr ""
+
+msgid "A verified %s artifact is required."
+msgstr ""
+
+msgid "Account save synchronization"
+msgstr ""
+
+msgid "Accounts"
+msgstr ""
+
+msgid "Accounts disabled"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Administrators are recommended until a dedicated tester role exists."
+msgstr ""
+
+msgid "All artifacts"
+msgstr ""
+
+msgid "Allow guest play"
+msgstr ""
+
+msgid "Allow immediate play and offer an import when the visitor signs in."
+msgstr ""
+
+msgid "Allowed"
+msgstr ""
+
+msgid "An artifact was assigned to the wrong profile role."
+msgstr ""
+
+msgid "Any / not applicable"
+msgstr ""
+
+msgid "Apple login"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Approve"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+msgid "Architecture status"
+msgstr ""
+
+msgid "Artifact categories"
+msgstr ""
+
+msgid "Artifact status could not be updated."
+msgstr ""
+
+msgid "Artifact status updated."
+msgstr ""
+
+msgid "Artifact storage"
+msgstr ""
+
+msgid "Artifact type, name and version are required."
+msgstr ""
+
+msgid "Artifact versions"
+msgstr ""
+
+msgid "Artifacts"
+msgstr ""
+
+msgid "Attach loading, frame, audio and control observations to each test run."
+msgstr ""
+
+msgid "Attempts"
+msgstr ""
+
+msgid "Atualização oficial e assinada do Geek Cube Studio."
+msgstr ""
+
+msgid "Audio is clean"
+msgstr ""
+
+msgid "Authoritative source URL"
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid "Automatic mode only enables threads when the required browser isolation is available."
+msgstr ""
+
+msgid "Automatic update"
+msgstr ""
+
+msgid "Available version"
+msgstr ""
+
+msgid "BIOS"
+msgstr ""
+
+msgid "BIOS (optional)"
+msgstr ""
+
+msgid "Before WordPress installs the package, Geek Cube verifies that its URL matches the signed manifest and that the downloaded ZIP matches the signed SHA-256 fingerprint."
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Blocked"
+msgstr ""
+
+msgid "Boot completes"
+msgstr ""
+
+msgid "Browser player"
+msgstr ""
+
+msgid "Browsers require user interaction before reliable audio playback."
+msgstr ""
+
+msgid "Cache boundary"
+msgstr ""
+
+msgid "Cache responsibility"
+msgstr ""
+
+msgid "Canonical slug"
+msgstr ""
+
+msgid "Catalog"
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Check again"
+msgstr ""
+
+msgid "Check upstream releases"
+msgstr ""
+
+msgid "Commercial use allowed"
+msgstr ""
+
+msgid "Commercial use reviewed"
+msgstr ""
+
+msgid "Compatibility laboratory"
+msgstr ""
+
+msgid "Compatible"
+msgstr ""
+
+msgid "Complete the checklist after playing."
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "Configuration (optional)"
+msgstr ""
+
+msgid "Configure stable, versioned browser game experiences without coupling public URLs to their internal artifacts."
+msgstr ""
+
+msgid "Configured"
+msgstr ""
+
+msgid "Consulte o changelog incluído no pacote do plugin."
+msgstr ""
+
+msgid "Controls"
+msgstr ""
+
+msgid "Controls (optional)"
+msgstr ""
+
+msgid "Controls for repeatable test runs and immutable compatibility reports."
+msgstr ""
+
+msgid "Core"
+msgstr ""
+
+msgid "Core runtime key"
+msgstr ""
+
+msgid "Core, ROM and BIOS artifacts require a supported platform."
+msgstr ""
+
+msgid "Create immutable profile"
+msgstr ""
+
+msgid "Data migrations run separately, with locks and automatic retries."
+msgstr ""
+
+msgid "Date UTC"
+msgstr ""
+
+msgid "Default engine"
+msgstr ""
+
+msgid "Default fallback"
+msgstr ""
+
+msgid "Default volume"
+msgstr ""
+
+msgid "Deprecate"
+msgstr ""
+
+msgid "Deprecated"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Detect candidate versions without changing approved game profiles."
+msgstr ""
+
+msgid "Device conflict policy"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Do not attach ROM files here; they are separate immutable artifacts."
+msgstr ""
+
+msgid "Download candidates automatically"
+msgstr ""
+
+msgid "Downloads never approve or promote an artifact. Keep disabled until source validation is implemented."
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Each Geek Cube route must use a different slug within the same language."
+msgstr ""
+
+msgid "Ed25519 signature"
+msgstr ""
+
+msgid "Eligible on this site"
+msgstr ""
+
+msgid "Email login"
+msgstr ""
+
+msgid "Enable laboratory"
+msgstr ""
+
+msgid "Enable public player"
+msgstr ""
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Enter a valid title and a non-reserved game slug."
+msgstr ""
+
+msgid "Environment"
+msgstr ""
+
+msgid "Every profile artifact must be verified first."
+msgstr ""
+
+msgid "Every run will be attached to an immutable execution profile."
+msgstr ""
+
+msgid "Every uploaded byte is stored under its SHA-256 and never overwritten."
+msgstr ""
+
+msgid "Execution profiles"
+msgstr ""
+
+msgid "Explicit Play button"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Fallback active"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Final result"
+msgstr ""
+
+msgid "Fingerprint"
+msgstr ""
+
+msgid "Freeze a test combination"
+msgstr ""
+
+msgid "Frozen combinations"
+msgstr ""
+
+msgid "Fullscreen"
+msgstr ""
+
+msgid "Game"
+msgstr ""
+
+msgid "Game compatibility test player"
+msgstr ""
+
+msgid "Game detail"
+msgstr ""
+
+msgid "Game registered."
+msgstr ""
+
+msgid "Game saves"
+msgstr ""
+
+msgid "Gamepad controls"
+msgstr ""
+
+msgid "Games"
+msgstr ""
+
+msgid "Geek Cube"
+msgstr ""
+
+msgid "Geek Cube Studio"
+msgstr ""
+
+msgid "Geek Cube Studio não conseguiu concluir estas migrações após várias tentativas: %s. Verifique o log do WordPress antes de tentar novamente."
+msgstr ""
+
+msgid "Geek Cube Studio player"
+msgstr ""
+
+msgid "Geek Cube Studio updates"
+msgstr ""
+
+msgid "Geek Cube emits immutable artifact URLs and does not manage cache policy."
+msgstr ""
+
+msgid "Geek Cube settings"
+msgstr ""
+
+msgid "Geek Cube will resolve its own translated endpoint segments. It will not depend on the translated custom-post-type slug feature from Polylang Pro."
+msgstr ""
+
+msgid "Global defaults. An approved execution profile may override compatible controls."
+msgstr ""
+
+msgid "Google login"
+msgstr ""
+
+msgid "Guest saves"
+msgstr ""
+
+msgid "Guest saves in the browser"
+msgstr ""
+
+msgid "Identity"
+msgstr ""
+
+msgid "Immutable artifact imported. Review its rights and verify it before use."
+msgstr ""
+
+msgid "Immutable catalog"
+msgstr ""
+
+msgid "Immutable execution profile created."
+msgstr ""
+
+msgid "Immutable test run recorded."
+msgstr ""
+
+msgid "Import a version"
+msgstr ""
+
+msgid "Import immutable artifact"
+msgstr ""
+
+msgid "Inconclusive"
+msgstr ""
+
+msgid "Initial language"
+msgstr ""
+
+msgid "Initial volume before the player remembers a user preference."
+msgstr ""
+
+msgid "Installed version"
+msgstr ""
+
+msgid "Installed version is ahead"
+msgstr ""
+
+msgid "Introduced in"
+msgstr ""
+
+msgid "Keep an account recovery path independent from social providers."
+msgstr ""
+
+msgid "Keep both revisions"
+msgstr ""
+
+msgid "Keep disabled while only laboratory profiles exist."
+msgstr ""
+
+msgid "Keep it protected until the first execution profile is approved."
+msgstr ""
+
+msgid "Keep newest"
+msgstr ""
+
+msgid "Keeping both versions is safest while synchronization is new."
+msgstr ""
+
+msgid "Keyboard controls"
+msgstr ""
+
+msgid "Laboratory"
+msgstr ""
+
+msgid "Laboratory access"
+msgstr ""
+
+msgid "Last signed-manifest check: %s."
+msgstr ""
+
+msgid "Last verification"
+msgstr ""
+
+msgid "Latest version installed"
+msgstr ""
+
+msgid "License"
+msgstr ""
+
+msgid "Loading frozen execution profile…"
+msgstr ""
+
+msgid "Local guest progress and account synchronization remain separated by execution profile."
+msgstr ""
+
+msgid "Local, immutable storage for players, cores, ROMs, BIOS files, patches and configurations."
+msgstr ""
+
+msgid "Login requirement"
+msgstr ""
+
+msgid "Makes the internal test route available to authorized users."
+msgstr ""
+
+msgid "Managed by HypeLab"
+msgstr ""
+
+msgid "Manifest"
+msgstr ""
+
+msgid "Manifest unavailable"
+msgstr ""
+
+msgid "Maximum save-state size"
+msgstr ""
+
+msgid "Minimums"
+msgstr ""
+
+msgid "Multilingual URLs"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Native cartridge saves may use a smaller limit in their artifact profile."
+msgstr ""
+
+msgid "Native game save"
+msgstr ""
+
+msgid "Needs review"
+msgstr ""
+
+msgid "No CDN"
+msgstr ""
+
+msgid "No artifacts have been imported in this category."
+msgstr ""
+
+msgid "No games registered."
+msgstr ""
+
+msgid "No patches apply to this installed version."
+msgstr ""
+
+msgid "No profiles created."
+msgstr ""
+
+msgid "No settings found."
+msgstr ""
+
+msgid "No tests recorded."
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Not allowed"
+msgstr ""
+
+msgid "Not applicable"
+msgstr ""
+
+msgid "Not checked yet"
+msgstr ""
+
+msgid "Not cleared"
+msgstr ""
+
+msgid "Not eligible on this site"
+msgstr ""
+
+msgid "Not tested"
+msgstr ""
+
+msgid "Not verified"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "O pacote não corresponde ao manifesto assinado."
+msgstr ""
+
+msgid "OAuth client secrets and Apple private keys must be supplied through server configuration or a secret manager, never saved in the WordPress options table."
+msgstr ""
+
+msgid "Observed FPS"
+msgstr ""
+
+msgid "Observed load time (ms)"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Older revisions provide recovery from corruption or device conflicts."
+msgstr ""
+
+msgid "One or more immutable profile files are missing from local storage."
+msgstr ""
+
+msgid "Only an approved profile can be promoted to production."
+msgstr ""
+
+msgid "Only route segments are stored. Polylang remains responsible for the language domain or directory."
+msgstr ""
+
+msgid "Only verified artifacts are offered. NES does not require a BIOS."
+msgstr ""
+
+msgid "Open endpoint"
+msgstr ""
+
+msgid "Open in new tab"
+msgstr ""
+
+msgid "Open test"
+msgstr ""
+
+msgid "Open-source NES homebrew selected for the first browser compatibility test."
+msgstr ""
+
+msgid "Optional"
+msgstr ""
+
+msgid "Optional login is recommended: play first, sign in to synchronize."
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Passed"
+msgstr ""
+
+msgid "Past results are evidence and are never edited."
+msgstr ""
+
+msgid "Patch"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pending artifacts cannot be attached to profiles."
+msgstr ""
+
+msgid "Pending credentials"
+msgstr ""
+
+msgid "Platform"
+msgstr ""
+
+msgid "Playable URL"
+msgstr ""
+
+msgid "Player"
+msgstr ""
+
+msgid "Player accounts"
+msgstr ""
+
+msgid "Player package"
+msgstr ""
+
+msgid "Player packages"
+msgstr ""
+
+msgid "Player profile"
+msgstr ""
+
+msgid "Plugin updates"
+msgstr ""
+
+msgid "Polylang Free connected"
+msgstr ""
+
+msgid "Polylang Free strategy"
+msgstr ""
+
+msgid "Polylang detected"
+msgstr ""
+
+msgid "Polylang not detected"
+msgstr ""
+
+msgid "Post-update patches"
+msgstr ""
+
+msgid "Preserve old playable links with permanent redirects after a route change."
+msgstr ""
+
+msgid "Product control center"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Production profile"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Profile approved."
+msgstr ""
+
+msgid "Profile name"
+msgstr ""
+
+msgid "Profile name and slug are required."
+msgstr ""
+
+msgid "Profile promoted to production."
+msgstr ""
+
+msgid "Profile slug"
+msgstr ""
+
+msgid "Profile status could not be updated."
+msgstr ""
+
+msgid "Profile under test"
+msgstr ""
+
+msgid "Profiles"
+msgstr ""
+
+msgid "Promote"
+msgstr ""
+
+msgid "Protected"
+msgstr ""
+
+msgid "Protected update flow"
+msgstr ""
+
+msgid "Public client identifier detected in server configuration."
+msgstr ""
+
+msgid "Public player"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "ROM"
+msgstr ""
+
+msgid "Record immutable test"
+msgstr ""
+
+msgid "Record technical metrics"
+msgstr ""
+
+msgid "Redirect legacy routes"
+msgstr ""
+
+msgid "Register a game"
+msgstr ""
+
+msgid "Register game"
+msgstr ""
+
+msgid "Registered games"
+msgstr ""
+
+msgid "Relative path only. Artifact versions will add their own SHA-256 directory."
+msgstr ""
+
+msgid "Release and security details"
+msgstr ""
+
+msgid "Release channel not accepted"
+msgstr ""
+
+msgid "Release type"
+msgstr ""
+
+msgid "Reload saved state"
+msgstr ""
+
+msgid "Repeatable evidence"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Required capability"
+msgstr ""
+
+msgid "Requires GEEK_CUBE_STUDIO_APPLE_CLIENT_ID and the private key outside WordPress."
+msgstr ""
+
+msgid "Requires GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID in secure server configuration."
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
+msgid "Resume after background"
+msgstr ""
+
+msgid "Revalidation interval"
+msgstr ""
+
+msgid "Revalidation reminder"
+msgstr ""
+
+msgid "Review"
+msgstr ""
+
+msgid "Revisions per save slot"
+msgstr ""
+
+msgid "Rights"
+msgstr ""
+
+msgid "Rights and attribution notes"
+msgstr ""
+
+msgid "Rights notes"
+msgstr ""
+
+msgid "Rollout"
+msgstr ""
+
+msgid "Route segments remain independent from game and artifact IDs."
+msgstr ""
+
+msgid "Run"
+msgstr ""
+
+msgid "Run the exact frozen profile and record an immutable browser result."
+msgstr ""
+
+msgid "Save URL settings"
+msgstr ""
+
+msgid "Save account settings"
+msgstr ""
+
+msgid "Save artifact settings"
+msgstr ""
+
+msgid "Save laboratory settings"
+msgstr ""
+
+msgid "Save player settings"
+msgstr ""
+
+msgid "Save progress settings"
+msgstr ""
+
+msgid "Save state"
+msgstr ""
+
+msgid "Saves"
+msgstr ""
+
+msgid "Screen orientation"
+msgstr ""
+
+msgid "Search controls, URLs, saves, emulators..."
+msgstr ""
+
+msgid "Search settings"
+msgstr ""
+
+msgid "Secrets stay out of this screen"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Select a profile"
+msgstr ""
+
+msgid "Select a supported game platform."
+msgstr ""
+
+msgid "Select an existing game."
+msgstr ""
+
+msgid "Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint."
+msgstr ""
+
+msgid "Server compatibility"
+msgstr ""
+
+msgid "Server requirements not met"
+msgstr ""
+
+msgid "Sign in with Apple"
+msgstr ""
+
+msgid "Sign in with Google"
+msgstr ""
+
+msgid "Signed releases are installed through the native WordPress updater."
+msgstr ""
+
+msgid "Signed update manifest verified."
+msgstr ""
+
+msgid "Signing key"
+msgstr ""
+
+msgid "Social providers authenticate users, but WordPress remains the canonical account and save owner."
+msgstr ""
+
+msgid "Start after first interaction"
+msgstr ""
+
+msgid "Start behavior"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Synchronize saves to user profiles"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "Test history"
+msgstr ""
+
+msgid "Test laboratory"
+msgstr ""
+
+msgid "Test report"
+msgstr ""
+
+msgid "Test, approve, and only then promote a combination."
+msgstr ""
+
+msgid "Testing"
+msgstr ""
+
+msgid "The WordPress user ID remains the canonical save owner."
+msgstr ""
+
+msgid "The ZIP extension is required to import a player package."
+msgstr ""
+
+msgid "The artifact could not be registered."
+msgstr ""
+
+msgid "The artifact hash could not be calculated."
+msgstr ""
+
+msgid "The artifact requires a valid SHA-256 fingerprint."
+msgstr ""
+
+msgid "The artifact status change is invalid."
+msgstr ""
+
+msgid "The artifact upload did not complete successfully."
+msgstr ""
+
+msgid "The catalog patch is pending. WP-Cron will retry it automatically."
+msgstr ""
+
+msgid "The catalog schema must be installed before its initial records."
+msgstr ""
+
+msgid "The catalog schema patch is still pending. Reload the screen after WP-Cron runs."
+msgstr ""
+
+msgid "The core runtime key and ROM file are required."
+msgstr ""
+
+msgid "The exact engine version is locked by each execution profile."
+msgstr ""
+
+msgid "The execution profile could not be created."
+msgstr ""
+
+msgid "The extracted player package is larger than the configured safety limit."
+msgstr ""
+
+msgid "The falling-nes slug is already used by a different catalog record."
+msgstr ""
+
+msgid "The game and its emulation artifacts must use the same platform."
+msgstr ""
+
+msgid "The game could not be created."
+msgstr ""
+
+msgid "The immutable artifact directory could not be created."
+msgstr ""
+
+msgid "The initial FCEUmm identity already uses a different fingerprint."
+msgstr ""
+
+msgid "The player loader entrypoint is missing from immutable storage."
+msgstr ""
+
+msgid "The player package contains an unsafe path."
+msgstr ""
+
+msgid "The player package contains too many files."
+msgstr ""
+
+msgid "The player package could not be extracted."
+msgstr ""
+
+msgid "The player package has no validated loader entrypoint."
+msgstr ""
+
+msgid "The player package is not a readable ZIP archive."
+msgstr ""
+
+msgid "The player package must contain exactly one data/loader.js entrypoint."
+msgstr ""
+
+msgid "The profile game is missing."
+msgstr ""
+
+msgid "The profile game no longer exists."
+msgstr ""
+
+msgid "The profile promotion could not be completed."
+msgstr ""
+
+msgid "The profile status is invalid."
+msgstr ""
+
+msgid "The public player is not enabled."
+msgstr ""
+
+msgid "The requested execution profile does not exist."
+msgstr ""
+
+msgid "The signed update manifest is unavailable."
+msgstr ""
+
+msgid "The stored file is missing or no longer matches its SHA-256 fingerprint."
+msgstr ""
+
+msgid "The test requires a valid profile and final result."
+msgstr ""
+
+msgid "The test result could not be recorded."
+msgstr ""
+
+msgid "The update manifest or its Ed25519 signature is invalid."
+msgstr ""
+
+msgid "The update server returned HTTP %d."
+msgstr ""
+
+msgid "The uploaded artifact could not be moved to immutable storage."
+msgstr ""
+
+msgid "This artifact type requires an immutable stored file."
+msgstr ""
+
+msgid "This file extension is not allowed for the selected artifact type."
+msgstr ""
+
+msgid "This game has no active production profile."
+msgstr ""
+
+msgid "This game has no published execution profile."
+msgstr ""
+
+msgid "This plugin only emits versioned local URLs. Cache creation and invalidation remain under the HypeLab plugin."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Touch controls"
+msgstr ""
+
+msgid "Translated route slugs"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "URLs and languages"
+msgstr ""
+
+msgid "Unknown or incompatible"
+msgstr ""
+
+msgid "Update Geek Cube Studio now? WordPress will temporarily enable maintenance mode while replacing the plugin files."
+msgstr ""
+
+msgid "Update available"
+msgstr ""
+
+msgid "Update check completed. The installed version is current."
+msgstr ""
+
+msgid "Update now"
+msgstr ""
+
+msgid "Updates"
+msgstr ""
+
+msgid "Upload only content you may legally use and redistribute."
+msgstr ""
+
+msgid "Uploads subdirectory"
+msgstr ""
+
+msgid "Upstream update checks"
+msgstr ""
+
+msgid "Verification requires source, license and confirmed commercial use."
+msgstr ""
+
+msgid "Verified"
+msgstr ""
+
+msgid "Verify"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Version %s is available and ready for the native WordPress updater."
+msgstr ""
+
+msgid "Versioned artifacts"
+msgstr ""
+
+msgid "Versioned files"
+msgstr ""
+
+msgid "Video is stable"
+msgstr ""
+
+msgid "Visitors can start immediately and connect an account later."
+msgstr ""
+
+msgid "WebAssembly threads"
+msgstr ""
+
+msgid "WordPress database is unavailable."
+msgstr ""
+
+msgid "You cannot access this laboratory profile."
+msgstr ""
+
+msgid "You do not have permission to access this page."
+msgstr ""
+
+msgid "You do not have permission to update plugins."
+msgstr ""
+
+msgid "Your account cannot install plugin updates."
+msgstr ""
+
+msgid "days"
+msgstr ""

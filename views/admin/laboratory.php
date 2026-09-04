@@ -36,7 +36,7 @@ $checklist_labels = array(
 			<?php
 			foreach ( $profiles as $row ) :
 				?>
-				<option value="<?php echo esc_attr( $row['id'] ); ?>" <?php selected( $profile_id, $row['id'] ); ?>><?php echo esc_html( $row['name'] . ' · ' . $row['status'] ); ?></option><?php endforeach; ?></select><button class="button"><?php esc_html_e( 'Open test', 'geek-cube-studio' ); ?></button></form>
+				<option value="<?php echo esc_attr( $row['id'] ); ?>" <?php selected( $profile_id, $row['id'] ); ?>><?php echo esc_html( $row['name'] . ' · ' . Geek_Cube_Studio_Catalog_Admin::status_label( $row['status'] ) ); ?></option><?php endforeach; ?></select><button class="button"><?php esc_html_e( 'Open test', 'geek-cube-studio' ); ?></button></form>
 		</section>
 
 		<?php if ( $profile ) : ?>
@@ -65,6 +65,6 @@ $checklist_labels = array(
 						$run_profile = Geek_Cube_Studio_Repository::get_profile( $run['profile_id'] );
 						$environment = json_decode( $run['environment'], true );
 				?>
-	<tr><td><code><?php echo esc_html( substr( $run['uuid'], 0, 8 ) ); ?></code></td><td><?php echo esc_html( $run_profile ? $run_profile['name'] : '#' . $run['profile_id'] ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $run['result'] ) ); ?>"><?php echo esc_html( $run['result'] ); ?></span></td><td><small><?php echo esc_html( is_array( $environment ) && isset( $environment['platform'] ) ? $environment['platform'] : '—' ); ?></small></td><td><?php echo esc_html( $run['created_at'] ); ?></td></tr><?php endforeach; ?></tbody></table></div></section>
+	<tr><td><code><?php echo esc_html( substr( $run['uuid'], 0, 8 ) ); ?></code></td><td><?php echo esc_html( $run_profile ? $run_profile['name'] : '#' . $run['profile_id'] ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $run['result'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $run['result'] ) ); ?></span></td><td><small><?php echo esc_html( is_array( $environment ) && isset( $environment['platform'] ) ? $environment['platform'] : '—' ); ?></small></td><td><?php echo esc_html( $run['created_at'] ); ?></td></tr><?php endforeach; ?></tbody></table></div></section>
 	<?php endif; ?>
 </div>

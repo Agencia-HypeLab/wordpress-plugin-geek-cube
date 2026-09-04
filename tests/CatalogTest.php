@@ -30,6 +30,8 @@ final class CatalogTest extends TestCase {
 		$this->assertSame( 'rom', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'rom' ) ) );
 		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'unknown' ) ) );
 		$this->assertSame( 'all', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => array( 'rom' ) ) ) );
+		$this->assertSame( 'Pending', Geek_Cube_Studio_Catalog_Admin::status_label( 'pending' ) );
+		$this->assertSame( 'Draft', Geek_Cube_Studio_Catalog_Admin::status_label( 'draft' ) );
 	}
 
 	public function test_verified_nes_profile_without_bios_is_valid(): void {

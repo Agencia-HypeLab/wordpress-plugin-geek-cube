@@ -50,16 +50,6 @@ class Geek_Cube_Studio_Admin {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_post_geek_cube_check_updates', array( $this, 'handle_update_check' ) );
-		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
-	}
-
-	/**
-	 * Load translations.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain( 'geek-cube-studio', false, dirname( plugin_basename( GEEK_CUBE_STUDIO_PLUGIN_FILE ) ) . '/languages' );
 	}
 
 	/**

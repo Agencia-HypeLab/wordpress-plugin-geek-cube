@@ -4,7 +4,7 @@
  * Plugin URI:        https://www.hypelab.com.br/
  * Update URI:        https://www.hypelab.com.br/wordpress-plugin-geek-cube/geek-cube-studio-update.php
  * Description:       Connects Geek Cube Studio game pages to its browser-based player experience.
- * Version:           0.1.5
+ * Version:           0.1.6
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Agência HypeLab
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.5' );
+define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.6' );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_FILE', __FILE__ );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -41,6 +41,17 @@ require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-seed
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-player.php';
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-admin.php';
 require_once GEEK_CUBE_STUDIO_PLUGIN_DIR . 'includes/class-geek-cube-studio-catalog-admin.php';
+
+/**
+ * Load the plugin catalogue for both the administration and public player.
+ *
+ * @return void
+ */
+function geek_cube_studio_load_textdomain() {
+	load_plugin_textdomain( 'geek-cube-studio', false, dirname( plugin_basename( GEEK_CUBE_STUDIO_PLUGIN_FILE ) ) . '/languages' );
+}
+
+add_action( 'init', 'geek_cube_studio_load_textdomain', 0 );
 
 /**
  * Bootstrap infrastructure shared by every Geek Cube Studio feature.

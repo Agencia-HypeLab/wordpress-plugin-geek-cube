@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				foreach ( $games as $game ) :
 					?>
-					<tr><td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td><td><?php echo esc_html( strtoupper( $game['platform'] ) ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $game['status'] ) ); ?>"><?php echo esc_html( $game['status'] ); ?></span></td><td><?php echo $game['production_profile_id'] ? esc_html( '#' . $game['production_profile_id'] ) : '—'; ?></td></tr><?php endforeach; ?>
+					<tr><td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td><td><?php echo esc_html( strtoupper( $game['platform'] ) ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $game['status'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $game['status'] ) ); ?></span></td><td><?php echo $game['production_profile_id'] ? esc_html( '#' . $game['production_profile_id'] ) : '—'; ?></td></tr><?php endforeach; ?>
 				</tbody></table></div>
 			</section>
 		</div>

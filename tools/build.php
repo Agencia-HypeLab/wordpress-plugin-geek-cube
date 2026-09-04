@@ -205,6 +205,10 @@ function geek_cube_studio_build_quality_gates( $root_dir ) {
 	}
 
 	geek_cube_studio_build_run(
+		escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( $root_dir . '/tools/i18n.php' ) . ' verify',
+		'Translation catalogue verification failed. Release stopped.'
+	);
+	geek_cube_studio_build_run(
 		escapeshellarg( PHP_BINARY ) . ' -d memory_limit=1G ' . escapeshellarg( $phpunit ),
 		'PHPUnit failed. Release stopped.'
 	);

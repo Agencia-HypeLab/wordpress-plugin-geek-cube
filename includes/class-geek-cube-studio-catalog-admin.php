@@ -111,7 +111,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		);
 
 		foreach ( Geek_Cube_Studio_Repository::ARTIFACT_TYPES as $type ) {
-			$tabs[ $type ] = strtoupper( $type );
+			$tabs[ $type ] = self::artifact_type_label( $type );
 		}
 
 		return $tabs;
@@ -129,6 +129,52 @@ final class Geek_Cube_Studio_Catalog_Admin {
 			: 'all';
 
 		return isset( self::artifact_tabs()[ $value ] ) ? $value : 'all';
+	}
+
+	/**
+	 * Return the localized label for a stable artifact type identifier.
+	 *
+	 * @param string $type Artifact type identifier.
+	 * @return string
+	 */
+	public static function artifact_type_label( $type ) {
+		$labels = array(
+			'player'   => __( 'Player', 'geek-cube-studio' ),
+			'core'     => __( 'Core', 'geek-cube-studio' ),
+			'rom'      => __( 'ROM', 'geek-cube-studio' ),
+			'bios'     => __( 'BIOS', 'geek-cube-studio' ),
+			'patch'    => __( 'Patch', 'geek-cube-studio' ),
+			'config'   => __( 'Configuration', 'geek-cube-studio' ),
+			'controls' => __( 'Controls', 'geek-cube-studio' ),
+		);
+
+		return isset( $labels[ $type ] ) ? $labels[ $type ] : strtoupper( $type );
+	}
+
+	/**
+	 * Return the localized label for a stable workflow status identifier.
+	 *
+	 * @param string $status Workflow status identifier.
+	 * @return string
+	 */
+	public static function status_label( $status ) {
+		$labels = array(
+			'pending'      => __( 'Pending', 'geek-cube-studio' ),
+			'verified'     => __( 'Verified', 'geek-cube-studio' ),
+			'blocked'      => __( 'Blocked', 'geek-cube-studio' ),
+			'deprecated'   => __( 'Deprecated', 'geek-cube-studio' ),
+			'draft'        => __( 'Draft', 'geek-cube-studio' ),
+			'testing'      => __( 'Testing', 'geek-cube-studio' ),
+			'approved'     => __( 'Approved', 'geek-cube-studio' ),
+			'production'   => __( 'Production', 'geek-cube-studio' ),
+			'published'    => __( 'Published', 'geek-cube-studio' ),
+			'passed'       => __( 'Passed', 'geek-cube-studio' ),
+			'failed'       => __( 'Failed', 'geek-cube-studio' ),
+			'inconclusive' => __( 'Inconclusive', 'geek-cube-studio' ),
+			'completed'    => __( 'Completed', 'geek-cube-studio' ),
+		);
+
+		return isset( $labels[ $status ] ) ? $labels[ $status ] : $status;
 	}
 
 	/** Render profiles screen. */
@@ -274,7 +320,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	 * @return string
 	 */
 	public static function artifact_title( $artifact ) {
-		return is_array( $artifact ) ? $artifact['name'] . ' ' . $artifact['version'] . ' · ' . strtoupper( $artifact['type'] ) : '';
+		return is_array( $artifact ) ? $artifact['name'] . ' ' . $artifact['version'] . ' · ' . self::artifact_type_label( $artifact['type'] ) : '';
 	}
 
 	/**

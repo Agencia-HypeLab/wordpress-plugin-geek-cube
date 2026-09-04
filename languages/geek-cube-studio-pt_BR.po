@@ -1,0 +1,1163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Geek Cube Studio 0.1.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-04 00:00+0000\n"
+"PO-Revision-Date: 2026-09-04 00:00+0000\n"
+"Last-Translator: Agência HypeLab\n"
+"Language-Team: Português do Brasil\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Domain: geek-cube-studio\n"
+
+msgid "%d catalog identities"
+msgstr "%d identidades no catálogo"
+
+msgid "30-minute endurance"
+msgstr "Resistência de 30 minutos"
+
+msgid "A central view of the controls already prepared for the playable prototype."
+msgstr "Uma visão central dos controles já preparados para o protótipo jogável."
+
+msgid "A game is the stable identity that receives versioned execution profiles."
+msgstr "Um jogo é a identidade estável que recebe perfis de execução versionados."
+
+msgid "A integridade do pacote de atualização não pôde ser confirmada."
+msgstr "A integridade do pacote de atualização não pôde ser confirmada."
+
+msgid "A passing test requires boot, video and audio to pass."
+msgstr "Um teste aprovado exige inicialização, vídeo e áudio aprovados."
+
+msgid "A profile needs at least one passing test before approval."
+msgstr "Um perfil precisa de pelo menos um teste aprovado antes da aprovação."
+
+msgid "A profile permanently binds one game to exact player, core, ROM and optional BIOS versions."
+msgstr "Um perfil vincula permanentemente um jogo às versões exatas do player, núcleo, ROM e BIOS opcional."
+
+msgid "A reminder does not invalidate the original test record."
+msgstr "Um lembrete não invalida o registro original do teste."
+
+msgid "A test with a failed checklist item cannot receive a passing result."
+msgstr "Um teste com item reprovado na lista de verificação não pode receber resultado aprovado."
+
+msgid "A verified %s artifact is required."
+msgstr "É necessário um artefato %s verificado."
+
+msgid "Account save synchronization"
+msgstr "Sincronização de saves da conta"
+
+msgid "Accounts"
+msgstr "Contas"
+
+msgid "Accounts disabled"
+msgstr "Contas desativadas"
+
+msgid "Actions"
+msgstr "Ações"
+
+msgid "Administrators are recommended until a dedicated tester role exists."
+msgstr "Administradores são recomendados até que exista uma função exclusiva de testador."
+
+msgid "All artifacts"
+msgstr "Todos os artefatos"
+
+msgid "Allow guest play"
+msgstr "Permitir jogo como visitante"
+
+msgid "Allow immediate play and offer an import when the visitor signs in."
+msgstr "Permite jogar imediatamente e oferece importação quando o visitante entrar."
+
+msgid "Allowed"
+msgstr "Permitido"
+
+msgid "An artifact was assigned to the wrong profile role."
+msgstr "Um artefato foi atribuído à função errada no perfil."
+
+msgid "Any / not applicable"
+msgstr "Qualquer / não aplicável"
+
+msgid "Apple login"
+msgstr "Login com Apple"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Approve"
+msgstr "Aprovar"
+
+msgid "Approved"
+msgstr "Aprovado"
+
+msgid "Architecture status"
+msgstr "Status da arquitetura"
+
+msgid "Artifact categories"
+msgstr "Categorias de artefato"
+
+msgid "Artifact status could not be updated."
+msgstr "Não foi possível atualizar o status do artefato."
+
+msgid "Artifact status updated."
+msgstr "Status do artefato atualizado."
+
+msgid "Artifact storage"
+msgstr "Armazenamento de artefatos"
+
+msgid "Artifact type, name and version are required."
+msgstr "Tipo, nome e versão do artefato são obrigatórios."
+
+msgid "Artifact versions"
+msgstr "Versões de artefato"
+
+msgid "Artifacts"
+msgstr "Artefatos"
+
+msgid "Attach loading, frame, audio and control observations to each test run."
+msgstr "Anexe observações de carregamento, quadros, áudio e controles a cada execução de teste."
+
+msgid "Attempts"
+msgstr "Tentativas"
+
+msgid "Atualização oficial e assinada do Geek Cube Studio."
+msgstr "Atualização oficial e assinada do Geek Cube Studio."
+
+msgid "Audio is clean"
+msgstr "Áudio está limpo"
+
+msgid "Authoritative source URL"
+msgstr "URL da fonte oficial"
+
+msgid "Automatic"
+msgstr "Automático"
+
+msgid "Automatic mode only enables threads when the required browser isolation is available."
+msgstr "O modo automático só ativa threads quando o isolamento necessário do navegador estiver disponível."
+
+msgid "Automatic update"
+msgstr "Atualização automática"
+
+msgid "Available version"
+msgstr "Versão disponível"
+
+msgid "BIOS"
+msgstr "BIOS"
+
+msgid "BIOS (optional)"
+msgstr "BIOS (opcional)"
+
+msgid "Before WordPress installs the package, Geek Cube verifies that its URL matches the signed manifest and that the downloaded ZIP matches the signed SHA-256 fingerprint."
+msgstr "Antes de o WordPress instalar o pacote, o Geek Cube verifica se a URL corresponde ao manifesto assinado e se o ZIP baixado corresponde à impressão digital SHA-256 assinada."
+
+msgid "Block"
+msgstr "Bloquear"
+
+msgid "Blocked"
+msgstr "Bloqueado"
+
+msgid "Boot completes"
+msgstr "Inicialização concluída"
+
+msgid "Browser player"
+msgstr "Player no navegador"
+
+msgid "Browsers require user interaction before reliable audio playback."
+msgstr "Os navegadores exigem interação do usuário antes de reproduzir áudio de forma confiável."
+
+msgid "Cache boundary"
+msgstr "Limite de cache"
+
+msgid "Cache responsibility"
+msgstr "Responsabilidade pelo cache"
+
+msgid "Canonical slug"
+msgstr "Slug canônico"
+
+msgid "Catalog"
+msgstr "Catálogo"
+
+msgid "Channel"
+msgstr "Canal"
+
+msgid "Check again"
+msgstr "Verificar novamente"
+
+msgid "Check upstream releases"
+msgstr "Verificar releases de origem"
+
+msgid "Commercial use allowed"
+msgstr "Uso comercial permitido"
+
+msgid "Commercial use reviewed"
+msgstr "Uso comercial revisado"
+
+msgid "Compatibility laboratory"
+msgstr "Laboratório de compatibilidade"
+
+msgid "Compatible"
+msgstr "Compatível"
+
+msgid "Complete the checklist after playing."
+msgstr "Conclua a lista de verificação depois de jogar."
+
+msgid "Completed"
+msgstr "Concluído"
+
+msgid "Configuration"
+msgstr "Configuração"
+
+msgid "Configuration (optional)"
+msgstr "Configuração (opcional)"
+
+msgid "Configure stable, versioned browser game experiences without coupling public URLs to their internal artifacts."
+msgstr "Configure experiências estáveis e versionadas de jogos no navegador sem vincular URLs públicas aos artefatos internos."
+
+msgid "Configured"
+msgstr "Configurado"
+
+msgid "Consulte o changelog incluído no pacote do plugin."
+msgstr "Consulte o changelog incluído no pacote do plugin."
+
+msgid "Controls"
+msgstr "Controles"
+
+msgid "Controls (optional)"
+msgstr "Controles (opcional)"
+
+msgid "Controls for repeatable test runs and immutable compatibility reports."
+msgstr "Controles para execuções de teste repetíveis e relatórios de compatibilidade imutáveis."
+
+msgid "Core"
+msgstr "Núcleo"
+
+msgid "Core runtime key"
+msgstr "Chave de runtime do núcleo"
+
+msgid "Core, ROM and BIOS artifacts require a supported platform."
+msgstr "Artefatos de núcleo, ROM e BIOS exigem uma plataforma compatível."
+
+msgid "Create immutable profile"
+msgstr "Criar perfil imutável"
+
+msgid "Data migrations run separately, with locks and automatic retries."
+msgstr "As migrações de dados são executadas separadamente, com bloqueios e novas tentativas automáticas."
+
+msgid "Date UTC"
+msgstr "Data UTC"
+
+msgid "Default engine"
+msgstr "Mecanismo padrão"
+
+msgid "Default fallback"
+msgstr "Alternativa padrão"
+
+msgid "Default volume"
+msgstr "Volume padrão"
+
+msgid "Deprecate"
+msgstr "Descontinuar"
+
+msgid "Deprecated"
+msgstr "Descontinuado"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Detect candidate versions without changing approved game profiles."
+msgstr "Detecte versões candidatas sem alterar perfis de jogo aprovados."
+
+msgid "Device conflict policy"
+msgstr "Política de conflito entre dispositivos"
+
+msgid "Disabled"
+msgstr "Desativado"
+
+msgid "Do not attach ROM files here; they are separate immutable artifacts."
+msgstr "Não anexe arquivos de ROM aqui; eles são artefatos imutáveis separados."
+
+msgid "Download candidates automatically"
+msgstr "Baixar candidatas automaticamente"
+
+msgid "Downloads never approve or promote an artifact. Keep disabled until source validation is implemented."
+msgstr "Downloads nunca aprovam nem promovem um artefato. Mantenha desativado até a validação de fonte ser implementada."
+
+msgid "Draft"
+msgstr "Rascunho"
+
+msgid "Each Geek Cube route must use a different slug within the same language."
+msgstr "Cada rota do Geek Cube deve usar um slug diferente no mesmo idioma."
+
+msgid "Ed25519 signature"
+msgstr "Assinatura Ed25519"
+
+msgid "Eligible on this site"
+msgstr "Elegível neste site"
+
+msgid "Email login"
+msgstr "Login por e-mail"
+
+msgid "Enable laboratory"
+msgstr "Ativar laboratório"
+
+msgid "Enable public player"
+msgstr "Ativar player público"
+
+msgid "Enabled"
+msgstr "Ativado"
+
+msgid "Enter a valid title and a non-reserved game slug."
+msgstr "Informe um título válido e um slug de jogo não reservado."
+
+msgid "Environment"
+msgstr "Ambiente"
+
+msgid "Every profile artifact must be verified first."
+msgstr "Todos os artefatos do perfil precisam ser verificados primeiro."
+
+msgid "Every run will be attached to an immutable execution profile."
+msgstr "Cada execução será vinculada a um perfil de execução imutável."
+
+msgid "Every uploaded byte is stored under its SHA-256 and never overwritten."
+msgstr "Cada byte enviado é armazenado sob seu SHA-256 e nunca é sobrescrito."
+
+msgid "Execution profiles"
+msgstr "Perfis de execução"
+
+msgid "Explicit Play button"
+msgstr "Botão Jogar explícito"
+
+msgid "Failed"
+msgstr "Reprovado"
+
+msgid "Fallback active"
+msgstr "Alternativa ativa"
+
+msgid "File"
+msgstr "Arquivo"
+
+msgid "Final result"
+msgstr "Resultado final"
+
+msgid "Fingerprint"
+msgstr "Impressão digital"
+
+msgid "Freeze a test combination"
+msgstr "Congelar uma combinação de teste"
+
+msgid "Frozen combinations"
+msgstr "Combinações congeladas"
+
+msgid "Fullscreen"
+msgstr "Tela cheia"
+
+msgid "Game"
+msgstr "Jogo"
+
+msgid "Game compatibility test player"
+msgstr "Player de teste de compatibilidade do jogo"
+
+msgid "Game detail"
+msgstr "Detalhe do jogo"
+
+msgid "Game registered."
+msgstr "Jogo cadastrado."
+
+msgid "Game saves"
+msgstr "Saves do jogo"
+
+msgid "Gamepad controls"
+msgstr "Controles de gamepad"
+
+msgid "Games"
+msgstr "Jogos"
+
+msgid "Geek Cube"
+msgstr "Geek Cube"
+
+msgid "Geek Cube Studio"
+msgstr "Geek Cube Studio"
+
+msgid "Geek Cube Studio não conseguiu concluir estas migrações após várias tentativas: %s. Verifique o log do WordPress antes de tentar novamente."
+msgstr "Geek Cube Studio não conseguiu concluir estas migrações após várias tentativas: %s. Verifique o log do WordPress antes de tentar novamente."
+
+msgid "Geek Cube Studio player"
+msgstr "Player do Geek Cube Studio"
+
+msgid "Geek Cube Studio updates"
+msgstr "Atualizações do Geek Cube Studio"
+
+msgid "Geek Cube emits immutable artifact URLs and does not manage cache policy."
+msgstr "O Geek Cube emite URLs de artefatos imutáveis e não gerencia a política de cache."
+
+msgid "Geek Cube settings"
+msgstr "Configurações do Geek Cube"
+
+msgid "Geek Cube will resolve its own translated endpoint segments. It will not depend on the translated custom-post-type slug feature from Polylang Pro."
+msgstr "O Geek Cube resolverá seus próprios segmentos de endpoint traduzidos. Ele não dependerá do recurso de slug de tipo de post personalizado traduzido do Polylang Pro."
+
+msgid "Global defaults. An approved execution profile may override compatible controls."
+msgstr "Padrões globais. Um perfil de execução aprovado pode substituir controles compatíveis."
+
+msgid "Google login"
+msgstr "Login com Google"
+
+msgid "Guest saves"
+msgstr "Saves de visitante"
+
+msgid "Guest saves in the browser"
+msgstr "Saves de visitante no navegador"
+
+msgid "Identity"
+msgstr "Identidade"
+
+msgid "Immutable artifact imported. Review its rights and verify it before use."
+msgstr "Artefato imutável importado. Revise seus direitos e verifique-o antes de usar."
+
+msgid "Immutable catalog"
+msgstr "Catálogo imutável"
+
+msgid "Immutable execution profile created."
+msgstr "Perfil de execução imutável criado."
+
+msgid "Immutable test run recorded."
+msgstr "Execução de teste imutável registrada."
+
+msgid "Import a version"
+msgstr "Importar uma versão"
+
+msgid "Import immutable artifact"
+msgstr "Importar artefato imutável"
+
+msgid "Inconclusive"
+msgstr "Inconclusivo"
+
+msgid "Initial language"
+msgstr "Idioma inicial"
+
+msgid "Initial volume before the player remembers a user preference."
+msgstr "Volume inicial antes de o player lembrar uma preferência do usuário."
+
+msgid "Installed version"
+msgstr "Versão instalada"
+
+msgid "Installed version is ahead"
+msgstr "A versão instalada é mais recente"
+
+msgid "Introduced in"
+msgstr "Introduzido em"
+
+msgid "Keep an account recovery path independent from social providers."
+msgstr "Mantenha uma forma de recuperação da conta independente dos provedores sociais."
+
+msgid "Keep both revisions"
+msgstr "Manter ambas as revisões"
+
+msgid "Keep disabled while only laboratory profiles exist."
+msgstr "Mantenha desativado enquanto existirem apenas perfis de laboratório."
+
+msgid "Keep it protected until the first execution profile is approved."
+msgstr "Mantenha protegido até que o primeiro perfil de execução seja aprovado."
+
+msgid "Keep newest"
+msgstr "Manter mais recente"
+
+msgid "Keeping both versions is safest while synchronization is new."
+msgstr "Manter as duas versões é mais seguro enquanto a sincronização é nova."
+
+msgid "Keyboard controls"
+msgstr "Controles de teclado"
+
+msgid "Laboratory"
+msgstr "Laboratório"
+
+msgid "Laboratory access"
+msgstr "Acesso ao laboratório"
+
+msgid "Last signed-manifest check: %s."
+msgstr "Última verificação do manifesto assinado: %s."
+
+msgid "Last verification"
+msgstr "Última verificação"
+
+msgid "Latest version installed"
+msgstr "Versão mais recente instalada"
+
+msgid "License"
+msgstr "Licença"
+
+msgid "Loading frozen execution profile…"
+msgstr "Carregando perfil de execução congelado…"
+
+msgid "Local guest progress and account synchronization remain separated by execution profile."
+msgstr "O progresso local de visitante e a sincronização de conta permanecem separados por perfil de execução."
+
+msgid "Local, immutable storage for players, cores, ROMs, BIOS files, patches and configurations."
+msgstr "Armazenamento local e imutável para players, núcleos, ROMs, arquivos de BIOS, patches e configurações."
+
+msgid "Login requirement"
+msgstr "Exigência de login"
+
+msgid "Makes the internal test route available to authorized users."
+msgstr "Disponibiliza a rota interna de testes para usuários autorizados."
+
+msgid "Managed by HypeLab"
+msgstr "Gerenciado pela HypeLab"
+
+msgid "Manifest"
+msgstr "Manifesto"
+
+msgid "Manifest unavailable"
+msgstr "Manifesto indisponível"
+
+msgid "Maximum save-state size"
+msgstr "Tamanho máximo do estado salvo"
+
+msgid "Minimums"
+msgstr "Mínimos"
+
+msgid "Multilingual URLs"
+msgstr "URLs multilíngues"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Native cartridge saves may use a smaller limit in their artifact profile."
+msgstr "Saves nativos de cartucho podem usar um limite menor no perfil do artefato."
+
+msgid "Native game save"
+msgstr "Save nativo do jogo"
+
+msgid "Needs review"
+msgstr "Precisa de revisão"
+
+msgid "No CDN"
+msgstr "Sem CDN"
+
+msgid "No artifacts have been imported in this category."
+msgstr "Nenhum artefato foi importado nesta categoria."
+
+msgid "No games registered."
+msgstr "Nenhum jogo cadastrado."
+
+msgid "No patches apply to this installed version."
+msgstr "Nenhum patch se aplica a esta versão instalada."
+
+msgid "No profiles created."
+msgstr "Nenhum perfil criado."
+
+msgid "No settings found."
+msgstr "Nenhuma configuração encontrada."
+
+msgid "No tests recorded."
+msgstr "Nenhum teste registrado."
+
+msgid "None"
+msgstr "Nenhum"
+
+msgid "Not allowed"
+msgstr "Não permitido"
+
+msgid "Not applicable"
+msgstr "Não aplicável"
+
+msgid "Not checked yet"
+msgstr "Ainda não verificado"
+
+msgid "Not cleared"
+msgstr "Não liberado"
+
+msgid "Not eligible on this site"
+msgstr "Não elegível neste site"
+
+msgid "Not tested"
+msgstr "Não testado"
+
+msgid "Not verified"
+msgstr "Não verificado"
+
+msgid "Notes"
+msgstr "Observações"
+
+msgid "O pacote não corresponde ao manifesto assinado."
+msgstr "O pacote não corresponde ao manifesto assinado."
+
+msgid "OAuth client secrets and Apple private keys must be supplied through server configuration or a secret manager, never saved in the WordPress options table."
+msgstr "Os segredos de cliente OAuth e chaves privadas Apple devem ser fornecidos pela configuração do servidor ou por um gerenciador de segredos, nunca salvos na tabela de opções do WordPress."
+
+msgid "Observed FPS"
+msgstr "FPS observado"
+
+msgid "Observed load time (ms)"
+msgstr "Tempo de carregamento observado (ms)"
+
+msgid "Off"
+msgstr "Desligado"
+
+msgid "Older revisions provide recovery from corruption or device conflicts."
+msgstr "Revisões anteriores permitem recuperação de corrupção ou conflitos entre dispositivos."
+
+msgid "One or more immutable profile files are missing from local storage."
+msgstr "Um ou mais arquivos imutáveis do perfil estão ausentes no armazenamento local."
+
+msgid "Only an approved profile can be promoted to production."
+msgstr "Somente um perfil aprovado pode ser promovido para produção."
+
+msgid "Only route segments are stored. Polylang remains responsible for the language domain or directory."
+msgstr "Somente segmentos de rota são armazenados. O Polylang continua responsável pelo domínio ou diretório de idioma."
+
+msgid "Only verified artifacts are offered. NES does not require a BIOS."
+msgstr "Somente artefatos verificados são oferecidos. NES não exige BIOS."
+
+msgid "Open endpoint"
+msgstr "Abrir endpoint"
+
+msgid "Open in new tab"
+msgstr "Abrir em nova aba"
+
+msgid "Open test"
+msgstr "Abrir teste"
+
+msgid "Open-source NES homebrew selected for the first browser compatibility test."
+msgstr "Homebrew de NES em código aberto selecionado para o primeiro teste de compatibilidade no navegador."
+
+msgid "Optional"
+msgstr "Opcional"
+
+msgid "Optional login is recommended: play first, sign in to synchronize."
+msgstr "O login opcional é recomendado: jogue primeiro e entre para sincronizar."
+
+msgid "Overview"
+msgstr "Visão geral"
+
+msgid "Passed"
+msgstr "Aprovado"
+
+msgid "Past results are evidence and are never edited."
+msgstr "Resultados anteriores são evidências e nunca são editados."
+
+msgid "Patch"
+msgstr "Patch"
+
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Pending artifacts cannot be attached to profiles."
+msgstr "Artefatos pendentes não podem ser vinculados a perfis."
+
+msgid "Pending credentials"
+msgstr "Credenciais pendentes"
+
+msgid "Platform"
+msgstr "Plataforma"
+
+msgid "Playable URL"
+msgstr "URL jogável"
+
+msgid "Player"
+msgstr "Player"
+
+msgid "Player accounts"
+msgstr "Contas do player"
+
+msgid "Player package"
+msgstr "Pacote do player"
+
+msgid "Player packages"
+msgstr "Pacotes do player"
+
+msgid "Player profile"
+msgstr "Perfil do player"
+
+msgid "Plugin updates"
+msgstr "Atualizações do plugin"
+
+msgid "Polylang Free connected"
+msgstr "Polylang Free conectado"
+
+msgid "Polylang Free strategy"
+msgstr "Estratégia do Polylang Free"
+
+msgid "Polylang detected"
+msgstr "Polylang detectado"
+
+msgid "Polylang not detected"
+msgstr "Polylang não detectado"
+
+msgid "Post-update patches"
+msgstr "Patches pós-atualização"
+
+msgid "Preserve old playable links with permanent redirects after a route change."
+msgstr "Preserve links jogáveis antigos com redirecionamentos permanentes após uma alteração de rota."
+
+msgid "Product control center"
+msgstr "Central de controle do produto"
+
+msgid "Production"
+msgstr "Produção"
+
+msgid "Production profile"
+msgstr "Perfil de produção"
+
+msgid "Profile"
+msgstr "Perfil"
+
+msgid "Profile approved."
+msgstr "Perfil aprovado."
+
+msgid "Profile name"
+msgstr "Nome do perfil"
+
+msgid "Profile name and slug are required."
+msgstr "Nome e slug do perfil são obrigatórios."
+
+msgid "Profile promoted to production."
+msgstr "Perfil promovido para produção."
+
+msgid "Profile slug"
+msgstr "Slug do perfil"
+
+msgid "Profile status could not be updated."
+msgstr "Não foi possível atualizar o status do perfil."
+
+msgid "Profile under test"
+msgstr "Perfil em teste"
+
+msgid "Profiles"
+msgstr "Perfis"
+
+msgid "Promote"
+msgstr "Promover"
+
+msgid "Protected"
+msgstr "Protegido"
+
+msgid "Protected update flow"
+msgstr "Fluxo de atualização protegido"
+
+msgid "Public client identifier detected in server configuration."
+msgstr "Identificador público de cliente detectado na configuração do servidor."
+
+msgid "Public player"
+msgstr "Player público"
+
+msgid "Published"
+msgstr "Publicado"
+
+msgid "ROM"
+msgstr "ROM"
+
+msgid "Record immutable test"
+msgstr "Registrar teste imutável"
+
+msgid "Record technical metrics"
+msgstr "Registrar métricas técnicas"
+
+msgid "Redirect legacy routes"
+msgstr "Redirecionar rotas legadas"
+
+msgid "Register a game"
+msgstr "Cadastrar um jogo"
+
+msgid "Register game"
+msgstr "Cadastrar jogo"
+
+msgid "Registered games"
+msgstr "Jogos cadastrados"
+
+msgid "Relative path only. Artifact versions will add their own SHA-256 directory."
+msgstr "Somente caminho relativo. As versões dos artefatos adicionarão seu próprio diretório SHA-256."
+
+msgid "Release and security details"
+msgstr "Detalhes da release e segurança"
+
+msgid "Release channel not accepted"
+msgstr "Canal de release não aceito"
+
+msgid "Release type"
+msgstr "Tipo de release"
+
+msgid "Reload saved state"
+msgstr "Recarregar estado salvo"
+
+msgid "Repeatable evidence"
+msgstr "Evidência repetível"
+
+msgid "Required"
+msgstr "Obrigatório"
+
+msgid "Required capability"
+msgstr "Capacidade obrigatória"
+
+msgid "Requires GEEK_CUBE_STUDIO_APPLE_CLIENT_ID and the private key outside WordPress."
+msgstr "Exige GEEK_CUBE_STUDIO_APPLE_CLIENT_ID e a chave privada fora do WordPress."
+
+msgid "Requires GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID in secure server configuration."
+msgstr "Exige GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID na configuração segura do servidor."
+
+msgid "Result"
+msgstr "Resultado"
+
+msgid "Resume after background"
+msgstr "Retomar após segundo plano"
+
+msgid "Revalidation interval"
+msgstr "Intervalo de revalidação"
+
+msgid "Revalidation reminder"
+msgstr "Lembrete de revalidação"
+
+msgid "Review"
+msgstr "Revisar"
+
+msgid "Revisions per save slot"
+msgstr "Revisões por espaço de save"
+
+msgid "Rights"
+msgstr "Direitos"
+
+msgid "Rights and attribution notes"
+msgstr "Notas de direitos e atribuição"
+
+msgid "Rights notes"
+msgstr "Notas de direitos"
+
+msgid "Rollout"
+msgstr "Distribuição"
+
+msgid "Route segments remain independent from game and artifact IDs."
+msgstr "Os segmentos de rota permanecem independentes dos IDs de jogo e artefato."
+
+msgid "Run"
+msgstr "Executar"
+
+msgid "Run the exact frozen profile and record an immutable browser result."
+msgstr "Execute o perfil congelado exato e registre um resultado imutável no navegador."
+
+msgid "Save URL settings"
+msgstr "Salvar configurações de URL"
+
+msgid "Save account settings"
+msgstr "Salvar configurações de conta"
+
+msgid "Save artifact settings"
+msgstr "Salvar configurações de artefatos"
+
+msgid "Save laboratory settings"
+msgstr "Salvar configurações do laboratório"
+
+msgid "Save player settings"
+msgstr "Salvar configurações do player"
+
+msgid "Save progress settings"
+msgstr "Salvar configurações de progresso"
+
+msgid "Save state"
+msgstr "Salvar estado"
+
+msgid "Saves"
+msgstr "Saves"
+
+msgid "Screen orientation"
+msgstr "Orientação da tela"
+
+msgid "Search controls, URLs, saves, emulators..."
+msgstr "Pesquisar controles, URLs, saves, emuladores..."
+
+msgid "Search settings"
+msgstr "Pesquisar configurações"
+
+msgid "Secrets stay out of this screen"
+msgstr "Segredos ficam fora desta tela"
+
+msgid "Select"
+msgstr "Selecionar"
+
+msgid "Select a profile"
+msgstr "Selecione um perfil"
+
+msgid "Select a supported game platform."
+msgstr "Selecione uma plataforma de jogo compatível."
+
+msgid "Select an existing game."
+msgstr "Selecione um jogo existente."
+
+msgid "Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint."
+msgstr "Envie o ZIP oficial auto-hospedado. O importador o extrai com segurança e exige um ponto de entrada data/loader.js."
+
+msgid "Server compatibility"
+msgstr "Compatibilidade do servidor"
+
+msgid "Server requirements not met"
+msgstr "Requisitos do servidor não atendidos"
+
+msgid "Sign in with Apple"
+msgstr "Entrar com Apple"
+
+msgid "Sign in with Google"
+msgstr "Entrar com Google"
+
+msgid "Signed releases are installed through the native WordPress updater."
+msgstr "Releases assinadas são instaladas pelo atualizador nativo do WordPress."
+
+msgid "Signed update manifest verified."
+msgstr "Manifesto de atualização assinado verificado."
+
+msgid "Signing key"
+msgstr "Chave de assinatura"
+
+msgid "Social providers authenticate users, but WordPress remains the canonical account and save owner."
+msgstr "Provedores sociais autenticam usuários, mas o WordPress permanece a conta e o titular dos saves canônicos."
+
+msgid "Start after first interaction"
+msgstr "Iniciar após a primeira interação"
+
+msgid "Start behavior"
+msgstr "Comportamento de início"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Synchronize saves to user profiles"
+msgstr "Sincronizar saves com perfis de usuário"
+
+msgid "Test"
+msgstr "Teste"
+
+msgid "Test history"
+msgstr "Histórico de testes"
+
+msgid "Test laboratory"
+msgstr "Laboratório de testes"
+
+msgid "Test report"
+msgstr "Relatório de teste"
+
+msgid "Test, approve, and only then promote a combination."
+msgstr "Teste, aprove e só então promova uma combinação."
+
+msgid "Testing"
+msgstr "Em teste"
+
+msgid "The WordPress user ID remains the canonical save owner."
+msgstr "O ID de usuário do WordPress permanece o titular canônico do save."
+
+msgid "The ZIP extension is required to import a player package."
+msgstr "A extensão ZIP é necessária para importar um pacote de player."
+
+msgid "The artifact could not be registered."
+msgstr "Não foi possível cadastrar o artefato."
+
+msgid "The artifact hash could not be calculated."
+msgstr "Não foi possível calcular o hash do artefato."
+
+msgid "The artifact requires a valid SHA-256 fingerprint."
+msgstr "O artefato exige uma impressão digital SHA-256 válida."
+
+msgid "The artifact status change is invalid."
+msgstr "A alteração de status do artefato é inválida."
+
+msgid "The artifact upload did not complete successfully."
+msgstr "O envio do artefato não foi concluído com sucesso."
+
+msgid "The catalog patch is pending. WP-Cron will retry it automatically."
+msgstr "O patch do catálogo está pendente. O WP-Cron tentará novamente automaticamente."
+
+msgid "The catalog schema must be installed before its initial records."
+msgstr "O esquema do catálogo deve ser instalado antes dos registros iniciais."
+
+msgid "The catalog schema patch is still pending. Reload the screen after WP-Cron runs."
+msgstr "O patch do esquema do catálogo continua pendente. Recarregue a tela após o WP-Cron executar."
+
+msgid "The core runtime key and ROM file are required."
+msgstr "A chave de runtime do núcleo e o arquivo de ROM são obrigatórios."
+
+msgid "The exact engine version is locked by each execution profile."
+msgstr "A versão exata do mecanismo é bloqueada por cada perfil de execução."
+
+msgid "The execution profile could not be created."
+msgstr "Não foi possível criar o perfil de execução."
+
+msgid "The extracted player package is larger than the configured safety limit."
+msgstr "O pacote extraído do player é maior que o limite de segurança configurado."
+
+msgid "The falling-nes slug is already used by a different catalog record."
+msgstr "O slug falling-nes já é usado por outro registro no catálogo."
+
+msgid "The game and its emulation artifacts must use the same platform."
+msgstr "O jogo e seus artefatos de emulação devem usar a mesma plataforma."
+
+msgid "The game could not be created."
+msgstr "Não foi possível criar o jogo."
+
+msgid "The immutable artifact directory could not be created."
+msgstr "Não foi possível criar o diretório de artefatos imutáveis."
+
+msgid "The initial FCEUmm identity already uses a different fingerprint."
+msgstr "A identidade inicial do FCEUmm já usa uma impressão digital diferente."
+
+msgid "The player loader entrypoint is missing from immutable storage."
+msgstr "O ponto de entrada do carregador do player está ausente no armazenamento imutável."
+
+msgid "The player package contains an unsafe path."
+msgstr "O pacote do player contém um caminho inseguro."
+
+msgid "The player package contains too many files."
+msgstr "O pacote do player contém arquivos demais."
+
+msgid "The player package could not be extracted."
+msgstr "Não foi possível extrair o pacote do player."
+
+msgid "The player package has no validated loader entrypoint."
+msgstr "O pacote do player não possui um ponto de entrada de carregador validado."
+
+msgid "The player package is not a readable ZIP archive."
+msgstr "O pacote do player não é um arquivo ZIP legível."
+
+msgid "The player package must contain exactly one data/loader.js entrypoint."
+msgstr "O pacote do player deve conter exatamente um ponto de entrada data/loader.js."
+
+msgid "The profile game is missing."
+msgstr "O jogo do perfil está ausente."
+
+msgid "The profile game no longer exists."
+msgstr "O jogo do perfil não existe mais."
+
+msgid "The profile promotion could not be completed."
+msgstr "Não foi possível concluir a promoção do perfil."
+
+msgid "The profile status is invalid."
+msgstr "O status do perfil é inválido."
+
+msgid "The public player is not enabled."
+msgstr "O player público não está ativado."
+
+msgid "The requested execution profile does not exist."
+msgstr "O perfil de execução solicitado não existe."
+
+msgid "The signed update manifest is unavailable."
+msgstr "O manifesto de atualização assinado está indisponível."
+
+msgid "The stored file is missing or no longer matches its SHA-256 fingerprint."
+msgstr "O arquivo armazenado está ausente ou não corresponde mais à sua impressão digital SHA-256."
+
+msgid "The test requires a valid profile and final result."
+msgstr "O teste exige um perfil válido e resultado final."
+
+msgid "The test result could not be recorded."
+msgstr "Não foi possível registrar o resultado do teste."
+
+msgid "The update manifest or its Ed25519 signature is invalid."
+msgstr "O manifesto de atualização ou sua assinatura Ed25519 é inválido."
+
+msgid "The update server returned HTTP %d."
+msgstr "O servidor de atualização retornou HTTP %d."
+
+msgid "The uploaded artifact could not be moved to immutable storage."
+msgstr "Não foi possível mover o artefato enviado para o armazenamento imutável."
+
+msgid "This artifact type requires an immutable stored file."
+msgstr "Este tipo de artefato exige um arquivo imutável armazenado."
+
+msgid "This file extension is not allowed for the selected artifact type."
+msgstr "Esta extensão de arquivo não é permitida para o tipo de artefato selecionado."
+
+msgid "This game has no active production profile."
+msgstr "Este jogo não tem um perfil de produção ativo."
+
+msgid "This game has no published execution profile."
+msgstr "Este jogo não tem um perfil de execução publicado."
+
+msgid "This plugin only emits versioned local URLs. Cache creation and invalidation remain under the HypeLab plugin."
+msgstr "Este plugin apenas emite URLs locais versionadas. A criação e invalidação de cache permanecem sob o plugin HypeLab."
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Touch controls"
+msgstr "Controles de toque"
+
+msgid "Translated route slugs"
+msgstr "Slugs de rota traduzidos"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "URLs and languages"
+msgstr "URLs e idiomas"
+
+msgid "Unknown or incompatible"
+msgstr "Desconhecido ou incompatível"
+
+msgid "Update Geek Cube Studio now? WordPress will temporarily enable maintenance mode while replacing the plugin files."
+msgstr "Atualizar o Geek Cube Studio agora? O WordPress ativará temporariamente o modo de manutenção enquanto substitui os arquivos do plugin."
+
+msgid "Update available"
+msgstr "Atualização disponível"
+
+msgid "Update check completed. The installed version is current."
+msgstr "Verificação de atualização concluída. A versão instalada está atualizada."
+
+msgid "Update now"
+msgstr "Atualizar agora"
+
+msgid "Updates"
+msgstr "Atualizações"
+
+msgid "Upload only content you may legally use and redistribute."
+msgstr "Envie apenas conteúdo que você possa usar e redistribuir legalmente."
+
+msgid "Uploads subdirectory"
+msgstr "Subdiretório de uploads"
+
+msgid "Upstream update checks"
+msgstr "Verificações de atualização de origem"
+
+msgid "Verification requires source, license and confirmed commercial use."
+msgstr "A verificação exige fonte, licença e uso comercial confirmado."
+
+msgid "Verified"
+msgstr "Verificado"
+
+msgid "Verify"
+msgstr "Verificar"
+
+msgid "Version"
+msgstr "Versão"
+
+msgid "Version %s is available and ready for the native WordPress updater."
+msgstr "A versão %s está disponível e pronta para o atualizador nativo do WordPress."
+
+msgid "Versioned artifacts"
+msgstr "Artefatos versionados"
+
+msgid "Versioned files"
+msgstr "Arquivos versionados"
+
+msgid "Video is stable"
+msgstr "Vídeo está estável"
+
+msgid "Visitors can start immediately and connect an account later."
+msgstr "Visitantes podem começar imediatamente e conectar uma conta depois."
+
+msgid "WebAssembly threads"
+msgstr "Threads do WebAssembly"
+
+msgid "WordPress database is unavailable."
+msgstr "O banco de dados do WordPress está indisponível."
+
+msgid "You cannot access this laboratory profile."
+msgstr "Você não pode acessar este perfil de laboratório."
+
+msgid "You do not have permission to access this page."
+msgstr "Você não tem permissão para acessar esta página."
+
+msgid "You do not have permission to update plugins."
+msgstr "Você não tem permissão para atualizar plugins."
+
+msgid "Your account cannot install plugin updates."
+msgstr "Sua conta não pode instalar atualizações de plugins."
+
+msgid "days"
+msgstr "dias"

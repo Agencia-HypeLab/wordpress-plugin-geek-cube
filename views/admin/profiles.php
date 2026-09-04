@@ -67,7 +67,7 @@ foreach ( $artifacts as $artifact ) {
 				foreach ( $profiles as $row ) :
 					$row_game = Geek_Cube_Studio_Repository::get_game( $row['game_id'] );
 					?>
-					<tr><td><strong><?php echo esc_html( $row['name'] ); ?></strong><br><code><?php echo esc_html( $row['uuid'] ); ?></code></td><td><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $row_game ) ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $row['status'] ) ); ?>"><?php echo esc_html( $row['status'] ); ?></span></td><td><div class="geek-cube-actions"><a class="button" href="
+					<tr><td><strong><?php echo esc_html( $row['name'] ); ?></strong><br><code><?php echo esc_html( $row['uuid'] ); ?></code></td><td><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $row_game ) ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $row['status'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $row['status'] ) ); ?></span></td><td><div class="geek-cube-actions"><a class="button" href="
 					<?php
 					echo esc_url(
 						add_query_arg(
