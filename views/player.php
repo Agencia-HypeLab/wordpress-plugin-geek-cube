@@ -84,7 +84,7 @@ $runtime = array(
 						}
 						previousFrame = frame;
 						previousTime = now;
-					} elseif ( previousFrame === null ) {
+					} else if ( previousFrame === null ) {
 						previousFrame = frame;
 						previousTime = now;
 					}
