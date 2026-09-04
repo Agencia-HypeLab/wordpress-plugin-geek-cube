@@ -4,7 +4,7 @@
  * Plugin URI:        https://www.hypelab.com.br/
  * Update URI:        https://www.hypelab.com.br/wordpress-plugin-geek-cube/geek-cube-studio-update.php
  * Description:       Connects Geek Cube Studio game pages to its browser-based player experience.
- * Version:           0.1.7
+ * Version:           0.1.8
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Agência HypeLab
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.7' );
+define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.8' );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_FILE', __FILE__ );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

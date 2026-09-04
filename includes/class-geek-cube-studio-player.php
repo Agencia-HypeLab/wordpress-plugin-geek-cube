@@ -20,11 +20,35 @@ final class Geek_Cube_Studio_Player {
 	/** Laboratory profile query variable. */
 	const LAB_QUERY_VAR = 'geek_cube_lab_profile';
 
+	/** Stored version for the friendly player route schema. */
+	const REWRITE_RULES_VERSION = '1';
+
+	/** Option that records the installed friendly player route schema. */
+	const REWRITE_RULES_OPTION = 'geek_cube_studio_rewrite_rules_version';
+
 	/** Register route hooks. */
 	public static function boot() {
 		add_action( 'init', array( __CLASS__, 'register_rewrite_rules' ), 9 );
+		add_action( 'init', array( __CLASS__, 'maybe_flush_rewrite_rules' ), 10 );
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'dispatch' ) );
+	}
+
+	/**
+	 * Flush friendly player routes exactly once when their schema changes.
+	 *
+	 * A game only supplies a trailing slug to an existing generic rule, so game
+	 * registration never needs to trigger a permalink rebuild.
+	 *
+	 * @return void
+	 */
+	public static function maybe_flush_rewrite_rules() {
+		if ( self::REWRITE_RULES_VERSION === (string) get_option( self::REWRITE_RULES_OPTION, '' ) ) {
+			return;
+		}
+
+		flush_rewrite_rules( false );
+		update_option( self::REWRITE_RULES_OPTION, self::REWRITE_RULES_VERSION, false );
 	}
 
 	/**
@@ -171,6 +195,7 @@ final class Geek_Cube_Studio_Player {
 		$title      = Geek_Cube_Studio_Repository::translated_value( $game['titles'] );
 		$core       = $artifacts['core']['runtime_key'];
 		$volume     = max( 0, min( 100, (int) Geek_Cube_Studio_Settings::get( 'player_default_volume', 70 ) ) ) / 100;
+		$start_mode = (string) Geek_Cube_Studio_Settings::get( 'player_start_mode', 'interaction' );
 
 		status_header( 200 );
 		nocache_headers();

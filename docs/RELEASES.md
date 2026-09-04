@@ -6,12 +6,13 @@ O comando padrão é o fluxo completo:
 php tools\build.php
 ```
 
-Ele valida o projeto, testa os acessos, incrementa a versão patch, gera o ZIP,
+Ele pede logo no início a passphrase da chave SSH exclusiva deste repositório,
+valida o projeto, testa os acessos, incrementa a versão patch, gera o ZIP,
 assina o manifesto, cria o commit, faz o push da branch atual, envia os artefatos
 por FTP e, somente após confirmar a publicação HTTPS, cria e envia a tag da
-versão. A pasta local `build` e o diretório remoto mantêm somente os três ZIPs
-versionados mais recentes do Geek Cube Studio; manifesto e endpoint não entram
-nessa contagem.
+versão. A pasta local `build` mantém os três ZIPs versionados mais recentes para
+recuperação; o diretório remoto mantém somente o ZIP da release atual. O manifesto
+e o endpoint não entram nessa contagem.
 
 ## 1. Credenciais de FTP
 

@@ -74,6 +74,7 @@
 
 	const testForm = document.querySelector( '[data-geek-cube-test-form]' );
 	if ( testForm ) {
+		const labFrame = document.querySelector( '[data-geek-cube-lab-frame]' );
 		const values = {
 			userAgent: navigator.userAgent || '',
 			platform: navigator.userAgentData && navigator.userAgentData.platform ? navigator.userAgentData.platform : ( navigator.platform || '' ),
@@ -87,5 +88,32 @@
 				field.value = value;
 			}
 		} );
+
+		if ( labFrame ) {
+			window.addEventListener( 'message', ( event ) => {
+				const data = event.data || {};
+				const fps = Number( data.fps );
+				if (
+					event.origin !== window.location.origin ||
+					event.source !== labFrame.contentWindow ||
+					data.type !== 'geek-cube-player-fps' ||
+					data.profileId !== labFrame.dataset.profileId ||
+					! Number.isFinite( fps )
+				) {
+					return;
+				}
+
+				const input = testForm.querySelector( '[data-geek-cube-observed-fps]' );
+				const output = testForm.querySelector( '[data-geek-cube-observed-fps-output]' );
+				const value = fps.toFixed( 1 );
+				if ( input ) {
+					input.value = value;
+				}
+				if ( output ) {
+					output.value = `${ value } FPS`;
+					output.textContent = output.value;
+				}
+			} );
+		}
 	}
 }() );

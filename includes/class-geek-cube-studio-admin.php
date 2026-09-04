@@ -47,9 +47,23 @@ class Geek_Cube_Studio_Admin {
 	 */
 	public function init() {
 		add_action( 'admin_init', array( 'Geek_Cube_Studio_Settings', 'register' ) );
+		add_action( 'admin_init', array( $this, 'send_update_no_cache_headers' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_post_geek_cube_check_updates', array( $this, 'handle_update_check' ) );
+	}
+
+	/**
+	 * Prevent browsers and intermediaries from caching the update control page.
+	 *
+	 * @return void
+	 */
+	public function send_update_no_cache_headers() {
+		$page = isset( $_GET['page'] ) && is_scalar( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen state.
+
+		if ( 'geek-cube-studio' === $page && 'updates' === self::resolve_tab() ) {
+			nocache_headers();
+		}
 	}
 
 	/**
@@ -173,7 +187,7 @@ class Geek_Cube_Studio_Admin {
 
 		$google_configured = defined( 'GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID' ) && '' !== (string) GEEK_CUBE_STUDIO_GOOGLE_CLIENT_ID;
 		$apple_configured  = defined( 'GEEK_CUBE_STUDIO_APPLE_CLIENT_ID' ) && '' !== (string) GEEK_CUBE_STUDIO_APPLE_CLIENT_ID;
-		$update_status     = 'updates' === $active_tab ? Geek_Cube_Studio_Updater::get_update_status() : array();
+		$update_status     = 'updates' === $active_tab ? Geek_Cube_Studio_Updater::get_update_status( true ) : array();
 		$native_update_url = ! empty( $update_status['update_available'] ) ? Geek_Cube_Studio_Updater::native_update_url() : '';
 		$patch_inventory   = 'updates' === $active_tab ? Geek_Cube_Studio_Update_Patches::inventory() : array();
 

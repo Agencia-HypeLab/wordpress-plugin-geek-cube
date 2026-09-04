@@ -115,6 +115,16 @@ final class SettingsTest extends TestCase {
 		$this->assertSame( 1, $GLOBALS['test_rewrite_flushes'] );
 	}
 
+	public function test_player_route_schema_flushes_once_after_an_update(): void {
+		Geek_Cube_Studio_Player::maybe_flush_rewrite_rules();
+
+		$this->assertSame( 1, $GLOBALS['test_rewrite_flushes'] );
+		$this->assertSame( '1', get_option( Geek_Cube_Studio_Player::REWRITE_RULES_OPTION ) );
+
+		Geek_Cube_Studio_Player::maybe_flush_rewrite_rules();
+		$this->assertSame( 1, $GLOBALS['test_rewrite_flushes'] );
+	}
+
 	public function test_admin_tab_resolution_rejects_unknown_values(): void {
 		$this->assertSame( 'saves', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => 'saves' ) ) );
 		$this->assertSame( 'updates', Geek_Cube_Studio_Admin::resolve_tab( array( 'tab' => 'updates' ) ) );

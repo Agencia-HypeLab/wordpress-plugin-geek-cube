@@ -913,6 +913,12 @@ msgstr "Iniciar após a primeira interação"
 msgid "Start behavior"
 msgstr "Comportamento de início"
 
+msgid "Start game"
+msgstr "Iniciar jogo"
+
+msgid "Start test"
+msgstr "Iniciar teste"
+
 msgid "Status"
 msgstr "Status"
 

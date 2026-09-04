@@ -190,6 +190,81 @@ function geek_cube_studio_build_git_preflight( $root_dir ) {
 }
 
 /**
+ * Resolve the project-specific SSH identity configured for the Git remote.
+ *
+ * @param string $root_dir Project root.
+ * @return string
+ */
+function geek_cube_studio_build_ssh_identity_file( $root_dir ) {
+	$output = array();
+
+	if ( 0 !== geek_cube_studio_build_git( $root_dir, 'remote get-url --push origin', $output ) ) {
+		fwrite( STDERR, "Git SSH setup failed: origin is not configured.\n" );
+		exit( 1 );
+	}
+
+	$origin  = trim( implode( PHP_EOL, $output ) );
+	$matches = array();
+	if ( ! preg_match( '#^(?:ssh://(?:[^@/]+@)?([^/:]+)(?::[0-9]+)?/|(?:[^@/:]+@)?([^/:]+):)#', $origin, $matches ) ) {
+		fwrite( STDERR, "Git SSH setup failed: origin must use an SSH host alias.\n" );
+		exit( 1 );
+	}
+
+	$host   = ! empty( $matches[1] ) ? $matches[1] : $matches[2];
+	$output = array();
+	$status = 1;
+	exec( 'ssh -G ' . escapeshellarg( $host ) . ' 2>&1', $output, $status );
+
+	if ( 0 !== $status ) {
+		fwrite( STDERR, "Git SSH setup failed: unable to read the SSH host configuration.\n" );
+		exit( 1 );
+	}
+
+	$home = getenv( 'USERPROFILE' );
+	$home = '' !== $home ? $home : getenv( 'HOME' );
+
+	foreach ( $output as $line ) {
+		if ( ! preg_match( '/^identityfile\s+(.+)$/i', trim( $line ), $matches ) ) {
+			continue;
+		}
+
+		$identity = trim( $matches[1], " \t\n\r\0\x0B\"'" );
+		if ( 0 === strpos( $identity, '~/' ) && '' !== $home ) {
+			$identity = rtrim( $home, '/\\' ) . DIRECTORY_SEPARATOR . substr( $identity, 2 );
+		}
+
+		if ( is_file( $identity ) && is_readable( $identity ) ) {
+			return $identity;
+		}
+	}
+
+	fwrite( STDERR, "Git SSH setup failed: no readable project identity is configured for origin.\n" );
+	exit( 1 );
+}
+
+/**
+ * Request the project SSH passphrase before time-consuming release checks.
+ *
+ * The system SSH agent keeps the decrypted key only in memory, allowing the
+ * later Git preflight, push and tag operations to proceed without prompting.
+ *
+ * @param string $root_dir Project root.
+ * @return void
+ */
+function geek_cube_studio_build_prepare_ssh_identity( $root_dir ) {
+	$identity = geek_cube_studio_build_ssh_identity_file( $root_dir );
+	$status   = 1;
+
+	echo "Preparing the project Git SSH key. Enter its passphrase now if requested.\n";
+	passthru( 'ssh-add ' . escapeshellarg( $identity ), $status );
+
+	if ( 0 !== $status ) {
+		fwrite( STDERR, "Git SSH setup failed: ssh-add could not unlock the project identity.\n" );
+		exit( 1 );
+	}
+}
+
+/**
  * Run local PHP and optional JavaScript quality gates.
  *
  * @param string $root_dir Project root.
@@ -576,7 +651,7 @@ function geek_cube_studio_build_manifest( $root_dir, array $project, array $opti
 		exit( 1 );
 	}
 
-	$endpoint = "<?php\n/** Geek Cube Studio update manifest endpoint. */\nheader( 'Content-Type: application/json; charset=utf-8' );\nheader( 'Cache-Control: no-store, no-cache, must-revalidate, max-age=0' );\nheader( 'Pragma: no-cache' );\nheader( 'X-Robots-Tag: noindex, nofollow', true );\n\$manifest = __DIR__ . '/{$json_name}';\nif ( ! is_file( \$manifest ) || ! is_readable( \$manifest ) ) {\n\thttp_response_code( 503 );\n\techo json_encode( array( 'error' => 'manifest_unavailable' ) );\n\texit;\n}\nreadfile( \$manifest );\n";
+	$endpoint = "<?php\n/** Geek Cube Studio update manifest endpoint. */\nheader( 'Content-Type: application/json; charset=utf-8' );\nheader( 'Cache-Control: no-store, no-cache, must-revalidate, max-age=0' );\nheader( 'Pragma: no-cache' );\nheader( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );\nheader( 'X-Robots-Tag: noindex, nofollow', true );\n\$manifest = __DIR__ . '/{$json_name}';\nif ( ! is_file( \$manifest ) || ! is_readable( \$manifest ) ) {\n\thttp_response_code( 503 );\n\techo json_encode( array( 'error' => 'manifest_unavailable' ) );\n\texit;\n}\nreadfile( \$manifest );\n";
 
 	if ( false === file_put_contents( $build_dir . '/' . $php_name, $endpoint, LOCK_EX ) ) {
 		fwrite( STDERR, "Unable to write the update manifest endpoint.\n" );
@@ -696,6 +771,10 @@ foreach ( array( 'zip', 'sodium', 'curl' ) as $extension ) {
 		fwrite( STDERR, "Required PHP extension is unavailable: {$extension}\n" );
 		exit( 1 );
 	}
+}
+
+if ( ! $options['validate_only'] ) {
+	geek_cube_studio_build_prepare_ssh_identity( $root_dir );
 }
 
 geek_cube_studio_build_quality_gates( $root_dir );

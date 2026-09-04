@@ -908,6 +908,12 @@ msgstr ""
 msgid "Start behavior"
 msgstr ""
 
+msgid "Start game"
+msgstr ""
+
+msgid "Start test"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 

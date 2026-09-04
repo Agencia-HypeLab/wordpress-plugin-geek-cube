@@ -294,7 +294,7 @@ function geek_cube_studio_deploy_delete_remote( array $config, $remote_name ) {
 }
 
 /**
- * Mirror the local retention set and verify that no old remote package remains.
+ * Retain only the current package remotely and remove every older package.
  *
  * @param array<string,mixed>                                     $config      Transfer configuration.
  * @param string                                                  $plugin_slug Plugin slug.
@@ -334,8 +334,8 @@ function geek_cube_studio_deploy_prune_remote_builds( array $config, $plugin_slu
 		}
 	}
 
-	if ( count( $remaining ) > GEEK_CUBE_STUDIO_RELEASE_RETENTION ) {
-		throw new RuntimeException( 'Remote retention verification found more than three plugin builds.' );
+	if ( count( $remaining ) > count( $keep ) ) {
+		throw new RuntimeException( 'Remote retention verification found more package files than expected.' );
 	}
 
 	return $deleted;
@@ -444,10 +444,8 @@ try {
 		throw new RuntimeException( 'The signed release package is missing from the local retention set.' );
 	}
 
-	foreach ( $builds as $build ) {
-		geek_cube_studio_deploy_upload( $config, $build['path'], $build['filename'] );
-		echo 'Uploaded ' . $build['filename'] . ".\n";
-	}
+	geek_cube_studio_deploy_upload( $config, $zip_path, $zip_name );
+	echo "Uploaded {$zip_name}.\n";
 
 	foreach ( array(
 		$manifest_name => $manifest_path,
@@ -458,14 +456,24 @@ try {
 	}
 
 	geek_cube_studio_deploy_verify_public_manifest( $config, $endpoint_name, $version, $sha256 );
-	$deleted = geek_cube_studio_deploy_prune_remote_builds( $config, $slug, $builds );
+	$deleted = geek_cube_studio_deploy_prune_remote_builds(
+		$config,
+		$slug,
+		array(
+			array(
+				'path'     => $zip_path,
+				'filename' => $zip_name,
+				'mtime'    => (int) filemtime( $zip_path ),
+			),
+		)
+	);
 
 	if ( ! empty( $deleted ) ) {
 		echo "Removed old remote builds:\n - " . implode( "\n - ", $deleted ) . PHP_EOL;
 	}
 
 	if ( 'sftp' !== $config['protocol'] ) {
-		echo 'Remote retention verified: the latest ' . GEEK_CUBE_STUDIO_RELEASE_RETENTION . " builds are available.\n";
+		echo "Remote retention verified: only the current package is available.\n";
 	}
 
 	echo "Published signed Geek Cube Studio release {$version}.\n";
