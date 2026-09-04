@@ -20,6 +20,7 @@ return array(
 		'config/release-public-key.php',
 		'includes',
 		'languages',
+		'views',
 		'vendor',
 	),
 );

@@ -16,6 +16,9 @@ $GLOBALS['test_options']       = array();
 $GLOBALS['test_transients']    = array();
 $GLOBALS['test_cron_events']   = array();
 $GLOBALS['test_remote_result'] = null;
+$GLOBALS['test_registered_settings'] = array();
+$GLOBALS['test_settings_errors']     = array();
+$GLOBALS['test_rewrite_flushes']     = 0;
 
 class WP_Error {
 	private $message;
@@ -67,6 +70,24 @@ function sanitize_text_field( $value ) {
 	return trim( strip_tags( (string) $value ) );
 }
 
+function sanitize_key( $value ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $value ) );
+}
+
+function sanitize_title( $value ) {
+	$value = strtolower( trim( (string) $value ) );
+	$value = preg_replace( '/[^a-z0-9]+/', '-', $value );
+	return trim( $value, '-' );
+}
+
+function absint( $value ) {
+	return abs( (int) $value );
+}
+
+function wp_unslash( $value ) {
+	return $value;
+}
+
 function wp_kses_post( $value ) {
 	return (string) $value;
 }
@@ -91,6 +112,35 @@ function __( $value, $domain = '' ) {
 
 function home_url( $path = '' ) {
 	return 'https://site.example.test' . $path;
+}
+
+function trailingslashit( $value ) {
+	return rtrim( (string) $value, '/\\' ) . '/';
+}
+
+function user_trailingslashit( $value ) {
+	return trailingslashit( $value );
+}
+
+function get_locale() {
+	return 'pt_BR';
+}
+
+function register_setting( $group, $option, $args = array() ) {
+	$GLOBALS['test_registered_settings'][ $option ] = array(
+		'group' => $group,
+		'args'  => $args,
+	);
+	return true;
+}
+
+function add_settings_error( $setting, $code, $message ) {
+	$GLOBALS['test_settings_errors'][] = compact( 'setting', 'code', 'message' );
+}
+
+function flush_rewrite_rules( $hard = true ) {
+	unset( $hard );
+	++$GLOBALS['test_rewrite_flushes'];
 }
 
 function get_site_transient( $key ) {
@@ -165,3 +215,6 @@ function is_multisite() {
 
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-updater.php';
 require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-update-patches.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-settings.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-urls.php';
+require_once dirname( __DIR__ ) . '/includes/class-geek-cube-studio-admin.php';

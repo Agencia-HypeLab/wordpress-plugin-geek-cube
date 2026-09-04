@@ -4,6 +4,7 @@
 
     <file>geek-cube-studio.php</file>
     <file>includes</file>
+	<file>views</file>
     <arg name="basepath" value="."/>
     <arg name="colors"/>
     <arg value="sp"/>
