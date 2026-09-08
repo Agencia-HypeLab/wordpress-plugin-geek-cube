@@ -24,14 +24,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
 					<input type="hidden" name="action" value="geek_cube_create_game">
 					<?php wp_nonce_field( 'geek_cube_create_game' ); ?>
-					<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" required></label>
-					<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" pattern="[a-z0-9-]+" placeholder="falling-nes" data-geek-cube-slug></label>
+					<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" data-geek-cube-slug-source required></label>
+					<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" placeholder="falling-nes" data-geek-cube-slug-target readonly></label>
 					<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform" required><option value=""><?php esc_html_e( 'Select', 'geek-cube-studio' ); ?></option>
 					<?php
 					foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) :
 						?>
 						<option value="<?php echo esc_attr( $platform ); ?>"><?php echo esc_html( strtoupper( $platform ) ); ?></option><?php endforeach; ?></select></label>
-					<label><span><?php esc_html_e( 'Initial language', 'geek-cube-studio' ); ?></span><input type="text" name="language" value="default" required></label>
+					<label><span><?php esc_html_e( 'Initial language', 'geek-cube-studio' ); ?></span><input type="text" value="<?php esc_attr_e( 'English', 'geek-cube-studio' ); ?>" readonly><input type="hidden" name="language" value="en"></label>
 					<label class="is-wide"><span><?php esc_html_e( 'Description', 'geek-cube-studio' ); ?></span><textarea name="description" rows="3"></textarea></label>
 					<label class="is-wide"><span><?php esc_html_e( 'Cover image', 'geek-cube-studio' ); ?></span><div class="geek-cube-media-picker" data-geek-cube-media-picker><input type="hidden" name="cover_attachment_id" value=""><img data-geek-cube-media-preview hidden alt=""><div><button type="button" class="button" data-geek-cube-media-select><?php esc_html_e( 'Select cover image', 'geek-cube-studio' ); ?></button><button type="button" class="button-link-delete" data-geek-cube-media-remove hidden><?php esc_html_e( 'Remove image', 'geek-cube-studio' ); ?></button></div></div></label>
 					<div class="is-wide"><?php submit_button( __( 'Register game', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
@@ -61,10 +61,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
 								<input type="hidden" name="action" value="geek_cube_update_game">
 								<input type="hidden" name="game_id" value="<?php echo esc_attr( $game['id'] ); ?>">
-								<input type="hidden" name="language" value="default">
+								<input type="hidden" name="language" value="en">
 								<?php wp_nonce_field( 'geek_cube_update_game' ); ?>
-								<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" value="<?php echo esc_attr( $game_title ); ?>" required></label>
-								<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" value="<?php echo esc_attr( $game['slug'] ); ?>" pattern="[a-z0-9-]+" data-geek-cube-slug required></label>
+								<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" value="<?php echo esc_attr( $game_title ); ?>" data-geek-cube-slug-source required></label>
+								<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" value="<?php echo esc_attr( $game['slug'] ); ?>" data-geek-cube-slug-target readonly></label>
 								<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform" required><?php foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) : ?>
 									<option value="<?php echo esc_attr( $platform ); ?>"<?php selected( $game['platform'], $platform ); ?>><?php echo esc_html( strtoupper( $platform ) ); ?></option>
 								<?php endforeach; ?></select><small><?php esc_html_e( 'The platform cannot change after a profile is created.', 'geek-cube-studio' ); ?></small></label>

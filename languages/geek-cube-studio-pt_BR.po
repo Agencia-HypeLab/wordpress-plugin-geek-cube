@@ -346,6 +346,9 @@ msgstr "Ativar player público"
 msgid "Enabled"
 msgstr "Ativado"
 
+msgid "English"
+msgstr "Inglês"
+
 msgid "Enter a valid artifact name."
 msgstr "Informe um nome de artefato válido."
 

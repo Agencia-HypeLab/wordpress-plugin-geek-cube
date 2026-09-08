@@ -173,7 +173,7 @@ final class Geek_Cube_Studio_Seed {
 					'title'        => 'Falling',
 					'slug'         => self::GAME_SLUG,
 					'platform'     => 'nes',
-					'language'     => 'default',
+					'language'     => 'en',
 					'description'  => __( 'Open-source NES homebrew selected for the first browser compatibility test.', 'geek-cube-studio' ),
 					'source_url'   => 'https://github.com/xram64/falling-nes',
 					'rights_notes' => 'MIT-licensed source and ROM. Keep the upstream copyright and license notice with every redistributed copy.',

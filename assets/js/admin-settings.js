@@ -80,10 +80,19 @@
 		.replace( /-+/g, '-' )
 		.replace( /^-+|-+$/g, '' );
 
-	document.querySelectorAll( '[data-geek-cube-slug]' ).forEach( ( input ) => {
-		input.addEventListener( 'input', () => {
-			input.value = slugify( input.value );
-		} );
+	document.querySelectorAll( '[data-geek-cube-slug-source]' ).forEach( ( source ) => {
+		const form = source.closest( 'form' );
+		const target = form ? form.querySelector( '[data-geek-cube-slug-target]' ) : null;
+		if ( ! target ) {
+			return;
+		}
+
+		const sync = () => {
+			target.value = slugify( source.value );
+		};
+
+		source.addEventListener( 'input', sync );
+		sync();
 	} );
 
 	const profileAction = document.querySelector( 'input[name="action"][value="geek_cube_create_profile"]' );
@@ -91,9 +100,7 @@
 	if ( profileForm ) {
 		const game = profileForm.querySelector( 'select[name="game_id"]' );
 		const name = profileForm.querySelector( 'input[name="name"]' );
-		const slug = profileForm.querySelector( 'input[name="slug"]' );
 		let generatedName = '';
-		let generatedSlug = '';
 
 		const selectedTitle = () => {
 			if ( ! game || ! game.selectedOptions.length ) {
@@ -111,28 +118,12 @@
 			if ( name && ( ! name.value.trim() || name.value === generatedName ) ) {
 				name.value = title;
 				generatedName = title;
-			}
-			if ( slug && ( ! slug.value.trim() || slug.value === generatedSlug ) ) {
-				slug.value = slugify( title );
-				generatedSlug = slug.value;
+				name.dispatchEvent( new Event( 'input' ) );
 			}
 		};
 
 		if ( game ) {
 			game.addEventListener( 'change', syncFromGame );
-		}
-		if ( name ) {
-			name.addEventListener( 'input', () => {
-				if ( slug && ( ! slug.value.trim() || slug.value === generatedSlug ) ) {
-					slug.value = slugify( name.value );
-					generatedSlug = slug.value;
-				}
-			} );
-		}
-		if ( slug ) {
-			slug.addEventListener( 'input', () => {
-				slug.value = slugify( slug.value );
-			} );
 		}
 	}
 

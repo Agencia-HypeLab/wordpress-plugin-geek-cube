@@ -298,7 +298,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 					'title'       => $artifact_name,
 					'slug'        => $game_slug,
 					'platform'    => $platform,
-					'language'    => 'default',
+					'language'    => 'en',
 					'description' => '',
 				)
 			);

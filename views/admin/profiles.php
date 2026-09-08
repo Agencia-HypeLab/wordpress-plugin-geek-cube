@@ -27,8 +27,8 @@ foreach ( $artifacts as $artifact ) {
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Freeze a test combination', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Only verified artifacts are offered. NES does not require a BIOS.', 'geek-cube-studio' ); ?></p></div></div>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
 					<input type="hidden" name="action" value="geek_cube_create_profile"><?php wp_nonce_field( 'geek_cube_create_profile' ); ?>
-					<label><span><?php esc_html_e( 'Profile name', 'geek-cube-studio' ); ?></span><input type="text" name="name" placeholder="Falling · EJS 4.2.3 · FCEUmm" required></label>
-					<label><span><?php esc_html_e( 'Profile slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" pattern="[a-z0-9-]+" required></label>
+					<label><span><?php esc_html_e( 'Profile name', 'geek-cube-studio' ); ?></span><input type="text" name="name" placeholder="Falling · EJS 4.2.3 · FCEUmm" data-geek-cube-slug-source required></label>
+					<label><span><?php esc_html_e( 'Profile slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" data-geek-cube-slug-target readonly></label>
 					<label class="is-wide"><span><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></span><select name="game_id" required><option value=""><?php esc_html_e( 'Select', 'geek-cube-studio' ); ?></option>
 					<?php
 					foreach ( $games as $game ) :

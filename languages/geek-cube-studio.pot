@@ -341,6 +341,9 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
+msgid "English"
+msgstr ""
+
 msgid "Enter a valid artifact name."
 msgstr ""
 
