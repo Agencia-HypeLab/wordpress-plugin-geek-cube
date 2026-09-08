@@ -254,6 +254,9 @@ msgstr ""
 msgid "Core runtime key"
 msgstr ""
 
+msgid "Core runtime key updated."
+msgstr ""
+
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr ""
 
@@ -326,6 +329,9 @@ msgstr ""
 msgid "Edit name"
 msgstr ""
 
+msgid "Edit runtime key"
+msgstr ""
+
 msgid "Eligible on this site"
 msgstr ""
 
@@ -345,6 +351,9 @@ msgid "English"
 msgstr ""
 
 msgid "Enter a valid artifact name."
+msgstr ""
+
+msgid "Enter a valid core runtime key."
 msgstr ""
 
 msgid "Enter a valid title and a non-reserved game slug."
@@ -953,6 +962,9 @@ msgstr ""
 msgid "Save progress settings"
 msgstr ""
 
+msgid "Save runtime key"
+msgstr ""
+
 msgid "Save state"
 msgstr ""
 
@@ -1124,7 +1136,7 @@ msgstr ""
 msgid "The catalog schema patch is still pending. Reload the screen after WP-Cron runs."
 msgstr ""
 
-msgid "The core runtime key and ROM file are required."
+msgid "The core runtime key could not be updated."
 msgstr ""
 
 msgid "The exact engine version is locked by each execution profile."
@@ -1212,6 +1224,18 @@ msgid "The relocated artifact path could not be saved."
 msgstr ""
 
 msgid "The requested execution profile does not exist."
+msgstr ""
+
+msgid "The runtime key cannot change after the core is used by an execution profile."
+msgstr ""
+
+msgid "The selected ROM has no stored file. Import the original ROM file again before creating the profile."
+msgstr ""
+
+msgid "The selected artifact is not a core."
+msgstr ""
+
+msgid "The selected core has no runtime key. Import a core with the correct runtime key before creating the profile."
 msgstr ""
 
 msgid "The signed update manifest is unavailable."

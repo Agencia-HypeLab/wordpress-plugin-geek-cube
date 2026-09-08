@@ -259,6 +259,9 @@ msgstr "Núcleo"
 msgid "Core runtime key"
 msgstr "Chave de runtime do núcleo"
 
+msgid "Core runtime key updated."
+msgstr "Chave de runtime do núcleo atualizada."
+
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr "Artefatos de núcleo, ROM e BIOS exigem uma plataforma compatível."
 
@@ -331,6 +334,9 @@ msgstr "Editar jogo"
 msgid "Edit name"
 msgstr "Editar nome"
 
+msgid "Edit runtime key"
+msgstr "Editar chave de runtime"
+
 msgid "Eligible on this site"
 msgstr "Elegível neste site"
 
@@ -351,6 +357,9 @@ msgstr "Inglês"
 
 msgid "Enter a valid artifact name."
 msgstr "Informe um nome de artefato válido."
+
+msgid "Enter a valid core runtime key."
+msgstr "Informe uma chave de runtime válida para o núcleo."
 
 msgid "Enter a valid title and a non-reserved game slug."
 msgstr "Informe um título válido e um slug de jogo não reservado."
@@ -958,6 +967,9 @@ msgstr "Salvar configurações do player"
 msgid "Save progress settings"
 msgstr "Salvar configurações de progresso"
 
+msgid "Save runtime key"
+msgstr "Salvar chave de runtime"
+
 msgid "Save state"
 msgstr "Salvar estado"
 
@@ -1129,8 +1141,8 @@ msgstr "O esquema do catálogo deve ser instalado antes dos registros iniciais."
 msgid "The catalog schema patch is still pending. Reload the screen after WP-Cron runs."
 msgstr "O patch do esquema do catálogo continua pendente. Recarregue a tela após o WP-Cron executar."
 
-msgid "The core runtime key and ROM file are required."
-msgstr "A chave de runtime do núcleo e o arquivo de ROM são obrigatórios."
+msgid "The core runtime key could not be updated."
+msgstr "Não foi possível atualizar a chave de runtime do núcleo."
 
 msgid "The exact engine version is locked by each execution profile."
 msgstr "A versão exata do mecanismo é bloqueada por cada perfil de execução."
@@ -1218,6 +1230,18 @@ msgstr "Não foi possível salvar o caminho reorganizado do artefato."
 
 msgid "The requested execution profile does not exist."
 msgstr "O perfil de execução solicitado não existe."
+
+msgid "The runtime key cannot change after the core is used by an execution profile."
+msgstr "A chave de runtime não pode mudar depois que o núcleo é usado por um perfil de execução."
+
+msgid "The selected ROM has no stored file. Import the original ROM file again before creating the profile."
+msgstr "A ROM selecionada não possui arquivo armazenado. Importe novamente o arquivo original antes de criar o perfil."
+
+msgid "The selected artifact is not a core."
+msgstr "O artefato selecionado não é um núcleo."
+
+msgid "The selected core has no runtime key. Import a core with the correct runtime key before creating the profile."
+msgstr "O núcleo selecionado não possui chave de runtime. Importe um núcleo com a chave correta antes de criar o perfil."
 
 msgid "The signed update manifest is unavailable."
 msgstr "O manifesto de atualização assinado está indisponível."

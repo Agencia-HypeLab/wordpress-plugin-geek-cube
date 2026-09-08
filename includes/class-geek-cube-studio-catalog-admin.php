@@ -46,6 +46,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		add_action( 'geek_cube_studio_cleanup_artifact_draft', array( $this, 'cleanup_expired_artifact_draft' ) );
 		add_action( 'admin_post_geek_cube_create_artifact', array( $this, 'create_artifact' ) );
 		add_action( 'admin_post_geek_cube_update_artifact_name', array( $this, 'update_artifact_name' ) );
+		add_action( 'admin_post_geek_cube_update_core_runtime_key', array( $this, 'update_core_runtime_key' ) );
 		add_action( 'admin_post_geek_cube_artifact_status', array( $this, 'update_artifact_status' ) );
 		add_action( 'admin_post_geek_cube_create_profile', array( $this, 'create_profile' ) );
 		add_action( 'admin_post_geek_cube_record_test', array( $this, 'record_test' ) );
@@ -187,10 +188,12 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	/** Render profiles screen. */
 	public function render_profiles() {
 		$this->authorize();
-		$schema_ready = $this->schema_ready();
-		$games        = $schema_ready ? Geek_Cube_Studio_Repository::get_games() : array();
-		$artifacts    = $schema_ready ? Geek_Cube_Studio_Repository::get_artifacts() : array();
-		$profiles     = $schema_ready ? Geek_Cube_Studio_Repository::get_profiles() : array();
+		$schema_ready  = $this->schema_ready();
+		$games         = $schema_ready ? Geek_Cube_Studio_Repository::get_games() : array();
+		$artifacts     = $schema_ready ? Geek_Cube_Studio_Repository::get_artifacts() : array();
+		$profiles      = $schema_ready ? Geek_Cube_Studio_Repository::get_profiles() : array();
+		$profile_draft = $schema_ready ? get_transient( self::profile_draft_key( get_current_user_id() ) ) : array();
+		$profile_draft = is_array( $profile_draft ) ? $profile_draft : array();
 		require GEEK_CUBE_STUDIO_PLUGIN_DIR . 'views/admin/profiles.php';
 	}
 
@@ -358,11 +361,29 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Artifact name updated.', 'geek-cube-studio' ), array( 'artifact_type' => $artifact_type ) );
 	}
 
+	/** Update a core's logical emulator runtime binding. */
+	public function update_core_runtime_key() {
+		$this->authorize_action();
+		check_admin_referer( 'geek_cube_update_core_runtime_key' );
+		$artifact_id   = isset( $_POST['artifact_id'] ) ? absint( wp_unslash( $_POST['artifact_id'] ) ) : 0;
+		$runtime_key   = isset( $_POST['runtime_key'] ) ? wp_unslash( $_POST['runtime_key'] ) : '';
+		$runtime_key   = is_scalar( $runtime_key ) ? sanitize_key( (string) $runtime_key ) : '';
+		$artifact_type = self::resolve_artifact_type( $_POST );
+		$result        = Geek_Cube_Studio_Repository::update_core_runtime_key( $artifact_id, $runtime_key );
+		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Core runtime key updated.', 'geek-cube-studio' ), array( 'artifact_type' => $artifact_type ) );
+	}
+
 	/** Handle execution profile creation. */
 	public function create_profile() {
 		$this->authorize_action();
 		check_admin_referer( 'geek_cube_create_profile' );
-		$result = Geek_Cube_Studio_Repository::create_profile( wp_unslash( $_POST ) );
+		$data   = wp_unslash( $_POST );
+		$result = Geek_Cube_Studio_Repository::create_profile( $data );
+		if ( is_wp_error( $result ) ) {
+			set_transient( self::profile_draft_key( get_current_user_id() ), self::profile_draft_values( $data ), 15 * MINUTE_IN_SECONDS );
+		} else {
+			delete_transient( self::profile_draft_key( get_current_user_id() ) );
+		}
 		$this->finish( 'geek-cube-studio-profiles', $result, __( 'Immutable execution profile created.', 'geek-cube-studio' ) );
 	}
 
@@ -504,6 +525,35 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	 */
 	private static function artifact_draft_key( $token ) {
 		return 'geek_cube_studio_artifact_draft_' . sanitize_text_field( (string) $token );
+	}
+
+	/**
+	 * Return the per-administrator transient key for an invalid profile form.
+	 *
+	 * @param int $user_id WordPress user ID.
+	 * @return string
+	 */
+	private static function profile_draft_key( $user_id ) {
+		return 'geek_cube_studio_profile_draft_' . absint( $user_id );
+	}
+
+	/**
+	 * Keep only scalar profile form values for a short retry window.
+	 *
+	 * @param array<string,mixed> $data Submitted profile data.
+	 * @return array<string,string>
+	 */
+	private static function profile_draft_values( array $data ) {
+		$values = array();
+		$keys   = array( 'name', 'slug', 'game_id', 'player_artifact_id', 'core_artifact_id', 'rom_artifact_id', 'bios_artifact_id', 'config_artifact_id', 'controls_artifact_id' );
+
+		foreach ( $keys as $key ) {
+			if ( isset( $data[ $key ] ) && is_scalar( $data[ $key ] ) ) {
+				$values[ $key ] = sanitize_text_field( (string) $data[ $key ] );
+			}
+		}
+
+		return $values;
 	}
 
 	/**

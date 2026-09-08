@@ -15,6 +15,7 @@ foreach ( $artifacts as $artifact ) {
 		$by_type[ $artifact['type'] ][] = $artifact;
 	}
 }
+$profile_draft = isset( $profile_draft ) && is_array( $profile_draft ) ? $profile_draft : array();
 ?>
 <div class="wrap geek-cube-admin">
 	<header class="geek-cube-admin__header"><div><p class="geek-cube-admin__eyebrow"><?php esc_html_e( 'Frozen combinations', 'geek-cube-studio' ); ?></p><h1><?php esc_html_e( 'Execution profiles', 'geek-cube-studio' ); ?></h1><p><?php esc_html_e( 'A profile permanently binds one game to exact player, core, ROM and optional BIOS versions.', 'geek-cube-studio' ); ?></p></div><span class="geek-cube-admin__version"><?php echo esc_html( GEEK_CUBE_STUDIO_VERSION ); ?></span></header>
@@ -27,13 +28,13 @@ foreach ( $artifacts as $artifact ) {
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Freeze a test combination', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Only verified artifacts are offered. NES does not require a BIOS.', 'geek-cube-studio' ); ?></p></div></div>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
 					<input type="hidden" name="action" value="geek_cube_create_profile"><?php wp_nonce_field( 'geek_cube_create_profile' ); ?>
-					<label><span><?php esc_html_e( 'Profile name', 'geek-cube-studio' ); ?></span><input type="text" name="name" placeholder="Falling · EJS 4.2.3 · FCEUmm" data-geek-cube-slug-source required></label>
-					<label><span><?php esc_html_e( 'Profile slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" data-geek-cube-slug-target readonly></label>
+					<label><span><?php esc_html_e( 'Profile name', 'geek-cube-studio' ); ?></span><input type="text" name="name" value="<?php echo esc_attr( $profile_draft['name'] ?? '' ); ?>" placeholder="Falling · EJS 4.2.3 · FCEUmm" data-geek-cube-slug-source required></label>
+					<label><span><?php esc_html_e( 'Profile slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" value="<?php echo esc_attr( $profile_draft['slug'] ?? '' ); ?>" data-geek-cube-slug-target readonly></label>
 					<label class="is-wide"><span><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></span><select name="game_id" required><option value=""><?php esc_html_e( 'Select', 'geek-cube-studio' ); ?></option>
 					<?php
 					foreach ( $games as $game ) :
 						?>
-						<option value="<?php echo esc_attr( $game['id'] ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) . ' · ' . strtoupper( $game['platform'] ) ); ?></option><?php endforeach; ?></select></label>
+						<option value="<?php echo esc_attr( $game['id'] ); ?>"<?php selected( $profile_draft['game_id'] ?? '', $game['id'] ); ?>><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) . ' · ' . strtoupper( $game['platform'] ) ); ?></option><?php endforeach; ?></select></label>
 				<?php
 				$roles = array(
 					'player'   => __( 'Player package', 'geek-cube-studio' ),
@@ -50,7 +51,7 @@ foreach ( $artifacts as $artifact ) {
 					<?php
 					foreach ( $by_type[ $artifact_role ] as $artifact ) :
 						?>
-						<option value="<?php echo esc_attr( $artifact['id'] ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::artifact_title( $artifact ) ); ?></option><?php endforeach; ?></select></label>
+						<option value="<?php echo esc_attr( $artifact['id'] ); ?>"<?php selected( $profile_draft[ $artifact_role . '_artifact_id' ] ?? '', $artifact['id'] ); ?>><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::artifact_title( $artifact ) ); ?></option><?php endforeach; ?></select></label>
 				<?php endforeach; ?>
 					<div class="is-wide"><?php submit_button( __( 'Create immutable profile', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
 				</form>

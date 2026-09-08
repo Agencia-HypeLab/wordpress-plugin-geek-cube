@@ -382,8 +382,11 @@ final class Geek_Cube_Studio_Repository {
 			return new WP_Error( 'geek_cube_profile_player_invalid', __( 'The player package has no validated loader entrypoint.', 'geek-cube-studio' ) );
 		}
 
-		if ( '' === $artifacts['core']['runtime_key'] || '' === $artifacts['rom']['relative_path'] ) {
-			return new WP_Error( 'geek_cube_profile_runtime_invalid', __( 'The core runtime key and ROM file are required.', 'geek-cube-studio' ) );
+		if ( '' === $artifacts['core']['runtime_key'] ) {
+			return new WP_Error( 'geek_cube_profile_runtime_invalid', __( 'The selected core has no runtime key. Import a core with the correct runtime key before creating the profile.', 'geek-cube-studio' ) );
+		}
+		if ( '' === $artifacts['rom']['relative_path'] ) {
+			return new WP_Error( 'geek_cube_profile_rom_file_missing', __( 'The selected ROM has no stored file. Import the original ROM file again before creating the profile.', 'geek-cube-studio' ) );
 		}
 
 		return true;
@@ -481,6 +484,42 @@ final class Geek_Cube_Studio_Repository {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Correct the runtime binding metadata of a logical core artifact.
+	 *
+	 * @param int    $artifact_id Artifact ID.
+	 * @param string $runtime_key Emulator runtime key.
+	 * @return true|WP_Error
+	 */
+	public static function update_core_runtime_key( $artifact_id, $runtime_key ) {
+		global $wpdb;
+
+		$artifact    = self::get_artifact( $artifact_id );
+		$runtime_key = sanitize_key( (string) $runtime_key );
+		if ( ! $artifact || 'core' !== $artifact['type'] ) {
+			return new WP_Error( 'geek_cube_core_missing', __( 'The selected artifact is not a core.', 'geek-cube-studio' ) );
+		}
+		if ( '' === $runtime_key ) {
+			return new WP_Error( 'geek_cube_core_runtime_invalid', __( 'Enter a valid core runtime key.', 'geek-cube-studio' ) );
+		}
+		if ( self::core_has_profiles( $artifact['id'] ) ) {
+			return new WP_Error( 'geek_cube_core_runtime_locked', __( 'The runtime key cannot change after the core is used by an execution profile.', 'geek-cube-studio' ) );
+		}
+
+		$updated = $wpdb->update(
+			Geek_Cube_Studio_Schema::table( 'artifacts' ),
+			array(
+				'runtime_key' => $runtime_key,
+				'updated_at'  => current_time( 'mysql', true ),
+			),
+			array( 'id' => (int) $artifact['id'] ),
+			array( '%s', '%s' ),
+			array( '%d' )
+		);
+
+		return false === $updated ? new WP_Error( 'geek_cube_core_runtime_update_failed', self::database_error( __( 'The core runtime key could not be updated.', 'geek-cube-studio' ) ) ) : true;
 	}
 
 	/**
@@ -814,6 +853,22 @@ final class Geek_Cube_Studio_Repository {
 
 		$table = Geek_Cube_Studio_Schema::table( 'profiles' );
 		$sql   = $wpdb->prepare( 'SELECT id FROM %i WHERE game_id = %d LIMIT 1', $table, absint( $game_id ) );
+		$id    = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared custom-table existence check.
+
+		return null !== $id;
+	}
+
+	/**
+	 * Determine whether a core is already bound by an execution profile.
+	 *
+	 * @param int $artifact_id Core artifact ID.
+	 * @return bool
+	 */
+	private static function core_has_profiles( $artifact_id ) {
+		global $wpdb;
+
+		$table = Geek_Cube_Studio_Schema::table( 'profiles' );
+		$sql   = $wpdb->prepare( 'SELECT id FROM %i WHERE core_artifact_id = %d LIMIT 1', $table, absint( $artifact_id ) );
 		$id    = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared custom-table existence check.
 
 		return null !== $id;
