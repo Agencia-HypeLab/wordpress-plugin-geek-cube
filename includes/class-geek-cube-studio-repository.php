@@ -59,8 +59,12 @@ final class Geek_Cube_Studio_Repository {
 			return new WP_Error( 'geek_cube_platform_invalid', __( 'Select a supported game platform.', 'geek-cube-studio' ) );
 		}
 
-		$language     = isset( $data['language'] ) && is_scalar( $data['language'] ) ? sanitize_key( (string) $data['language'] ) : 'default';
-		$language     = '' !== $language ? $language : 'default';
+		$language            = isset( $data['language'] ) && is_scalar( $data['language'] ) ? sanitize_key( (string) $data['language'] ) : 'default';
+		$language            = '' !== $language ? $language : 'default';
+		$cover_attachment_id = isset( $data['cover_attachment_id'] ) ? absint( $data['cover_attachment_id'] ) : 0;
+		if ( $cover_attachment_id && ! wp_attachment_is_image( $cover_attachment_id ) ) {
+			return new WP_Error( 'geek_cube_game_cover_invalid', __( 'Select a valid image from the Media Library.', 'geek-cube-studio' ) );
+		}
 		$descriptions = array( $language => isset( $data['description'] ) ? wp_kses_post( $data['description'] ) : '' );
 		$titles       = array( $language => $title );
 		$now          = current_time( 'mysql', true );
@@ -74,7 +78,7 @@ final class Geek_Cube_Studio_Repository {
 				'status'                => 'draft',
 				'titles'                => wp_json_encode( $titles ),
 				'descriptions'          => wp_json_encode( $descriptions ),
-				'cover_attachment_id'   => isset( $data['cover_attachment_id'] ) ? absint( $data['cover_attachment_id'] ) : 0,
+				'cover_attachment_id'   => $cover_attachment_id,
 				'source_url'            => isset( $data['source_url'] ) ? esc_url_raw( $data['source_url'] ) : '',
 				'rights_notes'          => isset( $data['rights_notes'] ) ? sanitize_textarea_field( $data['rights_notes'] ) : '',
 				'production_profile_id' => 0,
@@ -124,8 +128,12 @@ final class Geek_Cube_Studio_Repository {
 			return new WP_Error( 'geek_cube_game_platform_locked', __( 'The platform cannot change after a game has execution profiles.', 'geek-cube-studio' ) );
 		}
 
-		$language                  = isset( $data['language'] ) && is_scalar( $data['language'] ) ? sanitize_key( (string) $data['language'] ) : 'default';
-		$language                  = '' !== $language ? $language : 'default';
+		$language            = isset( $data['language'] ) && is_scalar( $data['language'] ) ? sanitize_key( (string) $data['language'] ) : 'default';
+		$language            = '' !== $language ? $language : 'default';
+		$cover_attachment_id = isset( $data['cover_attachment_id'] ) ? absint( $data['cover_attachment_id'] ) : (int) $game['cover_attachment_id'];
+		if ( $cover_attachment_id && ! wp_attachment_is_image( $cover_attachment_id ) ) {
+			return new WP_Error( 'geek_cube_game_cover_invalid', __( 'Select a valid image from the Media Library.', 'geek-cube-studio' ) );
+		}
 		$titles                    = json_decode( $game['titles'], true );
 		$descriptions              = json_decode( $game['descriptions'], true );
 		$titles                    = is_array( $titles ) ? $titles : array();
@@ -136,16 +144,17 @@ final class Geek_Cube_Studio_Repository {
 		$updated = $wpdb->update(
 			Geek_Cube_Studio_Schema::table( 'games' ),
 			array(
-				'slug'         => $slug,
-				'platform'     => $platform,
-				'titles'       => wp_json_encode( $titles ),
-				'descriptions' => wp_json_encode( $descriptions ),
-				'source_url'   => isset( $data['source_url'] ) ? esc_url_raw( $data['source_url'] ) : '',
-				'rights_notes' => isset( $data['rights_notes'] ) ? sanitize_textarea_field( $data['rights_notes'] ) : '',
-				'updated_at'   => current_time( 'mysql', true ),
+				'slug'                => $slug,
+				'platform'            => $platform,
+				'titles'              => wp_json_encode( $titles ),
+				'descriptions'        => wp_json_encode( $descriptions ),
+				'cover_attachment_id' => $cover_attachment_id,
+				'source_url'          => $game['source_url'],
+				'rights_notes'        => $game['rights_notes'],
+				'updated_at'          => current_time( 'mysql', true ),
 			),
 			array( 'id' => (int) $game['id'] ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 

@@ -32,6 +32,41 @@ final class Geek_Cube_Studio_Player {
 		add_action( 'init', array( __CLASS__, 'maybe_flush_rewrite_rules' ), 10 );
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'dispatch' ) );
+		add_shortcode( 'geek_cube_game', array( __CLASS__, 'render_game_shortcode' ) );
+	}
+
+	/**
+	 * Embed a published game player inside regular WordPress page content.
+	 *
+	 * @param array<string,mixed>|string $attributes Shortcode attributes.
+	 * @return string
+	 */
+	public static function render_game_shortcode( $attributes ) {
+		$attributes = shortcode_atts(
+			array(
+				'slug'   => '',
+				'height' => '640',
+			),
+			$attributes,
+			'geek_cube_game'
+		);
+		$slug       = sanitize_title( $attributes['slug'] );
+		$height     = max( 320, min( 1080, absint( $attributes['height'] ) ) );
+		$game       = '' !== $slug ? Geek_Cube_Studio_Repository::get_game_by_slug( $slug ) : null;
+
+		if ( ! $game || 'published' !== $game['status'] || ! $game['production_profile_id'] ) {
+			return '';
+		}
+
+		$url   = Geek_Cube_Studio_URLs::build( 'play', $game['slug'] );
+		$title = Geek_Cube_Studio_Repository::translated_value( $game['titles'] );
+
+		return sprintf(
+			'<div class="geek-cube-game-embed"><iframe src="%1$s" title="%2$s" loading="lazy" allow="fullscreen" style="width:100%%;height:%3$dpx;border:0" allowfullscreen></iframe></div>',
+			esc_url( $url ),
+			esc_attr( $title ),
+			$height
+		);
 	}
 
 	/**

@@ -95,6 +95,8 @@ class Geek_Cube_Studio_Admin {
 			return;
 		}
 
+		wp_enqueue_media();
+
 		$style_path  = GEEK_CUBE_STUDIO_PLUGIN_DIR . 'assets/css/admin.css';
 		$script_path = GEEK_CUBE_STUDIO_PLUGIN_DIR . 'assets/js/admin-settings.js';
 

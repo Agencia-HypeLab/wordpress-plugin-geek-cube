@@ -262,6 +262,9 @@ msgstr "Chave de runtime do núcleo"
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr "Artefatos de núcleo, ROM e BIOS exigem uma plataforma compatível."
 
+msgid "Cover image"
+msgstr "Imagem de capa"
+
 msgid "Create a draft game automatically from this ROM"
 msgstr "Criar automaticamente um jogo em rascunho a partir desta ROM"
 
@@ -411,6 +414,9 @@ msgstr "Jogo cadastrado."
 
 msgid "Game registration"
 msgstr "Cadastro do jogo"
+
+msgid "Game saved. Add this shortcode to a page: %s"
+msgstr "Jogo salvo. Adicione este shortcode a uma página: %s"
 
 msgid "Game saves"
 msgstr "Saves do jogo"
@@ -811,6 +817,9 @@ msgstr "Publicar jogo"
 msgid "Published"
 msgstr "Publicado"
 
+msgid "Published with production profile #%d."
+msgstr "Publicado com o perfil de produção #%d."
+
 msgid "ROM"
 msgstr "ROM"
 
@@ -859,6 +868,9 @@ msgstr "Tipo de release"
 msgid "Reload saved state"
 msgstr "Recarregar estado salvo"
 
+msgid "Remove image"
+msgstr "Remover imagem"
+
 msgid "Repeatable evidence"
 msgstr "Evidência repetível"
 
@@ -900,9 +912,6 @@ msgstr "Direitos"
 
 msgid "Rights and attribution notes"
 msgstr "Notas de direitos e atribuição"
-
-msgid "Rights notes"
-msgstr "Notas de direitos"
 
 msgid "Rollout"
 msgstr "Distribuição"
@@ -973,11 +982,17 @@ msgstr "Selecione um perfil"
 msgid "Select a supported game platform."
 msgstr "Selecione uma plataforma de jogo compatível."
 
+msgid "Select a valid image from the Media Library."
+msgstr "Selecione uma imagem válida na Biblioteca de Mídia."
+
 msgid "Select an approved profile"
 msgstr "Selecionar um perfil aprovado"
 
 msgid "Select an existing game."
 msgstr "Selecione um jogo existente."
+
+msgid "Select cover image"
+msgstr "Selecionar imagem de capa"
 
 msgid "Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint."
 msgstr "Envie o ZIP oficial auto-hospedado. O importador o extrai com segurança e exige um ponto de entrada data/loader.js."

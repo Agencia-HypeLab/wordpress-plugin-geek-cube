@@ -257,6 +257,9 @@ msgstr ""
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr ""
 
+msgid "Cover image"
+msgstr ""
+
 msgid "Create a draft game automatically from this ROM"
 msgstr ""
 
@@ -405,6 +408,9 @@ msgid "Game registered."
 msgstr ""
 
 msgid "Game registration"
+msgstr ""
+
+msgid "Game saved. Add this shortcode to a page: %s"
 msgstr ""
 
 msgid "Game saves"
@@ -806,6 +812,9 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
+msgid "Published with production profile #%d."
+msgstr ""
+
 msgid "ROM"
 msgstr ""
 
@@ -854,6 +863,9 @@ msgstr ""
 msgid "Reload saved state"
 msgstr ""
 
+msgid "Remove image"
+msgstr ""
+
 msgid "Repeatable evidence"
 msgstr ""
 
@@ -894,9 +906,6 @@ msgid "Rights"
 msgstr ""
 
 msgid "Rights and attribution notes"
-msgstr ""
-
-msgid "Rights notes"
 msgstr ""
 
 msgid "Rollout"
@@ -968,10 +977,16 @@ msgstr ""
 msgid "Select a supported game platform."
 msgstr ""
 
+msgid "Select a valid image from the Media Library."
+msgstr ""
+
 msgid "Select an approved profile"
 msgstr ""
 
 msgid "Select an existing game."
+msgstr ""
+
+msgid "Select cover image"
 msgstr ""
 
 msgid "Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint."

@@ -136,6 +136,58 @@
 		}
 	}
 
+	document.querySelectorAll( '[data-geek-cube-media-picker]' ).forEach( ( picker ) => {
+		const input = picker.querySelector( 'input[name="cover_attachment_id"]' );
+		const preview = picker.querySelector( '[data-geek-cube-media-preview]' );
+		const select = picker.querySelector( '[data-geek-cube-media-select]' );
+		const remove = picker.querySelector( '[data-geek-cube-media-remove]' );
+
+		const clear = () => {
+			if ( input ) {
+				input.value = '';
+			}
+			if ( preview ) {
+				preview.removeAttribute( 'src' );
+				preview.hidden = true;
+			}
+			if ( remove ) {
+				remove.hidden = true;
+			}
+		};
+
+		if ( select && window.wp && window.wp.media ) {
+			select.addEventListener( 'click', () => {
+				const frame = window.wp.media( {
+					title: select.textContent.trim(),
+					button: { text: select.textContent.trim() },
+					library: { type: 'image' },
+					multiple: false,
+				} );
+				frame.on( 'select', () => {
+					const attachment = frame.state().get( 'selection' ).first().toJSON();
+					if ( ! attachment || ! attachment.id ) {
+						return;
+					}
+
+					if ( input ) {
+						input.value = attachment.id;
+					}
+					if ( preview ) {
+						preview.src = attachment.url || '';
+						preview.hidden = ! attachment.url;
+					}
+					if ( remove ) {
+						remove.hidden = false;
+					}
+				} );
+				frame.open();
+			} );
+		}
+		if ( remove ) {
+			remove.addEventListener( 'click', clear );
+		}
+	} );
+
 	const testForm = document.querySelector( '[data-geek-cube-test-form]' );
 	if ( testForm ) {
 		const labFrame = document.querySelector( '[data-geek-cube-lab-frame]' );

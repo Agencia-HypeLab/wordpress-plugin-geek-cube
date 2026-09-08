@@ -33,8 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<option value="<?php echo esc_attr( $platform ); ?>"><?php echo esc_html( strtoupper( $platform ) ); ?></option><?php endforeach; ?></select></label>
 					<label><span><?php esc_html_e( 'Initial language', 'geek-cube-studio' ); ?></span><input type="text" name="language" value="default" required></label>
 					<label class="is-wide"><span><?php esc_html_e( 'Description', 'geek-cube-studio' ); ?></span><textarea name="description" rows="3"></textarea></label>
-					<label class="is-wide"><span><?php esc_html_e( 'Authoritative source URL', 'geek-cube-studio' ); ?></span><input type="url" name="source_url"></label>
-					<label class="is-wide"><span><?php esc_html_e( 'Rights notes', 'geek-cube-studio' ); ?></span><textarea name="rights_notes" rows="3" required></textarea></label>
+					<label class="is-wide"><span><?php esc_html_e( 'Cover image', 'geek-cube-studio' ); ?></span><div class="geek-cube-media-picker" data-geek-cube-media-picker><input type="hidden" name="cover_attachment_id" value=""><img data-geek-cube-media-preview hidden alt=""><div><button type="button" class="button" data-geek-cube-media-select><?php esc_html_e( 'Select cover image', 'geek-cube-studio' ); ?></button><button type="button" class="button-link-delete" data-geek-cube-media-remove hidden><?php esc_html_e( 'Remove image', 'geek-cube-studio' ); ?></button></div></div></label>
 					<div class="is-wide"><?php submit_button( __( 'Register game', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
 				</form>
 			</section>
@@ -53,6 +52,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					$candidates   = isset( $production_candidates[ (int) $game['id'] ] ) ? $production_candidates[ (int) $game['id'] ] : array();
 					$game_title   = Geek_Cube_Studio_Catalog_Admin::game_title( $game );
 					$description  = Geek_Cube_Studio_Repository::translated_value( $game['descriptions'] );
+					$cover_id     = absint( $game['cover_attachment_id'] );
+					$cover_url    = $cover_id ? wp_get_attachment_image_url( $cover_id, 'medium' ) : '';
 					?>
 					<tr class="geek-cube-game-edit-row"><td colspan="6">
 						<details class="geek-cube-game-edit">
@@ -68,8 +69,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<option value="<?php echo esc_attr( $platform ); ?>"<?php selected( $game['platform'], $platform ); ?>><?php echo esc_html( strtoupper( $platform ) ); ?></option>
 								<?php endforeach; ?></select><small><?php esc_html_e( 'The platform cannot change after a profile is created.', 'geek-cube-studio' ); ?></small></label>
 								<label class="is-wide"><span><?php esc_html_e( 'Description', 'geek-cube-studio' ); ?></span><textarea name="description" rows="3"><?php echo esc_textarea( $description ); ?></textarea></label>
-								<label class="is-wide"><span><?php esc_html_e( 'Authoritative source URL', 'geek-cube-studio' ); ?></span><input type="url" name="source_url" value="<?php echo esc_attr( $game['source_url'] ); ?>"></label>
-								<label class="is-wide"><span><?php esc_html_e( 'Rights notes', 'geek-cube-studio' ); ?></span><textarea name="rights_notes" rows="3"><?php echo esc_textarea( $game['rights_notes'] ); ?></textarea></label>
+								<label class="is-wide"><span><?php esc_html_e( 'Cover image', 'geek-cube-studio' ); ?></span><div class="geek-cube-media-picker" data-geek-cube-media-picker><input type="hidden" name="cover_attachment_id" value="<?php echo esc_attr( $cover_id ); ?>"><img data-geek-cube-media-preview src="<?php echo esc_url( $cover_url ); ?>" alt=""<?php echo $cover_url ? '' : ' hidden'; ?>><div><button type="button" class="button" data-geek-cube-media-select><?php esc_html_e( 'Select cover image', 'geek-cube-studio' ); ?></button><button type="button" class="button-link-delete" data-geek-cube-media-remove<?php echo $cover_url ? '' : ' hidden'; ?>><?php esc_html_e( 'Remove image', 'geek-cube-studio' ); ?></button></div></div></label>
 								<div class="is-wide"><button class="button button-primary"><?php esc_html_e( 'Save game', 'geek-cube-studio' ); ?></button></div>
 							</form>
 						</details>
@@ -89,7 +89,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</td>
 						<td>
 							<?php if ( empty( $candidates ) ) : ?>
-								<small><?php esc_html_e( 'No approved test profile is available.', 'geek-cube-studio' ); ?></small>
+								<?php if ( $is_published ) : ?>
+									<small><?php echo esc_html( sprintf( /* translators: %d: active production profile ID. */ __( 'Published with production profile #%d.', 'geek-cube-studio' ), $game['production_profile_id'] ) ); ?></small>
+								<?php else : ?>
+									<small><?php esc_html_e( 'No approved test profile is available.', 'geek-cube-studio' ); ?></small>
+								<?php endif; ?>
 							<?php else : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-inline-form geek-cube-publication-form">
 									<input type="hidden" name="action" value="geek_cube_promote_profile">
