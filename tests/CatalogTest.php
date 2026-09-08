@@ -44,6 +44,7 @@ final class CatalogTest extends TestCase {
 		$this->assertArrayNotHasKey( 'all', Geek_Cube_Studio_Catalog_Admin::artifact_tabs() );
 		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array() ) );
 		$this->assertSame( 'rom', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'rom' ) ) );
+		$this->assertSame( 'rom', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'type' => 'rom' ) ) );
 		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => 'unknown' ) ) );
 		$this->assertSame( 'player', Geek_Cube_Studio_Catalog_Admin::resolve_artifact_type( array( 'artifact_type' => array( 'rom' ) ) ) );
 		$this->assertSame( 'Pending', Geek_Cube_Studio_Catalog_Admin::status_label( 'pending' ) );

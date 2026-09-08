@@ -123,8 +123,9 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	 * @return string
 	 */
 	public static function resolve_artifact_type( $request ) {
-		$value = is_array( $request ) && isset( $request['artifact_type'] ) && is_scalar( $request['artifact_type'] )
-			? sanitize_key( (string) $request['artifact_type'] )
+		$raw   = is_array( $request ) && isset( $request['artifact_type'] ) ? $request['artifact_type'] : ( is_array( $request ) && isset( $request['type'] ) ? $request['type'] : '' );
+		$value = is_scalar( $raw )
+			? sanitize_key( (string) $raw )
 			: 'player';
 
 		return isset( self::artifact_tabs()[ $value ] ) ? $value : 'player';
