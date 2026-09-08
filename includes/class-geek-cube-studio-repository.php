@@ -91,6 +91,68 @@ final class Geek_Cube_Studio_Repository {
 	}
 
 	/**
+	 * Update the mutable catalog metadata of one game.
+	 *
+	 * @param int                 $game_id Game ID.
+	 * @param array<string,mixed> $data Updated metadata.
+	 * @return true|WP_Error
+	 */
+	public static function update_game( $game_id, array $data ) {
+		global $wpdb;
+
+		$game = self::get_game( $game_id );
+		if ( ! $game ) {
+			return new WP_Error( 'geek_cube_game_missing', __( 'The game could not be found.', 'geek-cube-studio' ) );
+		}
+
+		$title = isset( $data['title'] ) && is_scalar( $data['title'] ) ? sanitize_text_field( $data['title'] ) : '';
+		$slug  = isset( $data['slug'] ) && is_scalar( $data['slug'] ) ? sanitize_title( $data['slug'] ) : sanitize_title( $title );
+		if ( '' === $title || '' === $slug || 'laboratorio' === $slug ) {
+			return new WP_Error( 'geek_cube_game_invalid', __( 'Enter a valid title and a non-reserved game slug.', 'geek-cube-studio' ) );
+		}
+
+		$slug_match = self::get_game_by_slug( $slug );
+		if ( $slug_match && (int) $slug_match['id'] !== (int) $game['id'] ) {
+			return new WP_Error( 'geek_cube_game_slug_exists', __( 'Another game already uses this canonical slug.', 'geek-cube-studio' ) );
+		}
+
+		$platform = self::platform( isset( $data['platform'] ) ? $data['platform'] : '' );
+		if ( '' === $platform ) {
+			return new WP_Error( 'geek_cube_platform_invalid', __( 'Select a supported game platform.', 'geek-cube-studio' ) );
+		}
+		if ( $platform !== $game['platform'] && self::game_has_profiles( $game['id'] ) ) {
+			return new WP_Error( 'geek_cube_game_platform_locked', __( 'The platform cannot change after a game has execution profiles.', 'geek-cube-studio' ) );
+		}
+
+		$language                  = isset( $data['language'] ) && is_scalar( $data['language'] ) ? sanitize_key( (string) $data['language'] ) : 'default';
+		$language                  = '' !== $language ? $language : 'default';
+		$titles                    = json_decode( $game['titles'], true );
+		$descriptions              = json_decode( $game['descriptions'], true );
+		$titles                    = is_array( $titles ) ? $titles : array();
+		$descriptions              = is_array( $descriptions ) ? $descriptions : array();
+		$titles[ $language ]       = $title;
+		$descriptions[ $language ] = isset( $data['description'] ) && is_scalar( $data['description'] ) ? wp_kses_post( $data['description'] ) : '';
+
+		$updated = $wpdb->update(
+			Geek_Cube_Studio_Schema::table( 'games' ),
+			array(
+				'slug'         => $slug,
+				'platform'     => $platform,
+				'titles'       => wp_json_encode( $titles ),
+				'descriptions' => wp_json_encode( $descriptions ),
+				'source_url'   => isset( $data['source_url'] ) ? esc_url_raw( $data['source_url'] ) : '',
+				'rights_notes' => isset( $data['rights_notes'] ) ? sanitize_textarea_field( $data['rights_notes'] ) : '',
+				'updated_at'   => current_time( 'mysql', true ),
+			),
+			array( 'id' => (int) $game['id'] ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d' )
+		);
+
+		return false === $updated ? new WP_Error( 'geek_cube_game_update_failed', self::database_error( __( 'The game could not be updated.', 'geek-cube-studio' ) ) ) : true;
+	}
+
+	/**
 	 * Create one immutable artifact version.
 	 *
 	 * @param array<string,mixed> $data Validated artifact data.
@@ -731,6 +793,22 @@ final class Geek_Cube_Studio_Repository {
 		);
 
 		return false === $updated ? new WP_Error( 'geek_cube_profile_status_failed', self::database_error( __( 'Profile status could not be updated.', 'geek-cube-studio' ) ) ) : true;
+	}
+
+	/**
+	 * Determine whether a game is already bound by an execution profile.
+	 *
+	 * @param int $game_id Game ID.
+	 * @return bool
+	 */
+	private static function game_has_profiles( $game_id ) {
+		global $wpdb;
+
+		$table = Geek_Cube_Studio_Schema::table( 'profiles' );
+		$sql   = $wpdb->prepare( 'SELECT id FROM %i WHERE game_id = %d LIMIT 1', $table, absint( $game_id ) );
+		$id    = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared custom-table existence check.
+
+		return null !== $id;
 	}
 
 	/**

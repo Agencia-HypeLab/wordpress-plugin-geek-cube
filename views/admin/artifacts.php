@@ -53,6 +53,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<p><?php echo esc_html( sprintf( /* translators: %s: ROM header revision. */ __( 'Detected header revision: %s', 'geek-cube-studio' ), $artifact_draft['analysis']['header_revision'] ) ); ?></p>
 						<?php endif; ?></div>
 						<label><span><?php esc_html_e( 'Name', 'geek-cube-studio' ); ?></span><input type="text" name="name" value="<?php echo esc_attr( $artifact_draft['name'] ); ?>" required></label>
+						<?php if ( 'rom' === $artifact_type ) : ?>
+							<fieldset class="is-wide geek-cube-callout geek-cube-auto-game"><legend><?php esc_html_e( 'Game registration', 'geek-cube-studio' ); ?></legend><label><input type="checkbox" name="create_draft_game" value="1" checked> <?php esc_html_e( 'Create a draft game automatically from this ROM', 'geek-cube-studio' ); ?></label><p><?php esc_html_e( 'The game will use this ROM name, normalized canonical slug and detected platform. You can edit it before creating a test profile.', 'geek-cube-studio' ); ?></p></fieldset>
+						<?php endif; ?>
 						<label><span><?php esc_html_e( 'Version', 'geek-cube-studio' ); ?></span><input type="text" name="version" value="<?php echo esc_attr( $artifact_draft['version'] ); ?>" required></label>
 						<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><?php if ( $platform_locked ) : ?>
 							<input type="hidden" name="platform" value="<?php echo esc_attr( $artifact_draft['platform'] ); ?>">

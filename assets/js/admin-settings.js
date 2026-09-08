@@ -76,7 +76,8 @@
 		.normalize( 'NFD' )
 		.replace( /[\u0300-\u036f]/g, '' )
 		.toLowerCase()
-		.replace( /[^a-z0-9]+/g, '-' )
+		.replace( /[^a-z0-9-]+/g, '-' )
+		.replace( /-+/g, '-' )
 		.replace( /^-+|-+$/g, '' );
 
 	document.querySelectorAll( '[data-geek-cube-slug]' ).forEach( ( input ) => {

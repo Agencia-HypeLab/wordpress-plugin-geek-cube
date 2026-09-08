@@ -86,6 +86,9 @@ msgstr ""
 msgid "Another artifact file already uses the generated name."
 msgstr ""
 
+msgid "Another game already uses this canonical slug."
+msgstr ""
+
 msgid "Any / not applicable"
 msgstr ""
 
@@ -254,6 +257,9 @@ msgstr ""
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr ""
 
+msgid "Create a draft game automatically from this ROM"
+msgstr ""
+
 msgid "Create immutable profile"
 msgstr ""
 
@@ -309,6 +315,9 @@ msgid "Each Geek Cube route must use a different slug within the same language."
 msgstr ""
 
 msgid "Ed25519 signature"
+msgstr ""
+
+msgid "Edit game"
 msgstr ""
 
 msgid "Edit name"
@@ -395,7 +404,13 @@ msgstr ""
 msgid "Game registered."
 msgstr ""
 
+msgid "Game registration"
+msgstr ""
+
 msgid "Game saves"
+msgstr ""
+
+msgid "Game updated."
 msgstr ""
 
 msgid "Gamepad controls"
@@ -794,6 +809,15 @@ msgstr ""
 msgid "ROM"
 msgstr ""
 
+msgid "ROM imported and a draft game was created. Verify the ROM before creating a test profile."
+msgstr ""
+
+msgid "ROM imported, but the draft game could not be created: %s"
+msgstr ""
+
+msgid "ROM imported. An existing game with the same canonical slug was kept."
+msgstr ""
+
 msgid "ROMs must be uploaded in their original playable format. Compressed archives are not accepted."
 msgstr ""
 
@@ -897,6 +921,9 @@ msgid "Save account settings"
 msgstr ""
 
 msgid "Save artifact settings"
+msgstr ""
+
+msgid "Save game"
 msgstr ""
 
 msgid "Save immutable artifact"
@@ -1022,6 +1049,9 @@ msgstr ""
 msgid "The ROM file could not be moved into the managed artifact directory."
 msgstr ""
 
+msgid "The ROM name cannot create a valid game slug. Adjust the name and try again."
+msgstr ""
+
 msgid "The WordPress user ID remains the canonical save owner."
 msgstr ""
 
@@ -1097,10 +1127,25 @@ msgstr ""
 msgid "The game could not be created."
 msgstr ""
 
+msgid "The game could not be found."
+msgstr ""
+
+msgid "The game could not be updated."
+msgstr ""
+
+msgid "The game will use this ROM name, normalized canonical slug and detected platform. You can edit it before creating a test profile."
+msgstr ""
+
 msgid "The immutable artifact directory could not be created."
 msgstr ""
 
 msgid "The initial FCEUmm identity already uses a different fingerprint."
+msgstr ""
+
+msgid "The platform cannot change after a game has execution profiles."
+msgstr ""
+
+msgid "The platform cannot change after a profile is created."
 msgstr ""
 
 msgid "The player loader entrypoint is missing from immutable storage."

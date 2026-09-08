@@ -41,6 +41,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	private function init() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ), 11 );
 		add_action( 'admin_post_geek_cube_create_game', array( $this, 'create_game' ) );
+		add_action( 'admin_post_geek_cube_update_game', array( $this, 'update_game' ) );
 		add_action( 'admin_post_geek_cube_analyze_artifact', array( $this, 'analyze_artifact' ) );
 		add_action( 'geek_cube_studio_cleanup_artifact_draft', array( $this, 'cleanup_expired_artifact_draft' ) );
 		add_action( 'admin_post_geek_cube_create_artifact', array( $this, 'create_artifact' ) );
@@ -213,6 +214,15 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		$this->finish( 'geek-cube-studio-games', $result, __( 'Game registered.', 'geek-cube-studio' ) );
 	}
 
+	/** Handle mutable game metadata changes. */
+	public function update_game() {
+		$this->authorize_action();
+		check_admin_referer( 'geek_cube_update_game' );
+		$game_id = isset( $_POST['game_id'] ) ? absint( wp_unslash( $_POST['game_id'] ) ) : 0;
+		$result  = Geek_Cube_Studio_Repository::update_game( $game_id, wp_unslash( $_POST ) );
+		$this->finish( 'geek-cube-studio-games', $result, __( 'Game updated.', 'geek-cube-studio' ) );
+	}
+
 	/** Handle immutable artifact import. */
 	public function analyze_artifact() {
 		$this->authorize_action();
@@ -247,8 +257,18 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		$artifact_version = is_scalar( $artifact_version ) ? sanitize_text_field( (string) $artifact_version ) : '';
 		$platform         = is_scalar( $platform ) ? sanitize_key( (string) $platform ) : '';
 		$draft            = $this->get_artifact_draft( $_POST );
+		$auto_create_game = 'rom' === $type && isset( $_POST['create_draft_game'] ) && is_scalar( $_POST['create_draft_game'] ) && '1' === (string) wp_unslash( $_POST['create_draft_game'] );
+		$game_slug        = sanitize_title( $artifact_name );
+		$existing_game    = $auto_create_game && '' !== $game_slug ? Geek_Cube_Studio_Repository::get_game_by_slug( $game_slug ) : null;
 		if ( $draft && ( $type !== $draft['type'] || ( ! empty( $draft['platform_locked'] ) && $platform !== $draft['platform'] ) ) ) {
 			$this->finish( 'geek-cube-studio-artifacts', new WP_Error( 'geek_cube_stage_metadata_invalid', __( 'The analyzed file metadata does not match this submission. Analyze the file again.', 'geek-cube-studio' ) ), '', array( 'artifact_type' => $type ) );
+		}
+		if ( $auto_create_game && ( '' === $game_slug || 'laboratorio' === $game_slug ) ) {
+			$extra = array( 'artifact_type' => $type );
+			if ( is_array( $draft ) && isset( $draft['token'] ) ) {
+				$extra['artifact_draft'] = $draft['token'];
+			}
+			$this->finish( 'geek-cube-studio-artifacts', new WP_Error( 'geek_cube_auto_game_invalid', __( 'The ROM name cannot create a valid game slug. Adjust the name and try again.', 'geek-cube-studio' ) ), '', $extra );
 		}
 		$uuid   = wp_generate_uuid4();
 		$stored = $draft ? Geek_Cube_Studio_Artifact_Storage::store_staged( $draft, $artifact_name, $artifact_version, $platform ) : new WP_Error( 'geek_cube_stage_missing', __( 'Analyze a file before saving an artifact.', 'geek-cube-studio' ) );
@@ -263,12 +283,39 @@ final class Geek_Cube_Studio_Catalog_Admin {
 
 		if ( is_wp_error( $result ) ) {
 			Geek_Cube_Studio_Artifact_Storage::cleanup( $stored );
-		} else {
-			Geek_Cube_Studio_Artifact_Storage::cleanup_staged( $draft );
-			delete_transient( self::artifact_draft_key( $draft['token'] ) );
+			$this->finish( 'geek-cube-studio-artifacts', $result, '', array( 'artifact_type' => self::resolve_artifact_type( array( 'artifact_type' => $type ) ) ) );
 		}
 
-		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Immutable artifact imported. Review its rights and verify it before use.', 'geek-cube-studio' ), array( 'artifact_type' => self::resolve_artifact_type( array( 'artifact_type' => $type ) ) ) );
+		Geek_Cube_Studio_Artifact_Storage::cleanup_staged( $draft );
+		delete_transient( self::artifact_draft_key( $draft['token'] ) );
+		$success = __( 'Immutable artifact imported. Review its rights and verify it before use.', 'geek-cube-studio' );
+
+		if ( $auto_create_game && ! $existing_game ) {
+			$game_result = Geek_Cube_Studio_Repository::create_game(
+				array(
+					'title'        => $artifact_name,
+					'slug'         => $game_slug,
+					'platform'     => $platform,
+					'language'     => 'default',
+					'description'  => '',
+					'source_url'   => isset( $_POST['source_url'] ) ? wp_unslash( $_POST['source_url'] ) : '',
+					'rights_notes' => isset( $_POST['rights_notes'] ) ? wp_unslash( $_POST['rights_notes'] ) : '',
+				)
+			);
+			if ( is_wp_error( $game_result ) ) {
+				$success = sprintf(
+					/* translators: %s: game creation error. */
+					__( 'ROM imported, but the draft game could not be created: %s', 'geek-cube-studio' ),
+					$game_result->get_error_message()
+				);
+			} else {
+				$success = __( 'ROM imported and a draft game was created. Verify the ROM before creating a test profile.', 'geek-cube-studio' );
+			}
+		} elseif ( $auto_create_game ) {
+			$success = __( 'ROM imported. An existing game with the same canonical slug was kept.', 'geek-cube-studio' );
+		}
+
+		$this->finish( 'geek-cube-studio-artifacts', true, $success, array( 'artifact_type' => self::resolve_artifact_type( array( 'artifact_type' => $type ) ) ) );
 	}
 
 	/**

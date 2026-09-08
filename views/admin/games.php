@@ -51,9 +51,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 					$public_url   = Geek_Cube_Studio_URLs::build( 'play', $game['slug'] );
 					$is_published = 'published' === $game['status'] && ! empty( $game['production_profile_id'] );
 					$candidates   = isset( $production_candidates[ (int) $game['id'] ] ) ? $production_candidates[ (int) $game['id'] ] : array();
+					$game_title   = Geek_Cube_Studio_Catalog_Admin::game_title( $game );
+					$description  = Geek_Cube_Studio_Repository::translated_value( $game['descriptions'] );
 					?>
+					<tr class="geek-cube-game-edit-row"><td colspan="6">
+						<details class="geek-cube-game-edit">
+							<summary><?php esc_html_e( 'Edit game', 'geek-cube-studio' ); ?></summary>
+							<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
+								<input type="hidden" name="action" value="geek_cube_update_game">
+								<input type="hidden" name="game_id" value="<?php echo esc_attr( $game['id'] ); ?>">
+								<input type="hidden" name="language" value="default">
+								<?php wp_nonce_field( 'geek_cube_update_game' ); ?>
+								<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" value="<?php echo esc_attr( $game_title ); ?>" required></label>
+								<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" value="<?php echo esc_attr( $game['slug'] ); ?>" pattern="[a-z0-9-]+" data-geek-cube-slug required></label>
+								<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform" required><?php foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) : ?>
+									<option value="<?php echo esc_attr( $platform ); ?>"<?php selected( $game['platform'], $platform ); ?>><?php echo esc_html( strtoupper( $platform ) ); ?></option>
+								<?php endforeach; ?></select><small><?php esc_html_e( 'The platform cannot change after a profile is created.', 'geek-cube-studio' ); ?></small></label>
+								<label class="is-wide"><span><?php esc_html_e( 'Description', 'geek-cube-studio' ); ?></span><textarea name="description" rows="3"><?php echo esc_textarea( $description ); ?></textarea></label>
+								<label class="is-wide"><span><?php esc_html_e( 'Authoritative source URL', 'geek-cube-studio' ); ?></span><input type="url" name="source_url" value="<?php echo esc_attr( $game['source_url'] ); ?>"></label>
+								<label class="is-wide"><span><?php esc_html_e( 'Rights notes', 'geek-cube-studio' ); ?></span><textarea name="rights_notes" rows="3"><?php echo esc_textarea( $game['rights_notes'] ); ?></textarea></label>
+								<div class="is-wide"><button class="button button-primary"><?php esc_html_e( 'Save game', 'geek-cube-studio' ); ?></button></div>
+							</form>
+						</details>
+					</td></tr>
 					<tr>
-						<td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td>
+						<td><strong><?php echo esc_html( $game_title ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td>
 						<td><?php echo esc_html( strtoupper( $game['platform'] ) ); ?></td>
 						<td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $game['status'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $game['status'] ) ); ?></span></td>
 						<td><?php echo $game['production_profile_id'] ? esc_html( '#' . $game['production_profile_id'] ) : '—'; ?></td>

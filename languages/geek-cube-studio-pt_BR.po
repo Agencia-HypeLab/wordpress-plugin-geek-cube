@@ -91,6 +91,9 @@ msgstr "Analisar arquivo"
 msgid "Another artifact file already uses the generated name."
 msgstr "Outro arquivo de artefato já usa o nome gerado."
 
+msgid "Another game already uses this canonical slug."
+msgstr "Outro jogo já usa este slug canônico."
+
 msgid "Any / not applicable"
 msgstr "Qualquer / não aplicável"
 
@@ -259,6 +262,9 @@ msgstr "Chave de runtime do núcleo"
 msgid "Core, ROM and BIOS artifacts require a supported platform."
 msgstr "Artefatos de núcleo, ROM e BIOS exigem uma plataforma compatível."
 
+msgid "Create a draft game automatically from this ROM"
+msgstr "Criar automaticamente um jogo em rascunho a partir desta ROM"
+
 msgid "Create immutable profile"
 msgstr "Criar perfil imutável"
 
@@ -315,6 +321,9 @@ msgstr "Cada rota do Geek Cube deve usar um slug diferente no mesmo idioma."
 
 msgid "Ed25519 signature"
 msgstr "Assinatura Ed25519"
+
+msgid "Edit game"
+msgstr "Editar jogo"
 
 msgid "Edit name"
 msgstr "Editar nome"
@@ -400,8 +409,14 @@ msgstr "Detalhe do jogo"
 msgid "Game registered."
 msgstr "Jogo cadastrado."
 
+msgid "Game registration"
+msgstr "Cadastro do jogo"
+
 msgid "Game saves"
 msgstr "Saves do jogo"
+
+msgid "Game updated."
+msgstr "Jogo atualizado."
 
 msgid "Gamepad controls"
 msgstr "Controles de gamepad"
@@ -799,6 +814,15 @@ msgstr "Publicado"
 msgid "ROM"
 msgstr "ROM"
 
+msgid "ROM imported and a draft game was created. Verify the ROM before creating a test profile."
+msgstr "ROM importada e jogo em rascunho criado. Verifique a ROM antes de criar um perfil de teste."
+
+msgid "ROM imported, but the draft game could not be created: %s"
+msgstr "ROM importada, mas não foi possível criar o jogo em rascunho: %s"
+
+msgid "ROM imported. An existing game with the same canonical slug was kept."
+msgstr "ROM importada. O jogo existente com o mesmo slug canônico foi mantido."
+
 msgid "ROMs must be uploaded in their original playable format. Compressed archives are not accepted."
 msgstr "As ROMs devem ser enviadas em seu formato original jogável. Arquivos compactados não são aceitos."
 
@@ -903,6 +927,9 @@ msgstr "Salvar configurações de conta"
 
 msgid "Save artifact settings"
 msgstr "Salvar configurações de artefatos"
+
+msgid "Save game"
+msgstr "Salvar jogo"
 
 msgid "Save immutable artifact"
 msgstr "Salvar artefato imutável"
@@ -1027,6 +1054,9 @@ msgstr "Não foi possível localizar o arquivo da ROM para realocação."
 msgid "The ROM file could not be moved into the managed artifact directory."
 msgstr "Não foi possível mover o arquivo da ROM para o diretório gerenciado de artefatos."
 
+msgid "The ROM name cannot create a valid game slug. Adjust the name and try again."
+msgstr "O nome da ROM não pode criar um slug de jogo válido. Ajuste o nome e tente novamente."
+
 msgid "The WordPress user ID remains the canonical save owner."
 msgstr "O ID de usuário do WordPress permanece o titular canônico do save."
 
@@ -1102,11 +1132,26 @@ msgstr "O jogo e seus artefatos de emulação devem usar a mesma plataforma."
 msgid "The game could not be created."
 msgstr "Não foi possível criar o jogo."
 
+msgid "The game could not be found."
+msgstr "Não foi possível encontrar o jogo."
+
+msgid "The game could not be updated."
+msgstr "Não foi possível atualizar o jogo."
+
+msgid "The game will use this ROM name, normalized canonical slug and detected platform. You can edit it before creating a test profile."
+msgstr "O jogo usará este nome da ROM, slug canônico normalizado e plataforma detectada. Você poderá editá-lo antes de criar um perfil de teste."
+
 msgid "The immutable artifact directory could not be created."
 msgstr "Não foi possível criar o diretório de artefatos imutáveis."
 
 msgid "The initial FCEUmm identity already uses a different fingerprint."
 msgstr "A identidade inicial do FCEUmm já usa uma impressão digital diferente."
+
+msgid "The platform cannot change after a game has execution profiles."
+msgstr "A plataforma não pode mudar depois que o jogo possui perfis de execução."
+
+msgid "The platform cannot change after a profile is created."
+msgstr "A plataforma não pode mudar após a criação de um perfil."
 
 msgid "The player loader entrypoint is missing from immutable storage."
 msgstr "O ponto de entrada do carregador do player está ausente no armazenamento imutável."
