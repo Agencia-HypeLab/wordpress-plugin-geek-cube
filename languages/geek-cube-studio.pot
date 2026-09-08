@@ -17,6 +17,9 @@ msgstr ""
 msgid "A central view of the controls already prepared for the playable prototype."
 msgstr ""
 
+msgid "A different ROM already occupies the managed artifact path."
+msgstr ""
+
 msgid "A game is the stable identity that receives versioned execution profiles."
 msgstr ""
 
@@ -66,6 +69,15 @@ msgid "Allowed"
 msgstr ""
 
 msgid "An artifact was assigned to the wrong profile role."
+msgstr ""
+
+msgid "An artifact with this name, version and platform already exists. Register a new version instead."
+msgstr ""
+
+msgid "Analyze a file before saving an artifact."
+msgstr ""
+
+msgid "Analyze file"
 msgstr ""
 
 msgid "Any / not applicable"
@@ -129,6 +141,9 @@ msgid "Automatic mode only enables threads when the required browser isolation i
 msgstr ""
 
 msgid "Automatic update"
+msgstr ""
+
+msgid "Available after publishing."
 msgstr ""
 
 msgid "Available version"
@@ -260,6 +275,9 @@ msgstr ""
 msgid "Detect candidate versions without changing approved game profiles."
 msgstr ""
 
+msgid "Detected header revision: %s"
+msgstr ""
+
 msgid "Device conflict policy"
 msgstr ""
 
@@ -327,6 +345,12 @@ msgid "Fallback active"
 msgstr ""
 
 msgid "File"
+msgstr ""
+
+msgid "File analyzed. Review the suggested metadata before saving the immutable artifact."
+msgstr ""
+
+msgid "File extensions"
 msgstr ""
 
 msgid "Final result"
@@ -417,9 +441,6 @@ msgid "Immutable test run recorded."
 msgstr ""
 
 msgid "Import a version"
-msgstr ""
-
-msgid "Import immutable artifact"
 msgstr ""
 
 msgid "Inconclusive"
@@ -599,6 +620,9 @@ msgstr ""
 msgid "Only route segments are stored. Polylang remains responsible for the language domain or directory."
 msgstr ""
 
+msgid "Only stored ROM artifacts can be relocated."
+msgstr ""
+
 msgid "Only verified artifacts are offered. NES does not require a BIOS."
 msgstr ""
 
@@ -728,6 +752,9 @@ msgstr ""
 msgid "Protected update flow"
 msgstr ""
 
+msgid "Public URL"
+msgstr ""
+
 msgid "Public client identifier detected in server configuration."
 msgstr ""
 
@@ -738,6 +765,9 @@ msgid "Published"
 msgstr ""
 
 msgid "ROM"
+msgstr ""
+
+msgid "ROMs must be uploaded in their original playable format. Compressed archives are not accepted."
 msgstr ""
 
 msgid "Record immutable test"
@@ -827,6 +857,9 @@ msgstr ""
 msgid "Run the exact frozen profile and record an immutable browser result."
 msgstr ""
 
+msgid "SHA-256: %s"
+msgstr ""
+
 msgid "Save URL settings"
 msgstr ""
 
@@ -834,6 +867,9 @@ msgid "Save account settings"
 msgstr ""
 
 msgid "Save artifact settings"
+msgstr ""
+
+msgid "Save immutable artifact"
 msgstr ""
 
 msgid "Save laboratory settings"
@@ -938,10 +974,31 @@ msgstr ""
 msgid "Testing"
 msgstr ""
 
+msgid "The ROM file could not be located for relocation."
+msgstr ""
+
+msgid "The ROM file could not be moved into the managed artifact directory."
+msgstr ""
+
 msgid "The WordPress user ID remains the canonical save owner."
 msgstr ""
 
 msgid "The ZIP extension is required to import a player package."
+msgstr ""
+
+msgid "The analyzed file metadata does not match this submission. Analyze the file again."
+msgstr ""
+
+msgid "The analyzed upload changed before it could be saved."
+msgstr ""
+
+msgid "The analyzed upload is no longer available. Analyze the file again."
+msgstr ""
+
+msgid "The artifact could not be moved into immutable storage."
+msgstr ""
+
+msgid "The artifact could not be prepared for analysis."
 msgstr ""
 
 msgid "The artifact could not be registered."
@@ -1031,6 +1088,9 @@ msgstr ""
 msgid "The public player is not enabled."
 msgstr ""
 
+msgid "The relocated ROM path could not be saved."
+msgstr ""
+
 msgid "The requested execution profile does not exist."
 msgstr ""
 
@@ -1083,6 +1143,9 @@ msgid "URLs and languages"
 msgstr ""
 
 msgid "Unknown or incompatible"
+msgstr ""
+
+msgid "Untitled artifact"
 msgstr ""
 
 msgid "Update Geek Cube Studio now? WordPress will temporarily enable maintenance mode while replacing the plugin files."

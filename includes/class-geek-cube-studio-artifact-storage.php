@@ -20,6 +20,9 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	/** Maximum files in one player package. */
 	const MAX_ARCHIVE_FILES = 4000;
 
+	/** Temporary upload lifetime in seconds. */
+	const STAGED_UPLOAD_TTL = HOUR_IN_SECONDS;
+
 	/**
 	 * Return allow-listed file extensions by artifact type.
 	 *
@@ -31,7 +34,7 @@ final class Geek_Cube_Studio_Artifact_Storage {
 		$map = array(
 			'player'   => array( 'zip' ),
 			'core'     => array( 'wasm', 'zip' ),
-			'rom'      => array( 'nes', 'fds', 'gb', 'gbc', 'gba', 'sfc', 'smc', 'md', 'gen', 'bin', 'zip', 'chd', 'cue', 'iso' ),
+			'rom'      => array( 'nes', 'fds', 'gb', 'gbc', 'gba', 'sfc', 'smc', 'md', 'gen', 'bin', 'chd', 'cue', 'iso' ),
 			'bios'     => array( 'bin', 'rom', 'zip' ),
 			'patch'    => array( 'ips', 'bps', 'ups', 'xdelta' ),
 			'config'   => array( 'json' ),
@@ -42,15 +45,320 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	}
 
 	/**
+	 * Return the extension groups displayed by the ROM import screen.
+	 *
+	 * @return array<string,string[]>
+	 */
+	public static function rom_extension_groups() {
+		return array(
+			'nes'       => array( 'nes', 'fds' ),
+			'gb'        => array( 'gb' ),
+			'gbc'       => array( 'gbc' ),
+			'gba'       => array( 'gba' ),
+			'snes'      => array( 'sfc', 'smc' ),
+			'megadrive' => array( 'md', 'gen', 'bin' ),
+			'psx'       => array( 'chd', 'cue', 'iso', 'bin' ),
+		);
+	}
+
+	/**
+	 * Infer a platform when one extension represents exactly one platform.
+	 *
+	 * @param string $filename Uploaded filename.
+	 * @return string
+	 */
+	public static function detected_platform( $filename ) {
+		$extension = strtolower( (string) pathinfo( (string) $filename, PATHINFO_EXTENSION ) );
+		$matches   = array();
+
+		foreach ( self::rom_extension_groups() as $platform => $extensions ) {
+			if ( in_array( $extension, $extensions, true ) ) {
+				$matches[] = $platform;
+			}
+		}
+
+		return 1 === count( $matches ) ? $matches[0] : '';
+	}
+
+	/**
+	 * Return an execution-core suggestion for a confirmed platform.
+	 *
+	 * @param string $platform Platform key.
+	 * @return string
+	 */
+	public static function suggested_runtime_key( $platform ) {
+		$suggestions = array(
+			'nes'       => 'fceumm',
+			'snes'      => 'snes9x',
+			'gb'        => 'gambatte',
+			'gbc'       => 'gambatte',
+			'gba'       => 'mgba',
+			'megadrive' => 'genesis_plus_gx',
+			'psx'       => 'pcsx_rearmed',
+		);
+		$platform    = sanitize_key( (string) $platform );
+
+		return isset( $suggestions[ $platform ] ) ? $suggestions[ $platform ] : '';
+	}
+
+	/**
+	 * Place an uploaded file in a short-lived, private staging directory.
+	 *
+	 * @param array<string,mixed> $file Uploaded file entry.
+	 * @param string              $type Artifact type.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	public static function stage_upload( array $file, $type ) {
+		$type = sanitize_key( (string) $type );
+
+		if ( empty( $file['tmp_name'] ) || empty( $file['name'] ) || UPLOAD_ERR_OK !== (int) $file['error'] ) {
+			return new WP_Error( 'geek_cube_upload_failed', __( 'The artifact upload did not complete successfully.', 'geek-cube-studio' ) );
+		}
+
+		$original_name = sanitize_file_name( (string) $file['name'] );
+		$extension     = strtolower( (string) pathinfo( $original_name, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $extension, self::allowed_extensions( $type ), true ) ) {
+			return new WP_Error( 'geek_cube_extension_blocked', __( 'This file extension is not allowed for the selected artifact type.', 'geek-cube-studio' ) );
+		}
+
+		$uploads = wp_upload_dir();
+		if ( ! empty( $uploads['error'] ) ) {
+			return new WP_Error( 'geek_cube_upload_directory', sanitize_text_field( $uploads['error'] ) );
+		}
+
+		$token        = wp_generate_uuid4();
+		$relative_dir = self::base_relative_directory() . '/temporary/' . $token;
+		$absolute_dir = trailingslashit( $uploads['basedir'] ) . $relative_dir;
+		$destination  = trailingslashit( $absolute_dir ) . $original_name;
+
+		if ( ! wp_mkdir_p( $absolute_dir ) || ! move_uploaded_file( (string) $file['tmp_name'], $destination ) ) {
+			self::remove_empty_directory( $absolute_dir, $uploads['basedir'] );
+			return new WP_Error( 'geek_cube_stage_failed', __( 'The artifact could not be prepared for analysis.', 'geek-cube-studio' ) );
+		}
+
+		$sha256 = hash_file( 'sha256', $destination );
+		if ( false === $sha256 ) {
+			self::cleanup_staged( array( 'temporary_relative_path' => $relative_dir . '/' . $original_name ) );
+			return new WP_Error( 'geek_cube_hash_failed', __( 'The artifact hash could not be calculated.', 'geek-cube-studio' ) );
+		}
+
+		$platform = 'rom' === $type ? self::detected_platform( $original_name ) : '';
+		$analysis = self::analyze_rom( $destination, $platform );
+		$name     = sanitize_text_field( (string) pathinfo( $original_name, PATHINFO_FILENAME ) );
+		$name     = '' !== $name ? $name : __( 'Untitled artifact', 'geek-cube-studio' );
+
+		return array(
+			'token'                   => $token,
+			'type'                    => $type,
+			'original_name'           => $original_name,
+			'temporary_relative_path' => $relative_dir . '/' . $original_name,
+			'sha256'                  => $sha256,
+			'file_size'               => (int) filesize( $destination ),
+			'name'                    => isset( $analysis['title'] ) && '' !== $analysis['title'] ? $analysis['title'] : $name,
+			'version'                 => '0.0.0',
+			'platform'                => $platform,
+			'platform_locked'         => '' !== $platform,
+			'suggested_runtime_key'   => self::suggested_runtime_key( $platform ),
+			'analysis'                => $analysis,
+			'expires_at'              => time() + self::STAGED_UPLOAD_TTL,
+		);
+	}
+
+	/**
+	 * Delete a staged upload and its private parent directory.
+	 *
+	 * @param array<string,mixed> $draft Staged upload data.
+	 * @return void
+	 */
+	public static function cleanup_staged( array $draft ) {
+		$relative = isset( $draft['temporary_relative_path'] ) ? (string) $draft['temporary_relative_path'] : '';
+		$path     = self::path( $relative );
+		$uploads  = wp_upload_dir();
+		$base     = trailingslashit( $uploads['basedir'] ) . self::base_relative_directory() . '/temporary/';
+
+		if ( '' === $path || 0 !== strpos( wp_normalize_path( $path ), wp_normalize_path( $base ) ) ) {
+			return;
+		}
+
+		$directory = dirname( $path );
+		if ( is_file( $path ) ) {
+			unlink( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Validated short-lived staging file.
+		}
+		self::remove_empty_directory( $directory, $uploads['basedir'] );
+	}
+
+	/**
+	 * Move a previously analyzed upload into its immutable artifact location.
+	 *
+	 * @param array<string,mixed> $draft            Staged upload data.
+	 * @param string              $artifact_name    Registered artifact name.
+	 * @param string              $artifact_version Registered artifact version.
+	 * @param string              $platform         Registered artifact platform.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	public static function store_staged( array $draft, $artifact_name, $artifact_version, $platform ) {
+		$type     = isset( $draft['type'] ) ? sanitize_key( (string) $draft['type'] ) : '';
+		$original = isset( $draft['original_name'] ) ? (string) $draft['original_name'] : '';
+		$source   = isset( $draft['temporary_relative_path'] ) ? self::path( $draft['temporary_relative_path'] ) : '';
+
+		if ( '' === $source || ! is_file( $source ) || ! in_array( strtolower( (string) pathinfo( $original, PATHINFO_EXTENSION ) ), self::allowed_extensions( $type ), true ) ) {
+			return new WP_Error( 'geek_cube_stage_missing', __( 'The analyzed upload is no longer available. Analyze the file again.', 'geek-cube-studio' ) );
+		}
+
+		$sha256 = hash_file( 'sha256', $source );
+		if ( false === $sha256 || empty( $draft['sha256'] ) || ! hash_equals( (string) $draft['sha256'], $sha256 ) ) {
+			return new WP_Error( 'geek_cube_stage_changed', __( 'The analyzed upload changed before it could be saved.', 'geek-cube-studio' ) );
+		}
+
+		$uploads      = wp_upload_dir();
+		$relative_dir = self::artifact_relative_directory( $type, $platform );
+		$absolute_dir = trailingslashit( $uploads['basedir'] ) . $relative_dir;
+		$filename     = self::artifact_filename( $artifact_name, $artifact_version, $platform, $original );
+		$destination  = trailingslashit( $absolute_dir ) . $filename;
+
+		if ( ! wp_mkdir_p( $absolute_dir ) ) {
+			return new WP_Error( 'geek_cube_directory_failed', __( 'The immutable artifact directory could not be created.', 'geek-cube-studio' ) );
+		}
+		if ( file_exists( $destination ) ) {
+			return new WP_Error( 'geek_cube_artifact_filename_conflict', __( 'An artifact with this name, version and platform already exists. Register a new version instead.', 'geek-cube-studio' ) );
+		}
+		if ( ! self::move_file( $source, $destination ) ) {
+			return new WP_Error( 'geek_cube_move_failed', __( 'The artifact could not be moved into immutable storage.', 'geek-cube-studio' ) );
+		}
+
+		$result = array(
+			'sha256'          => $sha256,
+			'file_size'       => (int) filesize( $destination ),
+			'relative_path'   => $relative_dir . '/' . $filename,
+			'entrypoint_path' => '',
+			'absolute_path'   => $destination,
+			'absolute_root'   => '',
+		);
+
+		if ( 'player' === $type ) {
+			$package_name            = (string) pathinfo( $filename, PATHINFO_FILENAME );
+			$package_dir             = trailingslashit( $absolute_dir ) . $package_name;
+			$package_rel             = $relative_dir . '/' . $package_name;
+			$result['absolute_root'] = $package_dir;
+			$extracted               = self::extract_player_package( $destination, $package_dir, $package_rel );
+			if ( is_wp_error( $extracted ) ) {
+				self::cleanup( $result );
+				return $extracted;
+			}
+
+			$result['entrypoint_path'] = $extracted;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Move one legacy ROM file into the managed human-readable directory.
+	 *
+	 * @param array<string,mixed> $artifact ROM artifact database row.
+	 * @return string|WP_Error New relative path.
+	 */
+	public static function relocate_legacy_rom( array $artifact ) {
+		if ( 'rom' !== ( $artifact['type'] ?? '' ) || empty( $artifact['relative_path'] ) ) {
+			return new WP_Error( 'geek_cube_relocation_invalid', __( 'Only stored ROM artifacts can be relocated.', 'geek-cube-studio' ) );
+		}
+
+		$source       = self::path( $artifact['relative_path'] );
+		$original     = (string) basename( $artifact['relative_path'] );
+		$relative_dir = self::artifact_relative_directory( 'rom', $artifact['platform'] ?? '' );
+		$filename     = self::artifact_filename( $artifact['name'] ?? '', $artifact['version'] ?? '', $artifact['platform'] ?? '', $original );
+		$relative     = $relative_dir . '/' . $filename;
+		$destination  = self::path( $relative );
+
+		if ( '' === $source || '' === $destination ) {
+			return new WP_Error( 'geek_cube_relocation_missing', __( 'The ROM file could not be located for relocation.', 'geek-cube-studio' ) );
+		}
+		if ( wp_normalize_path( $source ) === wp_normalize_path( $destination ) ) {
+			return $relative;
+		}
+		if ( file_exists( $destination ) ) {
+			$hash = hash_file( 'sha256', $destination );
+			return is_string( $hash ) && hash_equals( (string) $artifact['sha256'], $hash ) ? $relative : new WP_Error( 'geek_cube_relocation_conflict', __( 'A different ROM already occupies the managed artifact path.', 'geek-cube-studio' ) );
+		}
+		if ( ! is_file( $source ) || ! wp_mkdir_p( dirname( $destination ) ) || ! self::move_file( $source, $destination ) ) {
+			return new WP_Error( 'geek_cube_relocation_failed', __( 'The ROM file could not be moved into the managed artifact directory.', 'geek-cube-studio' ) );
+		}
+
+		return $relative;
+	}
+
+	/**
+	 * Return the configured artifact root relative to wp-content/uploads.
+	 *
+	 * @return string
+	 */
+	private static function base_relative_directory() {
+		return trim( (string) Geek_Cube_Studio_Settings::get( 'artifact_storage_subdirectory' ), '/\\' );
+	}
+
+	/**
+	 * Return the human-readable directory for one artifact type.
+	 *
+	 * @param string $type Artifact type.
+	 * @return string
+	 */
+	private static function artifact_directory_name( $type ) {
+		$directories = array(
+			'player'   => 'players',
+			'core'     => 'cores',
+			'rom'      => 'roms',
+			'bios'     => 'bios',
+			'patch'    => 'patches',
+			'config'   => 'configs',
+			'controls' => 'controls',
+		);
+		$type        = sanitize_key( (string) $type );
+
+		return isset( $directories[ $type ] ) ? $directories[ $type ] : 'other';
+	}
+
+	/**
+	 * Return the final directory for an artifact identity.
+	 *
+	 * @param string $type Artifact type.
+	 * @param string $platform Platform key.
+	 * @return string
+	 */
+	private static function artifact_relative_directory( $type, $platform ) {
+		$platform = sanitize_key( (string) $platform );
+		$platform = '' !== $platform ? $platform : 'global';
+
+		return self::base_relative_directory() . '/' . self::artifact_directory_name( $type ) . '/' . $platform;
+	}
+
+	/**
+	 * Move a staging file on the local filesystem without overwriting a target.
+	 *
+	 * @param string $source Source path.
+	 * @param string $destination Destination path.
+	 * @return bool
+	 */
+	private static function move_file( $source, $destination ) {
+		if ( rename( $source, $destination ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Validated plugin-owned paths.
+			return true;
+		}
+
+		return copy( $source, $destination ) && unlink( $source ); // phpcs:ignore WordPress.WP.AlternativeFunctions.copy_copy, WordPress.WP.AlternativeFunctions.unlink_unlink -- Validated plugin-owned paths.
+	}
+
+	/**
 	 * Store one HTTP upload under its content hash.
 	 *
 	 * @param array<string,mixed> $file Uploaded file entry.
 	 * @param string              $type Artifact type.
 	 * @param string              $uuid Artifact UUID.
+	 * @param string              $artifact_name Registered immutable artifact name.
+	 * @param string              $artifact_version Registered immutable artifact version.
+	 * @param string              $platform Registered artifact platform, when applicable.
 	 *
 	 * @return array<string,mixed>|WP_Error
 	 */
-	public static function store_upload( array $file, $type, $uuid ) {
+	public static function store_upload( array $file, $type, $uuid, $artifact_name = '', $artifact_version = '', $platform = '' ) {
 		$type = sanitize_key( (string) $type );
 		$uuid = sanitize_text_field( (string) $uuid );
 
@@ -82,7 +390,7 @@ final class Geek_Cube_Studio_Artifact_Storage {
 			return new WP_Error( 'geek_cube_directory_failed', __( 'The immutable artifact directory could not be created.', 'geek-cube-studio' ) );
 		}
 
-		$filename     = sanitize_file_name( (string) $file['name'] );
+		$filename     = self::artifact_filename( $artifact_name, $artifact_version, $platform, (string) $file['name'] );
 		$destination  = trailingslashit( $absolute_dir ) . $filename;
 		$relative     = $relative_dir . '/' . $filename;
 		$was_uploaded = is_uploaded_file( $tmp_name );
@@ -113,6 +421,79 @@ final class Geek_Cube_Studio_Artifact_Storage {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Create a stable storage filename from the registered artifact identity.
+	 *
+	 * The extension remains the uploaded file's allowed, validated extension.
+	 * Existing artifacts are never renamed: a corrected name is a new immutable
+	 * artifact version with its own directory and SHA-256 fingerprint.
+	 *
+	 * @param string $artifact_name    Registered artifact name.
+	 * @param string $artifact_version Registered artifact version.
+	 * @param string $platform         Registered platform, when applicable.
+	 * @param string $uploaded_name    Original uploaded filename.
+	 * @return string
+	 */
+	private static function artifact_filename( $artifact_name, $artifact_version, $platform, $uploaded_name ) {
+		$extension = strtolower( (string) pathinfo( $uploaded_name, PATHINFO_EXTENSION ) );
+		$name      = sanitize_title( (string) $artifact_name );
+		$version   = sanitize_title( (string) $artifact_version );
+		$platform  = sanitize_key( (string) $platform );
+		$platform  = '' !== $platform ? $platform : 'global';
+
+		if ( '' === $name || '' === $version || '' === $extension ) {
+			return sanitize_file_name( $uploaded_name );
+		}
+
+		return $name . '-' . $version . '-' . $platform . '.' . $extension;
+	}
+
+	/**
+	 * Read conservative, non-authoritative metadata from a supported ROM.
+	 *
+	 * @param string $path Detected local ROM path.
+	 * @param string $platform Detected platform key.
+	 * @return array<string,string>
+	 */
+	private static function analyze_rom( $path, $platform ) {
+		if ( 'snes' !== $platform || ! is_file( $path ) ) {
+			return array();
+		}
+
+		$best = array();
+		foreach ( array( 0, 512 ) as $copier_header ) {
+			foreach ( array( 0x7FC0, 0xFFC0 ) as $header_offset ) {
+				$header = file_get_contents( $path, false, null, $copier_header + $header_offset, 32 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reads a validated local staging file.
+				if ( false === $header || 32 !== strlen( $header ) ) {
+					continue;
+				}
+
+				$title = trim( preg_replace( '/[^\x20-\x7e]/', '', substr( $header, 0, 21 ) ) );
+				if ( strlen( $title ) < 3 ) {
+					continue;
+				}
+
+				$revision = (string) ord( $header[27] );
+				$score    = preg_match( '/[a-zA-Z]/', $title ) ? 2 : 1;
+				$check    = unpack( 'vchecksum/vinverse', substr( $header, 28, 4 ) );
+				if ( is_array( $check ) && 65535 === ( (int) $check['checksum'] + (int) $check['inverse'] ) ) {
+					++$score;
+				}
+				if ( ! isset( $best['score'] ) || $score > (int) $best['score'] ) {
+					$best = array(
+						'score'           => (string) $score,
+						'title'           => $title,
+						'header_revision' => $revision,
+						'mapping'         => 0x7FC0 === $header_offset ? 'lorom' : 'hirom',
+					);
+				}
+			}
+		}
+
+		unset( $best['score'] );
+		return $best;
 	}
 
 	/**
@@ -164,6 +545,11 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	 * @return void
 	 */
 	public static function cleanup( array $stored ) {
+		$file = isset( $stored['absolute_path'] ) ? (string) $stored['absolute_path'] : '';
+		if ( '' !== $file && is_file( $file ) ) {
+			unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Validated artifact file created during this request.
+		}
+
 		$root = isset( $stored['absolute_root'] ) ? (string) $stored['absolute_root'] : '';
 		if ( '' === $root || ! is_dir( $root ) ) {
 			return;

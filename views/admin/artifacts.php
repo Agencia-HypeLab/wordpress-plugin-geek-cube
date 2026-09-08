@@ -33,24 +33,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="geek-cube-workspace">
 			<section class="geek-cube-panel">
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Import a version', 'geek-cube-studio' ); ?></h2><p><?php esc_html_e( 'Upload only content you may legally use and redistribute.', 'geek-cube-studio' ); ?></p></div></div>
-				<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
-					<input type="hidden" name="action" value="geek_cube_create_artifact"><input type="hidden" name="type" value="<?php echo esc_attr( $artifact_type ); ?>"><?php wp_nonce_field( 'geek_cube_create_artifact' ); ?>
-					<label><span><?php esc_html_e( 'Name', 'geek-cube-studio' ); ?></span><input type="text" name="name" required></label>
-					<label><span><?php esc_html_e( 'Version', 'geek-cube-studio' ); ?></span><input type="text" name="version" placeholder="4.2.3 or 1.0.0" required></label>
-					<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform"><option value=""><?php esc_html_e( 'Any / not applicable', 'geek-cube-studio' ); ?></option>
-					<?php
-					foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) :
-						?>
-						<option value="<?php echo esc_attr( $platform ); ?>"><?php echo esc_html( strtoupper( $platform ) ); ?></option><?php endforeach; ?></select></label>
-					<label><span><?php esc_html_e( 'Core runtime key', 'geek-cube-studio' ); ?></span><input type="text" name="runtime_key" placeholder="fceumm"></label>
-					<label><span><?php esc_html_e( 'License', 'geek-cube-studio' ); ?></span><input type="text" name="license_name" placeholder="MIT" required></label>
-					<label><span><?php esc_html_e( 'Commercial use reviewed', 'geek-cube-studio' ); ?></span><select name="commercial_use" required><option value="review"><?php esc_html_e( 'Needs review', 'geek-cube-studio' ); ?></option><option value="yes"><?php esc_html_e( 'Allowed', 'geek-cube-studio' ); ?></option><option value="no"><?php esc_html_e( 'Not allowed', 'geek-cube-studio' ); ?></option></select></label>
-					<label><span><?php esc_html_e( 'File', 'geek-cube-studio' ); ?></span><input type="file" name="artifact_file" required></label>
-					<label class="is-wide"><span><?php esc_html_e( 'Authoritative source URL', 'geek-cube-studio' ); ?></span><input type="url" name="source_url" required></label>
-					<label class="is-wide"><span><?php esc_html_e( 'Rights and attribution notes', 'geek-cube-studio' ); ?></span><textarea name="rights_notes" rows="3" required></textarea></label>
-					<div class="is-wide geek-cube-callout"><strong><?php esc_html_e( 'Player packages', 'geek-cube-studio' ); ?></strong><p><?php esc_html_e( 'Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint.', 'geek-cube-studio' ); ?></p></div>
-					<div class="is-wide"><?php submit_button( __( 'Import immutable artifact', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
-				</form>
+				<?php if ( ! $artifact_draft ) : ?>
+					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
+						<input type="hidden" name="action" value="geek_cube_analyze_artifact"><input type="hidden" name="type" value="<?php echo esc_attr( $artifact_type ); ?>"><?php wp_nonce_field( 'geek_cube_analyze_artifact' ); ?>
+						<label class="is-wide"><span><?php esc_html_e( 'File', 'geek-cube-studio' ); ?></span><input type="file" name="artifact_file" required></label>
+						<?php if ( 'rom' === $artifact_type ) : ?>
+							<div class="is-wide geek-cube-callout"><p><?php esc_html_e( 'ROMs must be uploaded in their original playable format. Compressed archives are not accepted.', 'geek-cube-studio' ); ?></p></div>
+							<details class="is-wide geek-cube-artifact-extensions"><summary><?php esc_html_e( 'File extensions', 'geek-cube-studio' ); ?></summary><ul><?php foreach ( Geek_Cube_Studio_Artifact_Storage::rom_extension_groups() as $platform => $extensions ) : ?>
+								<li><strong><?php echo esc_html( strtoupper( $platform ) ); ?>:</strong> <code><?php echo esc_html( '.' . implode( ', .', $extensions ) ); ?></code></li>
+							<?php endforeach; ?></ul></details>
+						<?php endif; ?>
+						<div class="is-wide"><?php submit_button( __( 'Analyze file', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
+					</form>
+				<?php else : ?>
+					<?php $platform_locked = ! empty( $artifact_draft['platform_locked'] ); ?>
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-form">
+						<input type="hidden" name="action" value="geek_cube_create_artifact"><input type="hidden" name="type" value="<?php echo esc_attr( $artifact_type ); ?>"><input type="hidden" name="artifact_draft" value="<?php echo esc_attr( $artifact_draft['token'] ); ?>"><?php wp_nonce_field( 'geek_cube_create_artifact' ); ?>
+						<div class="is-wide geek-cube-callout"><strong><?php echo esc_html( $artifact_draft['original_name'] ); ?></strong><p><?php echo esc_html( sprintf( /* translators: %s: SHA-256 fingerprint. */ __( 'SHA-256: %s', 'geek-cube-studio' ), $artifact_draft['sha256'] ) ); ?></p><?php if ( ! empty( $artifact_draft['analysis']['header_revision'] ) ) : ?>
+							<p><?php echo esc_html( sprintf( /* translators: %s: ROM header revision. */ __( 'Detected header revision: %s', 'geek-cube-studio' ), $artifact_draft['analysis']['header_revision'] ) ); ?></p>
+						<?php endif; ?></div>
+						<label><span><?php esc_html_e( 'Name', 'geek-cube-studio' ); ?></span><input type="text" name="name" value="<?php echo esc_attr( $artifact_draft['name'] ); ?>" required></label>
+						<label><span><?php esc_html_e( 'Version', 'geek-cube-studio' ); ?></span><input type="text" name="version" value="<?php echo esc_attr( $artifact_draft['version'] ); ?>" required></label>
+						<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><?php if ( $platform_locked ) : ?>
+							<input type="hidden" name="platform" value="<?php echo esc_attr( $artifact_draft['platform'] ); ?>">
+						<?php endif; ?><select<?php disabled( $platform_locked ); ?> name="<?php echo esc_attr( $platform_locked ? 'detected_platform' : 'platform' ); ?>"><option value=""><?php esc_html_e( 'Any / not applicable', 'geek-cube-studio' ); ?></option><?php foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) : ?>
+							<option value="<?php echo esc_attr( $platform ); ?>"<?php selected( $artifact_draft['platform'], $platform ); ?>><?php echo esc_html( strtoupper( $platform ) ); ?></option>
+						<?php endforeach; ?></select></label>
+						<label><span><?php esc_html_e( 'Core runtime key', 'geek-cube-studio' ); ?></span><input type="text" name="runtime_key" value="<?php echo esc_attr( $artifact_draft['suggested_runtime_key'] ); ?>" placeholder="fceumm"></label>
+						<label><span><?php esc_html_e( 'License', 'geek-cube-studio' ); ?></span><input type="text" name="license_name" placeholder="MIT" required></label>
+						<label><span><?php esc_html_e( 'Commercial use reviewed', 'geek-cube-studio' ); ?></span><select name="commercial_use" required><option value="review"><?php esc_html_e( 'Needs review', 'geek-cube-studio' ); ?></option><option value="yes"><?php esc_html_e( 'Allowed', 'geek-cube-studio' ); ?></option><option value="no"><?php esc_html_e( 'Not allowed', 'geek-cube-studio' ); ?></option></select></label>
+						<label class="is-wide"><span><?php esc_html_e( 'Authoritative source URL', 'geek-cube-studio' ); ?></span><input type="url" name="source_url" required></label>
+						<label class="is-wide"><span><?php esc_html_e( 'Rights and attribution notes', 'geek-cube-studio' ); ?></span><textarea name="rights_notes" rows="3" required></textarea></label>
+						<div class="is-wide geek-cube-callout"><strong><?php esc_html_e( 'Player packages', 'geek-cube-studio' ); ?></strong><p><?php esc_html_e( 'Send the official self-hosted ZIP. The importer safely extracts it and requires a data/loader.js entrypoint.', 'geek-cube-studio' ); ?></p></div>
+						<div class="is-wide"><?php submit_button( __( 'Save immutable artifact', 'geek-cube-studio' ), 'primary', 'submit', false ); ?></div>
+					</form>
+				<?php endif; ?>
 			</section>
 
 			<section class="geek-cube-panel">

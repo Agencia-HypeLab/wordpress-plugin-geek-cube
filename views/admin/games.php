@@ -41,15 +41,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<section class="geek-cube-panel">
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Registered games', 'geek-cube-studio' ); ?></h2><p><?php echo esc_html( sprintf( /* translators: %d: number of games. */ __( '%d catalog identities', 'geek-cube-studio' ), count( $games ) ) ); ?></p></div></div>
-				<div class="geek-cube-table-wrap"><table class="widefat striped"><thead><tr><th><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Status', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Production profile', 'geek-cube-studio' ); ?></th></tr></thead><tbody>
+				<div class="geek-cube-table-wrap"><table class="widefat striped"><thead><tr><th><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Status', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Production profile', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Public URL', 'geek-cube-studio' ); ?></th></tr></thead><tbody>
 				<?php
 				if ( empty( $games ) ) :
 					?>
-					<tr><td colspan="4"><?php esc_html_e( 'No games registered.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
+					<tr><td colspan="5"><?php esc_html_e( 'No games registered.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
 				<?php
 				foreach ( $games as $game ) :
+					$public_url   = Geek_Cube_Studio_URLs::build( 'play', $game['slug'] );
+					$is_published = 'published' === $game['status'] && ! empty( $game['production_profile_id'] );
 					?>
-					<tr><td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td><td><?php echo esc_html( strtoupper( $game['platform'] ) ); ?></td><td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $game['status'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $game['status'] ) ); ?></span></td><td><?php echo $game['production_profile_id'] ? esc_html( '#' . $game['production_profile_id'] ) : '—'; ?></td></tr><?php endforeach; ?>
+					<tr>
+						<td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td>
+						<td><?php echo esc_html( strtoupper( $game['platform'] ) ); ?></td>
+						<td><span class="geek-cube-badge <?php echo esc_attr( Geek_Cube_Studio_Catalog_Admin::badge_class( $game['status'] ) ); ?>"><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::status_label( $game['status'] ) ); ?></span></td>
+						<td><?php echo $game['production_profile_id'] ? esc_html( '#' . $game['production_profile_id'] ) : '—'; ?></td>
+						<td>
+							<?php if ( $is_published ) : ?>
+								<a href="<?php echo esc_url( $public_url ); ?>" target="_blank" rel="noopener noreferrer"><code><?php echo esc_html( $public_url ); ?></code></a>
+							<?php else : ?>
+								<code><?php echo esc_html( $public_url ); ?></code><br>
+								<small><?php esc_html_e( 'Available after publishing.', 'geek-cube-studio' ); ?></small>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 				</tbody></table></div>
 			</section>
 		</div>

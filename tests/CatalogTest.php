@@ -17,12 +17,26 @@ final class CatalogTest extends TestCase {
 
 		$this->assertArrayHasKey( '001-create-content-schema', $patches );
 		$this->assertArrayHasKey( '002-seed-initial-nes-catalog', $patches );
+		$this->assertArrayHasKey( '003-relocate-rom-artifacts', $patches );
 		$this->assertSame( '0.1.3', $patches['002-seed-initial-nes-catalog']['introduced_in'] );
 	}
 
 	public function test_unsupported_archive_cannot_be_imported_as_a_rom(): void {
 		$this->assertNotContains( '7z', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
+		$this->assertNotContains( 'zip', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
 		$this->assertContains( 'nes', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
+	}
+
+	public function test_unambiguous_rom_extensions_lock_the_detected_platform(): void {
+		$this->assertSame( 'snes', Geek_Cube_Studio_Artifact_Storage::detected_platform( 'Super Mario Word.smc' ) );
+		$this->assertSame( 'nes', Geek_Cube_Studio_Artifact_Storage::detected_platform( 'falling.nes' ) );
+		$this->assertSame( '', Geek_Cube_Studio_Artifact_Storage::detected_platform( 'ambiguous.bin' ) );
+		$this->assertSame( 'snes9x', Geek_Cube_Studio_Artifact_Storage::suggested_runtime_key( 'snes' ) );
+	}
+
+	public function test_uploaded_artifact_filename_uses_its_registered_name_slug(): void {
+		$this->assertSame( 'super-mario-world-0-0-0-snes.smc', $this->artifactFilename( 'Super Mario World', '0.0.0', 'snes', 'Super Mario Word.smc' ) );
+		$this->assertSame( 'emulatorjs-4-2-3-global.zip', $this->artifactFilename( 'EmulatorJS', '4.2.3', '', 'emulatorjs-4.2.3-snes9x.zip' ) );
 	}
 
 	public function test_artifact_tab_resolution_accepts_only_known_categories(): void {
@@ -137,6 +151,13 @@ final class CatalogTest extends TestCase {
 		$method->setAccessible( true );
 
 		return $method->invoke( null, $archive, $root, $relative );
+	}
+
+	private function artifactFilename( string $artifactName, string $artifactVersion, string $platform, string $uploadedName ): string {
+		$method = new ReflectionMethod( Geek_Cube_Studio_Artifact_Storage::class, 'artifact_filename' );
+		$method->setAccessible( true );
+
+		return $method->invoke( null, $artifactName, $artifactVersion, $platform, $uploadedName );
 	}
 
 	private function temporaryDirectory(): string {

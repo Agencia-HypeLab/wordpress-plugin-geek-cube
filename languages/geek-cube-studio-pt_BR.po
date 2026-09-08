@@ -22,6 +22,9 @@ msgstr "Resistência de 30 minutos"
 msgid "A central view of the controls already prepared for the playable prototype."
 msgstr "Uma visão central dos controles já preparados para o protótipo jogável."
 
+msgid "A different ROM already occupies the managed artifact path."
+msgstr "Outra ROM já ocupa o caminho gerenciado do artefato."
+
 msgid "A game is the stable identity that receives versioned execution profiles."
 msgstr "Um jogo é a identidade estável que recebe perfis de execução versionados."
 
@@ -72,6 +75,15 @@ msgstr "Permitido"
 
 msgid "An artifact was assigned to the wrong profile role."
 msgstr "Um artefato foi atribuído à função errada no perfil."
+
+msgid "An artifact with this name, version and platform already exists. Register a new version instead."
+msgstr "Já existe um artefato com este nome, versão e plataforma. Cadastre uma nova versão."
+
+msgid "Analyze a file before saving an artifact."
+msgstr "Analise um arquivo antes de salvar um artefato."
+
+msgid "Analyze file"
+msgstr "Analisar arquivo"
 
 msgid "Any / not applicable"
 msgstr "Qualquer / não aplicável"
@@ -135,6 +147,9 @@ msgstr "O modo automático só ativa threads quando o isolamento necessário do 
 
 msgid "Automatic update"
 msgstr "Atualização automática"
+
+msgid "Available after publishing."
+msgstr "Disponível após a publicação."
 
 msgid "Available version"
 msgstr "Versão disponível"
@@ -265,6 +280,9 @@ msgstr "Descrição"
 msgid "Detect candidate versions without changing approved game profiles."
 msgstr "Detecte versões candidatas sem alterar perfis de jogo aprovados."
 
+msgid "Detected header revision: %s"
+msgstr "Revisão de cabeçalho detectada: %s"
+
 msgid "Device conflict policy"
 msgstr "Política de conflito entre dispositivos"
 
@@ -333,6 +351,12 @@ msgstr "Alternativa ativa"
 
 msgid "File"
 msgstr "Arquivo"
+
+msgid "File analyzed. Review the suggested metadata before saving the immutable artifact."
+msgstr "Arquivo analisado. Revise os metadados sugeridos antes de salvar o artefato imutável."
+
+msgid "File extensions"
+msgstr "Extensões de arquivo"
 
 msgid "Final result"
 msgstr "Resultado final"
@@ -423,9 +447,6 @@ msgstr "Execução de teste imutável registrada."
 
 msgid "Import a version"
 msgstr "Importar uma versão"
-
-msgid "Import immutable artifact"
-msgstr "Importar artefato imutável"
 
 msgid "Inconclusive"
 msgstr "Inconclusivo"
@@ -604,6 +625,9 @@ msgstr "Somente um perfil aprovado pode ser promovido para produção."
 msgid "Only route segments are stored. Polylang remains responsible for the language domain or directory."
 msgstr "Somente segmentos de rota são armazenados. O Polylang continua responsável pelo domínio ou diretório de idioma."
 
+msgid "Only stored ROM artifacts can be relocated."
+msgstr "Somente artefatos de ROM armazenados podem ser realocados."
+
 msgid "Only verified artifacts are offered. NES does not require a BIOS."
 msgstr "Somente artefatos verificados são oferecidos. NES não exige BIOS."
 
@@ -733,6 +757,9 @@ msgstr "Protegido"
 msgid "Protected update flow"
 msgstr "Fluxo de atualização protegido"
 
+msgid "Public URL"
+msgstr "URL pública"
+
 msgid "Public client identifier detected in server configuration."
 msgstr "Identificador público de cliente detectado na configuração do servidor."
 
@@ -744,6 +771,9 @@ msgstr "Publicado"
 
 msgid "ROM"
 msgstr "ROM"
+
+msgid "ROMs must be uploaded in their original playable format. Compressed archives are not accepted."
+msgstr "As ROMs devem ser enviadas em seu formato original jogável. Arquivos compactados não são aceitos."
 
 msgid "Record immutable test"
 msgstr "Registrar teste imutável"
@@ -832,6 +862,9 @@ msgstr "Executar"
 msgid "Run the exact frozen profile and record an immutable browser result."
 msgstr "Execute o perfil congelado exato e registre um resultado imutável no navegador."
 
+msgid "SHA-256: %s"
+msgstr "SHA-256: %s"
+
 msgid "Save URL settings"
 msgstr "Salvar configurações de URL"
 
@@ -840,6 +873,9 @@ msgstr "Salvar configurações de conta"
 
 msgid "Save artifact settings"
 msgstr "Salvar configurações de artefatos"
+
+msgid "Save immutable artifact"
+msgstr "Salvar artefato imutável"
 
 msgid "Save laboratory settings"
 msgstr "Salvar configurações do laboratório"
@@ -943,11 +979,32 @@ msgstr "Teste, aprove e só então promova uma combinação."
 msgid "Testing"
 msgstr "Em teste"
 
+msgid "The ROM file could not be located for relocation."
+msgstr "Não foi possível localizar o arquivo da ROM para realocação."
+
+msgid "The ROM file could not be moved into the managed artifact directory."
+msgstr "Não foi possível mover o arquivo da ROM para o diretório gerenciado de artefatos."
+
 msgid "The WordPress user ID remains the canonical save owner."
 msgstr "O ID de usuário do WordPress permanece o titular canônico do save."
 
 msgid "The ZIP extension is required to import a player package."
 msgstr "A extensão ZIP é necessária para importar um pacote de player."
+
+msgid "The analyzed file metadata does not match this submission. Analyze the file again."
+msgstr "Os metadados do arquivo analisado não correspondem a este envio. Analise o arquivo novamente."
+
+msgid "The analyzed upload changed before it could be saved."
+msgstr "O arquivo analisado foi alterado antes de poder ser salvo."
+
+msgid "The analyzed upload is no longer available. Analyze the file again."
+msgstr "O arquivo analisado não está mais disponível. Analise o arquivo novamente."
+
+msgid "The artifact could not be moved into immutable storage."
+msgstr "Não foi possível mover o artefato para o armazenamento imutável."
+
+msgid "The artifact could not be prepared for analysis."
+msgstr "Não foi possível preparar o artefato para análise."
 
 msgid "The artifact could not be registered."
 msgstr "Não foi possível cadastrar o artefato."
@@ -1036,6 +1093,9 @@ msgstr "O status do perfil é inválido."
 msgid "The public player is not enabled."
 msgstr "O player público não está ativado."
 
+msgid "The relocated ROM path could not be saved."
+msgstr "Não foi possível salvar o novo caminho da ROM realocada."
+
 msgid "The requested execution profile does not exist."
 msgstr "O perfil de execução solicitado não existe."
 
@@ -1089,6 +1149,9 @@ msgstr "URLs e idiomas"
 
 msgid "Unknown or incompatible"
 msgstr "Desconhecido ou incompatível"
+
+msgid "Untitled artifact"
+msgstr "Artefato sem título"
 
 msgid "Update Geek Cube Studio now? WordPress will temporarily enable maintenance mode while replacing the plugin files."
 msgstr "Atualizar o Geek Cube Studio agora? O WordPress ativará temporariamente o modo de manutenção enquanto substitui os arquivos do plugin."

@@ -54,8 +54,52 @@ final class Geek_Cube_Studio_Seed {
 			'description'   => 'Register the Falling NES test game and FCEUmm runtime preset.',
 			'callback'      => array( __CLASS__, 'install' ),
 		);
+		$patches['003-relocate-rom-artifacts']   = array(
+			'introduced_in' => '0.1.11',
+			'description'   => 'Move existing ROM artifacts into the managed platform directory layout.',
+			'callback'      => array( __CLASS__, 'relocate_rom_artifacts' ),
+		);
 
 		return $patches;
+	}
+
+	/**
+	 * Rehome legacy ROM uploads without changing their immutable bytes or hash.
+	 *
+	 * @return true|WP_Error
+	 */
+	public static function relocate_rom_artifacts() {
+		global $wpdb;
+
+		foreach ( Geek_Cube_Studio_Repository::get_artifacts() as $artifact ) {
+			if ( 'rom' !== $artifact['type'] || '' === $artifact['relative_path'] ) {
+				continue;
+			}
+
+			$relative = Geek_Cube_Studio_Artifact_Storage::relocate_legacy_rom( $artifact );
+			if ( is_wp_error( $relative ) ) {
+				return $relative;
+			}
+			if ( $relative === $artifact['relative_path'] ) {
+				continue;
+			}
+
+			$updated = $wpdb->update(
+				Geek_Cube_Studio_Schema::table( 'artifacts' ),
+				array(
+					'relative_path' => $relative,
+					'updated_at'    => current_time( 'mysql', true ),
+				),
+				array( 'id' => (int) $artifact['id'] ),
+				array( '%s', '%s' ),
+				array( '%d' )
+			);
+			if ( false === $updated ) {
+				return new WP_Error( 'geek_cube_relocation_database', __( 'The relocated ROM path could not be saved.', 'geek-cube-studio' ) );
+			}
+		}
+
+		return true;
 	}
 
 	/**

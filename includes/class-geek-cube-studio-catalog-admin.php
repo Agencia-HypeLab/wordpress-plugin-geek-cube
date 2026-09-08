@@ -41,6 +41,8 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	private function init() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ), 11 );
 		add_action( 'admin_post_geek_cube_create_game', array( $this, 'create_game' ) );
+		add_action( 'admin_post_geek_cube_analyze_artifact', array( $this, 'analyze_artifact' ) );
+		add_action( 'geek_cube_studio_cleanup_artifact_draft', array( $this, 'cleanup_expired_artifact_draft' ) );
 		add_action( 'admin_post_geek_cube_create_artifact', array( $this, 'create_artifact' ) );
 		add_action( 'admin_post_geek_cube_artifact_status', array( $this, 'update_artifact_status' ) );
 		add_action( 'admin_post_geek_cube_create_profile', array( $this, 'create_profile' ) );
@@ -74,6 +76,8 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		$this->authorize();
 		$schema_ready    = $this->schema_ready();
 		$artifact_type   = self::resolve_artifact_type( $_GET ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen filter.
+		$artifact_draft  = $this->get_artifact_draft( $_GET ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only opaque draft selector.
+		$artifact_draft  = $artifact_draft && $artifact_type === $artifact_draft['type'] ? $artifact_draft : null;
 		$artifact_tabs   = self::artifact_tabs();
 		$all_artifacts   = $schema_ready ? Geek_Cube_Studio_Repository::get_artifacts() : array();
 		$artifact_counts = array_fill_keys( array_keys( $artifact_tabs ), 0 );
@@ -203,14 +207,44 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	}
 
 	/** Handle immutable artifact import. */
+	public function analyze_artifact() {
+		$this->authorize_action();
+		check_admin_referer( 'geek_cube_analyze_artifact' );
+
+		$type  = self::resolve_artifact_type( $_POST );
+		$file  = isset( $_FILES['artifact_file'] ) && is_array( $_FILES['artifact_file'] ) ? $_FILES['artifact_file'] : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Storage validates upload fields and bytes.
+		$draft = Geek_Cube_Studio_Artifact_Storage::stage_upload( $file, $type );
+		$extra = array( 'artifact_type' => $type );
+
+		if ( is_wp_error( $draft ) ) {
+			$this->finish( 'geek-cube-studio-artifacts', $draft, '', $extra );
+		}
+
+		$draft['owner_id'] = get_current_user_id();
+		set_transient( self::artifact_draft_key( $draft['token'] ), $draft, Geek_Cube_Studio_Artifact_Storage::STAGED_UPLOAD_TTL );
+		wp_schedule_single_event( time() + Geek_Cube_Studio_Artifact_Storage::STAGED_UPLOAD_TTL, 'geek_cube_studio_cleanup_artifact_draft', array( $draft['token'] ) );
+		$extra['artifact_draft'] = $draft['token'];
+		$this->finish( 'geek-cube-studio-artifacts', true, __( 'File analyzed. Review the suggested metadata before saving the immutable artifact.', 'geek-cube-studio' ), $extra );
+	}
+
+	/** Handle immutable artifact import. */
 	public function create_artifact() {
 		$this->authorize_action();
 		check_admin_referer( 'geek_cube_create_artifact' );
 
-		$type   = isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : '';
+		$type             = isset( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : '';
+		$artifact_name    = isset( $_POST['name'] ) ? wp_unslash( $_POST['name'] ) : '';
+		$artifact_version = isset( $_POST['version'] ) ? wp_unslash( $_POST['version'] ) : '';
+		$platform         = isset( $_POST['platform'] ) ? wp_unslash( $_POST['platform'] ) : '';
+		$artifact_name    = is_scalar( $artifact_name ) ? sanitize_text_field( (string) $artifact_name ) : '';
+		$artifact_version = is_scalar( $artifact_version ) ? sanitize_text_field( (string) $artifact_version ) : '';
+		$platform         = is_scalar( $platform ) ? sanitize_key( (string) $platform ) : '';
+		$draft            = $this->get_artifact_draft( $_POST );
+		if ( $draft && ( $type !== $draft['type'] || ( ! empty( $draft['platform_locked'] ) && $platform !== $draft['platform'] ) ) ) {
+			$this->finish( 'geek-cube-studio-artifacts', new WP_Error( 'geek_cube_stage_metadata_invalid', __( 'The analyzed file metadata does not match this submission. Analyze the file again.', 'geek-cube-studio' ) ), '', array( 'artifact_type' => $type ) );
+		}
 		$uuid   = wp_generate_uuid4();
-		$file   = isset( $_FILES['artifact_file'] ) && is_array( $_FILES['artifact_file'] ) ? $_FILES['artifact_file'] : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload storage validates all fields and bytes.
-		$stored = Geek_Cube_Studio_Artifact_Storage::store_upload( $file, $type, $uuid );
+		$stored = $draft ? Geek_Cube_Studio_Artifact_Storage::store_staged( $draft, $artifact_name, $artifact_version, $platform ) : new WP_Error( 'geek_cube_stage_missing', __( 'Analyze a file before saving an artifact.', 'geek-cube-studio' ) );
 
 		if ( is_wp_error( $stored ) ) {
 			$this->finish( 'geek-cube-studio-artifacts', $stored );
@@ -222,9 +256,27 @@ final class Geek_Cube_Studio_Catalog_Admin {
 
 		if ( is_wp_error( $result ) ) {
 			Geek_Cube_Studio_Artifact_Storage::cleanup( $stored );
+		} else {
+			Geek_Cube_Studio_Artifact_Storage::cleanup_staged( $draft );
+			delete_transient( self::artifact_draft_key( $draft['token'] ) );
 		}
 
 		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Immutable artifact imported. Review its rights and verify it before use.', 'geek-cube-studio' ), array( 'artifact_type' => self::resolve_artifact_type( array( 'artifact_type' => $type ) ) ) );
+	}
+
+	/**
+	 * Remove an expired temporary artifact upload.
+	 *
+	 * @param string $token Staged upload UUID.
+	 * @return void
+	 */
+	public function cleanup_expired_artifact_draft( $token ) {
+		$token = sanitize_text_field( (string) $token );
+		$draft = get_transient( self::artifact_draft_key( $token ) );
+		if ( is_array( $draft ) ) {
+			Geek_Cube_Studio_Artifact_Storage::cleanup_staged( $draft );
+		}
+		delete_transient( self::artifact_draft_key( $token ) );
 	}
 
 	/** Handle an artifact lifecycle transition. */
@@ -351,6 +403,38 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	/** Determine whether the catalog patch completed. */
 	private function schema_ready() {
 		return Geek_Cube_Studio_Schema::VERSION === (string) get_option( Geek_Cube_Studio_Schema::VERSION_OPTION, '' );
+	}
+
+	/**
+	 * Return one owner-bound staged upload from an opaque request token.
+	 *
+	 * @param mixed $request Request data.
+	 * @return array<string,mixed>|null
+	 */
+	private function get_artifact_draft( $request ) {
+		$token = is_array( $request ) && isset( $request['artifact_draft'] ) && is_scalar( $request['artifact_draft'] )
+			? sanitize_text_field( (string) $request['artifact_draft'] )
+			: '';
+		if ( ! preg_match( '/^[a-f0-9-]{36}$/', $token ) ) {
+			return null;
+		}
+
+		$draft = get_transient( self::artifact_draft_key( $token ) );
+		if ( ! is_array( $draft ) || (int) get_current_user_id() !== (int) ( $draft['owner_id'] ?? 0 ) || (int) ( $draft['expires_at'] ?? 0 ) < time() ) {
+			return null;
+		}
+
+		return $draft;
+	}
+
+	/**
+	 * Return the WordPress transient key for one staged upload.
+	 *
+	 * @param string $token Staged upload UUID.
+	 * @return string
+	 */
+	private static function artifact_draft_key( $token ) {
+		return 'geek_cube_studio_artifact_draft_' . sanitize_text_field( (string) $token );
 	}
 
 	/**
