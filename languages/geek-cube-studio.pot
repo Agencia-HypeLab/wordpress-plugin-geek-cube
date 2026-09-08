@@ -563,6 +563,9 @@ msgstr ""
 msgid "No CDN"
 msgstr ""
 
+msgid "No approved test profile is available."
+msgstr ""
+
 msgid "No artifacts have been imported in this category."
 msgstr ""
 
@@ -734,6 +737,9 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
+msgid "Profile #%1$d - %2$s"
+msgstr ""
+
 msgid "Profile approved."
 msgstr ""
 
@@ -774,6 +780,12 @@ msgid "Public client identifier detected in server configuration."
 msgstr ""
 
 msgid "Public player"
+msgstr ""
+
+msgid "Publication"
+msgstr ""
+
+msgid "Publish game"
 msgstr ""
 
 msgid "Published"
@@ -819,6 +831,9 @@ msgid "Reload saved state"
 msgstr ""
 
 msgid "Repeatable evidence"
+msgstr ""
+
+msgid "Replace production profile"
 msgstr ""
 
 msgid "Required"
@@ -924,6 +939,9 @@ msgid "Select a profile"
 msgstr ""
 
 msgid "Select a supported game platform."
+msgstr ""
+
+msgid "Select an approved profile"
 msgstr ""
 
 msgid "Select an existing game."

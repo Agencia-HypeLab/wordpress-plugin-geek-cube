@@ -41,15 +41,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<section class="geek-cube-panel">
 				<div class="geek-cube-panel__heading"><div><h2><?php esc_html_e( 'Registered games', 'geek-cube-studio' ); ?></h2><p><?php echo esc_html( sprintf( /* translators: %d: number of games. */ __( '%d catalog identities', 'geek-cube-studio' ), count( $games ) ) ); ?></p></div></div>
-				<div class="geek-cube-table-wrap"><table class="widefat striped"><thead><tr><th><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Status', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Production profile', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Public URL', 'geek-cube-studio' ); ?></th></tr></thead><tbody>
+				<div class="geek-cube-table-wrap"><table class="widefat striped"><thead><tr><th><?php esc_html_e( 'Game', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Status', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Production profile', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Public URL', 'geek-cube-studio' ); ?></th><th><?php esc_html_e( 'Publication', 'geek-cube-studio' ); ?></th></tr></thead><tbody>
 				<?php
 				if ( empty( $games ) ) :
 					?>
-					<tr><td colspan="5"><?php esc_html_e( 'No games registered.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
+					<tr><td colspan="6"><?php esc_html_e( 'No games registered.', 'geek-cube-studio' ); ?></td></tr><?php endif; ?>
 				<?php
 				foreach ( $games as $game ) :
 					$public_url   = Geek_Cube_Studio_URLs::build( 'play', $game['slug'] );
 					$is_published = 'published' === $game['status'] && ! empty( $game['production_profile_id'] );
+					$candidates   = isset( $production_candidates[ (int) $game['id'] ] ) ? $production_candidates[ (int) $game['id'] ] : array();
 					?>
 					<tr>
 						<td><strong><?php echo esc_html( Geek_Cube_Studio_Catalog_Admin::game_title( $game ) ); ?></strong><br><code><?php echo esc_html( $game['slug'] ); ?></code></td>
@@ -62,6 +63,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php else : ?>
 								<code><?php echo esc_html( $public_url ); ?></code><br>
 								<small><?php esc_html_e( 'Available after publishing.', 'geek-cube-studio' ); ?></small>
+							<?php endif; ?>
+						</td>
+						<td>
+							<?php if ( empty( $candidates ) ) : ?>
+								<small><?php esc_html_e( 'No approved test profile is available.', 'geek-cube-studio' ); ?></small>
+							<?php else : ?>
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="geek-cube-inline-form geek-cube-publication-form">
+									<input type="hidden" name="action" value="geek_cube_promote_profile">
+									<input type="hidden" name="return_page" value="geek-cube-studio-games">
+									<?php wp_nonce_field( 'geek_cube_promote_profile' ); ?>
+									<select name="profile_id" aria-label="<?php esc_attr_e( 'Select an approved profile', 'geek-cube-studio' ); ?>">
+										<?php
+										foreach ( $candidates as $profile ) :
+											/* translators: 1: profile ID, 2: most recent profile update date. */
+											$profile_label = sprintf( __( 'Profile #%1$d - %2$s', 'geek-cube-studio' ), $profile['id'], mysql2date( get_option( 'date_format' ), $profile['updated_at'], true ) );
+											?>
+											<option value="<?php echo esc_attr( $profile['id'] ); ?>"><?php echo esc_html( $profile_label ); ?></option>
+										<?php endforeach; ?>
+									</select>
+									<button class="button button-primary"><?php echo esc_html( $is_published ? __( 'Replace production profile', 'geek-cube-studio' ) : __( 'Publish game', 'geek-cube-studio' ) ); ?></button>
+								</form>
 							<?php endif; ?>
 						</td>
 					</tr>

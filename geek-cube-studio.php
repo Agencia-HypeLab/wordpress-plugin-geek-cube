@@ -4,7 +4,7 @@
  * Plugin URI:        https://www.hypelab.com.br/
  * Update URI:        https://www.hypelab.com.br/wordpress-plugin-geek-cube/geek-cube-studio-update.php
  * Description:       Connects Geek Cube Studio game pages to its browser-based player experience.
- * Version:           0.1.14
+ * Version:           0.1.15
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Agência HypeLab
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.14' );
+define( 'GEEK_CUBE_STUDIO_VERSION', '0.1.15' );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_FILE', __FILE__ );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GEEK_CUBE_STUDIO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -59,6 +59,7 @@ add_action( 'init', 'geek_cube_studio_load_textdomain', 0 );
  * @return void
  */
 function geek_cube_studio_boot() {
+	geek_cube_studio_refresh_opcode_cache();
 	Geek_Cube_Studio_Schema::boot();
 	Geek_Cube_Studio_Seed::boot();
 	Geek_Cube_Studio_Updater::boot();
@@ -72,7 +73,66 @@ function geek_cube_studio_boot() {
 	}
 }
 
+/**
+ * Clear the PHP OPcache once after this plugin version is installed.
+ *
+ * Shared hosting may keep old PHP bytecode after a native WordPress update.
+ * This check is intentionally version-scoped, and does nothing when OPcache
+ * is unavailable or disabled for the current PHP runtime.
+ *
+ * @return void
+ */
+function geek_cube_studio_refresh_opcode_cache() {
+	$option = 'geek_cube_studio_opcode_cache_version';
+	if ( GEEK_CUBE_STUDIO_VERSION === get_option( $option, '' ) ) {
+		return;
+	}
+
+	geek_cube_studio_clear_opcode_cache();
+
+	update_option( $option, GEEK_CUBE_STUDIO_VERSION, false );
+}
+
+/**
+ * Clear OPcache when it is enabled for the current PHP runtime.
+ *
+ * @return void
+ */
+function geek_cube_studio_clear_opcode_cache() {
+	if ( ! function_exists( 'opcache_get_status' ) || ! function_exists( 'opcache_reset' ) ) {
+		return;
+	}
+
+	$status = opcache_get_status( false ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.opcache_get_statusFound -- Plugin requires PHP 8.1.
+	if ( is_array( $status ) && ! empty( $status['opcache_enabled'] ) ) {
+		opcache_reset(); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.opcache_resetFound -- Plugin requires PHP 8.1.
+	}
+}
+
 add_action( 'plugins_loaded', 'geek_cube_studio_boot', 5 );
+
+/**
+ * Invalidate PHP bytecode immediately after a native update of this plugin.
+ *
+ * @param WP_Upgrader         $upgrader WordPress upgrader instance.
+ * @param array<string,mixed> $options Upgrader operation details.
+ * @return void
+ */
+function geek_cube_studio_after_plugin_update( $upgrader, $options ) {
+	if ( ! is_array( $options ) || 'update' !== ( $options['action'] ?? '' ) || 'plugin' !== ( $options['type'] ?? '' ) ) {
+		return;
+	}
+
+	$plugins = isset( $options['plugins'] ) && is_array( $options['plugins'] ) ? $options['plugins'] : array( $options['plugin'] ?? '' );
+	if ( ! in_array( plugin_basename( GEEK_CUBE_STUDIO_PLUGIN_FILE ), $plugins, true ) ) {
+		return;
+	}
+
+	geek_cube_studio_clear_opcode_cache();
+	delete_option( 'geek_cube_studio_opcode_cache_version' );
+}
+
+add_action( 'upgrader_process_complete', 'geek_cube_studio_after_plugin_update', 10, 2 );
 
 /**
  * Initialize versioned runtime state.

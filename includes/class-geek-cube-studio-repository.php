@@ -537,6 +537,27 @@ final class Geek_Cube_Studio_Repository {
 	}
 
 	/**
+	 * Return approved profiles eligible for one game's production slot.
+	 *
+	 * @param int $game_id Game ID.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function get_approved_profiles_for_game( $game_id ) {
+		global $wpdb;
+
+		$game_id = absint( $game_id );
+		if ( ! $game_id ) {
+			return array();
+		}
+
+		$table = Geek_Cube_Studio_Schema::table( 'profiles' );
+		$sql   = $wpdb->prepare( 'SELECT * FROM %i WHERE game_id = %d AND status = %s ORDER BY updated_at DESC, id DESC', $table, $game_id, 'approved' );
+		$rows  = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared custom-table production candidates.
+
+		return is_array( $rows ) ? $rows : array();
+	}
+
+	/**
 	 * Return recent test runs.
 	 *
 	 * @param int $limit Maximum rows.

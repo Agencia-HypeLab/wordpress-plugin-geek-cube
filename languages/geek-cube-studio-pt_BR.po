@@ -568,6 +568,9 @@ msgstr "Precisa de revisão"
 msgid "No CDN"
 msgstr "Sem CDN"
 
+msgid "No approved test profile is available."
+msgstr "Nenhum perfil de teste aprovado está disponível."
+
 msgid "No artifacts have been imported in this category."
 msgstr "Nenhum artefato foi importado nesta categoria."
 
@@ -739,6 +742,9 @@ msgstr "Perfil de produção"
 msgid "Profile"
 msgstr "Perfil"
 
+msgid "Profile #%1$d - %2$s"
+msgstr "Perfil #%1$d - %2$s"
+
 msgid "Profile approved."
 msgstr "Perfil aprovado."
 
@@ -780,6 +786,12 @@ msgstr "Identificador público de cliente detectado na configuração do servido
 
 msgid "Public player"
 msgstr "Player público"
+
+msgid "Publication"
+msgstr "Publicação"
+
+msgid "Publish game"
+msgstr "Publicar jogo"
 
 msgid "Published"
 msgstr "Publicado"
@@ -825,6 +837,9 @@ msgstr "Recarregar estado salvo"
 
 msgid "Repeatable evidence"
 msgstr "Evidência repetível"
+
+msgid "Replace production profile"
+msgstr "Substituir perfil de produção"
 
 msgid "Required"
 msgstr "Obrigatório"
@@ -930,6 +945,9 @@ msgstr "Selecione um perfil"
 
 msgid "Select a supported game platform."
 msgstr "Selecione uma plataforma de jogo compatível."
+
+msgid "Select an approved profile"
+msgstr "Selecionar um perfil aprovado"
 
 msgid "Select an existing game."
 msgstr "Selecione um jogo existente."

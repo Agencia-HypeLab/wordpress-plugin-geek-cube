@@ -115,6 +115,8 @@
 .geek-cube-table-wrap code { white-space: nowrap; }
 .geek-cube-inline-form, .geek-cube-actions, .geek-cube-picker { display: flex; align-items: center; gap: 8px; }
 .geek-cube-inline-form select { max-width: 120px; }
+.geek-cube-publication-form { align-items: flex-end; flex-wrap: wrap; }
+.geek-cube-publication-form select { max-width: 240px; }
 .geek-cube-actions form { margin: 0; }
 .geek-cube-picker { flex-wrap: wrap; }
 .geek-cube-picker select { min-width: 320px; }

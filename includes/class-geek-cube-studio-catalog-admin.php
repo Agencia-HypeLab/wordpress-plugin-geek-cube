@@ -67,8 +67,13 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	/** Render games screen. */
 	public function render_games() {
 		$this->authorize();
-		$schema_ready = $this->schema_ready();
-		$games        = $schema_ready ? Geek_Cube_Studio_Repository::get_games() : array();
+		$schema_ready          = $this->schema_ready();
+		$games                 = $schema_ready ? Geek_Cube_Studio_Repository::get_games() : array();
+		$production_candidates = array();
+
+		foreach ( $games as $game ) {
+			$production_candidates[ (int) $game['id'] ] = Geek_Cube_Studio_Repository::get_approved_profiles_for_game( $game['id'] );
+		}
 		require GEEK_CUBE_STUDIO_PLUGIN_DIR . 'views/admin/games.php';
 	}
 
@@ -346,9 +351,10 @@ final class Geek_Cube_Studio_Catalog_Admin {
 	public function promote_profile() {
 		$this->authorize_action();
 		check_admin_referer( 'geek_cube_promote_profile' );
-		$profile_id = isset( $_POST['profile_id'] ) ? absint( wp_unslash( $_POST['profile_id'] ) ) : 0;
-		$result     = Geek_Cube_Studio_Repository::promote_profile( $profile_id );
-		$this->finish( 'geek-cube-studio-profiles', $result, __( 'Profile promoted to production.', 'geek-cube-studio' ) );
+		$profile_id  = isset( $_POST['profile_id'] ) ? absint( wp_unslash( $_POST['profile_id'] ) ) : 0;
+		$return_page = isset( $_POST['return_page'] ) && is_scalar( $_POST['return_page'] ) ? sanitize_key( wp_unslash( $_POST['return_page'] ) ) : '';
+		$result      = Geek_Cube_Studio_Repository::promote_profile( $profile_id );
+		$this->finish( 'geek-cube-studio-games' === $return_page ? $return_page : 'geek-cube-studio-profiles', $result, __( 'Profile promoted to production.', 'geek-cube-studio' ) );
 	}
 
 	/**
