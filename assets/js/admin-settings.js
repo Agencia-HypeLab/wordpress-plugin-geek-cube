@@ -85,6 +85,56 @@
 		} );
 	} );
 
+	const profileAction = document.querySelector( 'input[name="action"][value="geek_cube_create_profile"]' );
+	const profileForm = profileAction ? profileAction.closest( 'form' ) : null;
+	if ( profileForm ) {
+		const game = profileForm.querySelector( 'select[name="game_id"]' );
+		const name = profileForm.querySelector( 'input[name="name"]' );
+		const slug = profileForm.querySelector( 'input[name="slug"]' );
+		let generatedName = '';
+		let generatedSlug = '';
+
+		const selectedTitle = () => {
+			if ( ! game || ! game.selectedOptions.length ) {
+				return '';
+			}
+
+			return game.selectedOptions[ 0 ].textContent.trim().replace( /\s+[·•]\s+[A-Z0-9]+$/, '' );
+		};
+		const syncFromGame = () => {
+			const title = selectedTitle();
+			if ( ! title ) {
+				return;
+			}
+
+			if ( name && ( ! name.value.trim() || name.value === generatedName ) ) {
+				name.value = title;
+				generatedName = title;
+			}
+			if ( slug && ( ! slug.value.trim() || slug.value === generatedSlug ) ) {
+				slug.value = slugify( title );
+				generatedSlug = slug.value;
+			}
+		};
+
+		if ( game ) {
+			game.addEventListener( 'change', syncFromGame );
+		}
+		if ( name ) {
+			name.addEventListener( 'input', () => {
+				if ( slug && ( ! slug.value.trim() || slug.value === generatedSlug ) ) {
+					slug.value = slugify( name.value );
+					generatedSlug = slug.value;
+				}
+			} );
+		}
+		if ( slug ) {
+			slug.addEventListener( 'input', () => {
+				slug.value = slugify( slug.value );
+			} );
+		}
+	}
+
 	const testForm = document.querySelector( '[data-geek-cube-test-form]' );
 	if ( testForm ) {
 		const labFrame = document.querySelector( '[data-geek-cube-lab-frame]' );

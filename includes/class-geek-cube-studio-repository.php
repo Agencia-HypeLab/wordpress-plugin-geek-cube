@@ -178,8 +178,10 @@ final class Geek_Cube_Studio_Repository {
 			return $valid;
 		}
 
-		$name = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
-		$slug = isset( $data['slug'] ) ? sanitize_title( $data['slug'] ) : sanitize_title( $name );
+		$name          = isset( $data['name'] ) && is_scalar( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '';
+		$name          = '' !== $name ? $name : self::translated_value( $game['titles'] );
+		$provided_slug = isset( $data['slug'] ) && is_scalar( $data['slug'] ) ? sanitize_title( $data['slug'] ) : '';
+		$slug          = '' !== $provided_slug ? $provided_slug : sanitize_title( $name );
 		if ( '' === $name || '' === $slug ) {
 			return new WP_Error( 'geek_cube_profile_identity_invalid', __( 'Profile name and slug are required.', 'geek-cube-studio' ) );
 		}
