@@ -369,6 +369,49 @@ final class Geek_Cube_Studio_Repository {
 	}
 
 	/**
+	 * Update an artifact display name and synchronize its stored filename.
+	 *
+	 * @param int    $artifact_id Artifact ID.
+	 * @param string $name New artifact name.
+	 * @return true|WP_Error
+	 */
+	public static function update_artifact_name( $artifact_id, $name ) {
+		global $wpdb;
+
+		$artifact = self::get_artifact( $artifact_id );
+		$name     = sanitize_text_field( (string) $name );
+		if ( ! $artifact || '' === $name ) {
+			return new WP_Error( 'geek_cube_artifact_name_invalid', __( 'Enter a valid artifact name.', 'geek-cube-studio' ) );
+		}
+		if ( $name === $artifact['name'] ) {
+			return true;
+		}
+
+		$rename = Geek_Cube_Studio_Artifact_Storage::rename_artifact_file( $artifact, $name );
+		if ( is_wp_error( $rename ) ) {
+			return $rename;
+		}
+
+		$updated = $wpdb->update(
+			Geek_Cube_Studio_Schema::table( 'artifacts' ),
+			array(
+				'name'          => $name,
+				'relative_path' => $rename['relative_path'],
+				'updated_at'    => current_time( 'mysql', true ),
+			),
+			array( 'id' => (int) $artifact_id ),
+			array( '%s', '%s', '%s' ),
+			array( '%d' )
+		);
+		if ( false === $updated ) {
+			Geek_Cube_Studio_Artifact_Storage::rollback_artifact_file_rename( $rename );
+			return new WP_Error( 'geek_cube_artifact_name_failed', self::database_error( __( 'The artifact name could not be updated.', 'geek-cube-studio' ) ) );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Approve a profile only after at least one passing immutable test.
 	 *
 	 * @param int $profile_id Profile ID.

@@ -297,6 +297,162 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	}
 
 	/**
+	 * Move a stored artifact into the managed type and platform directory.
+	 *
+	 * This is deliberately content-preserving: the file bytes and SHA-256 stay
+	 * unchanged; only the owned local path is updated.
+	 *
+	 * @param array<string,mixed> $artifact Stored artifact database row.
+	 * @return array<string,string>|WP_Error Relocation details.
+	 */
+	public static function relocate_legacy_artifact( array $artifact ) {
+		$type     = isset( $artifact['type'] ) ? sanitize_key( (string) $artifact['type'] ) : '';
+		$relative = isset( $artifact['relative_path'] ) ? (string) $artifact['relative_path'] : '';
+		if ( '' === $relative ) {
+			return array(
+				'relative_path'   => '',
+				'entrypoint_path' => '',
+				'source'          => '',
+				'destination'     => '',
+				'absolute_root'   => '',
+			);
+		}
+
+		$source       = self::path( $relative );
+		$relative_dir = self::artifact_relative_directory( $type, $artifact['platform'] ?? '' );
+		$filename     = self::artifact_filename( $artifact['name'] ?? '', $artifact['version'] ?? '', $artifact['platform'] ?? '', basename( $relative ) );
+		$new_relative = $relative_dir . '/' . $filename;
+		$destination  = self::path( $new_relative );
+		if ( '' === $source || '' === $destination || ! is_file( $source ) ) {
+			return new WP_Error( 'geek_cube_relocation_missing', __( 'The artifact file could not be located for relocation.', 'geek-cube-studio' ) );
+		}
+		if ( wp_normalize_path( $source ) === wp_normalize_path( $destination ) ) {
+			return array(
+				'relative_path'   => $new_relative,
+				'entrypoint_path' => (string) ( $artifact['entrypoint_path'] ?? '' ),
+				'source'          => '',
+				'destination'     => '',
+				'absolute_root'   => '',
+			);
+		}
+		if ( file_exists( $destination ) ) {
+			$hash = hash_file( 'sha256', $destination );
+			return is_string( $hash ) && hash_equals( (string) $artifact['sha256'], $hash )
+				? array(
+					'relative_path'   => $new_relative,
+					'entrypoint_path' => (string) ( $artifact['entrypoint_path'] ?? '' ),
+					'source'          => '',
+					'destination'     => '',
+					'absolute_root'   => '',
+				)
+				: new WP_Error( 'geek_cube_relocation_conflict', __( 'A different artifact already occupies the managed storage path.', 'geek-cube-studio' ) );
+		}
+		if ( ! wp_mkdir_p( dirname( $destination ) ) || ! self::move_file( $source, $destination ) ) {
+			return new WP_Error( 'geek_cube_relocation_failed', __( 'The artifact file could not be moved into the managed storage directory.', 'geek-cube-studio' ) );
+		}
+
+		$result = array(
+			'relative_path'   => $new_relative,
+			'entrypoint_path' => (string) ( $artifact['entrypoint_path'] ?? '' ),
+			'source'          => $source,
+			'destination'     => $destination,
+			'absolute_root'   => '',
+		);
+
+		if ( 'player' !== $type ) {
+			return $result;
+		}
+
+		$package_name            = (string) pathinfo( $filename, PATHINFO_FILENAME );
+		$package_relative        = $relative_dir . '/' . $package_name;
+		$package_directory       = self::path( $package_relative );
+		$result['absolute_root'] = $package_directory;
+		$entrypoint              = '' === $package_directory ? new WP_Error( 'geek_cube_relocation_missing', __( 'The player package directory could not be created for relocation.', 'geek-cube-studio' ) ) : self::extract_player_package( $destination, $package_directory, $package_relative );
+		if ( is_wp_error( $entrypoint ) ) {
+			self::rollback_artifact_relocation( $result );
+			return $entrypoint;
+		}
+
+		$result['entrypoint_path'] = $entrypoint;
+
+		return $result;
+	}
+
+	/**
+	 * Rename the stored artifact file after an administrator changes its name.
+	 *
+	 * @param array<string,mixed> $artifact Artifact database row.
+	 * @param string              $name New artifact name.
+	 * @return array<string,string>|WP_Error
+	 */
+	public static function rename_artifact_file( array $artifact, $name ) {
+		$relative = isset( $artifact['relative_path'] ) ? (string) $artifact['relative_path'] : '';
+		if ( '' === $relative ) {
+			return array(
+				'relative_path' => '',
+				'source'        => '',
+				'destination'   => '',
+			);
+		}
+
+		$source       = self::path( $relative );
+		$filename     = self::artifact_filename( $name, $artifact['version'] ?? '', $artifact['platform'] ?? '', basename( $relative ) );
+		$relative_dir = self::artifact_relative_directory( $artifact['type'] ?? '', $artifact['platform'] ?? '' );
+		$new_relative = $relative_dir . '/' . $filename;
+		$destination  = self::path( $new_relative );
+		if ( '' === $source || '' === $destination || ! is_file( $source ) ) {
+			return new WP_Error( 'geek_cube_rename_source_missing', __( 'The stored artifact file could not be found for renaming.', 'geek-cube-studio' ) );
+		}
+		if ( wp_normalize_path( $source ) === wp_normalize_path( $destination ) ) {
+			return array(
+				'relative_path' => $new_relative,
+				'source'        => '',
+				'destination'   => '',
+			);
+		}
+		if ( file_exists( $destination ) ) {
+			return new WP_Error( 'geek_cube_rename_conflict', __( 'Another artifact file already uses the generated name.', 'geek-cube-studio' ) );
+		}
+		if ( ! wp_mkdir_p( dirname( $destination ) ) || ! self::move_file( $source, $destination ) ) {
+			return new WP_Error( 'geek_cube_rename_failed', __( 'The stored artifact file could not be renamed.', 'geek-cube-studio' ) );
+		}
+
+		return array(
+			'relative_path' => $new_relative,
+			'source'        => $source,
+			'destination'   => $destination,
+		);
+	}
+
+	/**
+	 * Restore a file move after its database update fails.
+	 *
+	 * @param array<string,string> $rename Rename operation result.
+	 * @return void
+	 */
+	public static function rollback_artifact_file_rename( array $rename ) {
+		if ( empty( $rename['source'] ) || empty( $rename['destination'] ) || ! is_file( $rename['destination'] ) || file_exists( $rename['source'] ) ) {
+			return;
+		}
+
+		self::move_file( $rename['destination'], $rename['source'] );
+	}
+
+	/**
+	 * Roll back a failed relocation, including a newly extracted player package.
+	 *
+	 * @param array<string,string> $relocation Relocation operation result.
+	 * @return void
+	 */
+	public static function rollback_artifact_relocation( array $relocation ) {
+		if ( ! empty( $relocation['absolute_root'] ) ) {
+			self::cleanup( array( 'absolute_root' => $relocation['absolute_root'] ) );
+		}
+
+		self::rollback_artifact_file_rename( $relocation );
+	}
+
+	/**
 	 * Return the configured artifact root relative to wp-content/uploads.
 	 *
 	 * @return string
@@ -457,8 +613,8 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	 * Create a stable storage filename from the registered artifact identity.
 	 *
 	 * The extension remains the uploaded file's allowed, validated extension.
-	 * Existing artifacts are never renamed: a corrected name is a new immutable
-	 * artifact version with its own directory and SHA-256 fingerprint.
+	 * A display-name correction only changes the owned filesystem path; its
+	 * immutable bytes and SHA-256 fingerprint remain untouched.
 	 *
 	 * @param string $artifact_name    Registered artifact name.
 	 * @param string $artifact_version Registered artifact version.

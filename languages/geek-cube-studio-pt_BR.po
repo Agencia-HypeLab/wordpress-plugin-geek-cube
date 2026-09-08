@@ -25,6 +25,9 @@ msgstr "Uma visão central dos controles já preparados para o protótipo jogáv
 msgid "A different ROM already occupies the managed artifact path."
 msgstr "Outra ROM já ocupa o caminho gerenciado do artefato."
 
+msgid "A different artifact already occupies the managed storage path."
+msgstr "Outro artefato já ocupa o caminho gerenciado de armazenamento."
+
 msgid "A game is the stable identity that receives versioned execution profiles."
 msgstr "Um jogo é a identidade estável que recebe perfis de execução versionados."
 
@@ -85,6 +88,9 @@ msgstr "Analise um arquivo antes de salvar um artefato."
 msgid "Analyze file"
 msgstr "Analisar arquivo"
 
+msgid "Another artifact file already uses the generated name."
+msgstr "Outro arquivo de artefato já usa o nome gerado."
+
 msgid "Any / not applicable"
 msgstr "Qualquer / não aplicável"
 
@@ -105,6 +111,9 @@ msgstr "Status da arquitetura"
 
 msgid "Artifact categories"
 msgstr "Categorias de artefato"
+
+msgid "Artifact name updated."
+msgstr "Nome do artefato atualizado."
 
 msgid "Artifact status could not be updated."
 msgstr "Não foi possível atualizar o status do artefato."
@@ -307,6 +316,9 @@ msgstr "Cada rota do Geek Cube deve usar um slug diferente no mesmo idioma."
 msgid "Ed25519 signature"
 msgstr "Assinatura Ed25519"
 
+msgid "Edit name"
+msgstr "Editar nome"
+
 msgid "Eligible on this site"
 msgstr "Elegível neste site"
 
@@ -321,6 +333,9 @@ msgstr "Ativar player público"
 
 msgid "Enabled"
 msgstr "Ativado"
+
+msgid "Enter a valid artifact name."
+msgstr "Informe um nome de artefato válido."
 
 msgid "Enter a valid title and a non-reserved game slug."
 msgstr "Informe um título válido e um slug de jogo não reservado."
@@ -880,6 +895,9 @@ msgstr "Salvar artefato imutável"
 msgid "Save laboratory settings"
 msgstr "Salvar configurações do laboratório"
 
+msgid "Save name"
+msgstr "Salvar nome"
+
 msgid "Save player settings"
 msgstr "Salvar configurações do player"
 
@@ -1015,8 +1033,17 @@ msgstr "Não foi possível preparar o artefato para análise."
 msgid "The artifact could not be registered."
 msgstr "Não foi possível cadastrar o artefato."
 
+msgid "The artifact file could not be located for relocation."
+msgstr "Não foi possível localizar o arquivo do artefato para reorganização."
+
+msgid "The artifact file could not be moved into the managed storage directory."
+msgstr "Não foi possível mover o arquivo do artefato para o diretório gerenciado."
+
 msgid "The artifact hash could not be calculated."
 msgstr "Não foi possível calcular o hash do artefato."
+
+msgid "The artifact name could not be updated."
+msgstr "Não foi possível atualizar o nome do artefato."
 
 msgid "The artifact requires a valid SHA-256 fingerprint."
 msgstr "O artefato exige uma impressão digital SHA-256 válida."
@@ -1075,6 +1102,9 @@ msgstr "O pacote do player contém arquivos demais."
 msgid "The player package could not be extracted."
 msgstr "Não foi possível extrair o pacote do player."
 
+msgid "The player package directory could not be created for relocation."
+msgstr "Não foi possível criar o diretório do pacote do player para reorganização."
+
 msgid "The player package has no validated loader entrypoint."
 msgstr "O pacote do player não possui um ponto de entrada de carregador validado."
 
@@ -1102,11 +1132,20 @@ msgstr "O player público não está ativado."
 msgid "The relocated ROM path could not be saved."
 msgstr "Não foi possível salvar o novo caminho da ROM realocada."
 
+msgid "The relocated artifact path could not be saved."
+msgstr "Não foi possível salvar o caminho reorganizado do artefato."
+
 msgid "The requested execution profile does not exist."
 msgstr "O perfil de execução solicitado não existe."
 
 msgid "The signed update manifest is unavailable."
 msgstr "O manifesto de atualização assinado está indisponível."
+
+msgid "The stored artifact file could not be found for renaming."
+msgstr "Não foi possível encontrar o arquivo armazenado do artefato para renomeá-lo."
+
+msgid "The stored artifact file could not be renamed."
+msgstr "Não foi possível renomear o arquivo armazenado do artefato."
 
 msgid "The stored file is missing or no longer matches its SHA-256 fingerprint."
 msgstr "O arquivo armazenado está ausente ou não corresponde mais à sua impressão digital SHA-256."

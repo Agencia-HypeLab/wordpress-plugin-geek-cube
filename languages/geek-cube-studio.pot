@@ -20,6 +20,9 @@ msgstr ""
 msgid "A different ROM already occupies the managed artifact path."
 msgstr ""
 
+msgid "A different artifact already occupies the managed storage path."
+msgstr ""
+
 msgid "A game is the stable identity that receives versioned execution profiles."
 msgstr ""
 
@@ -80,6 +83,9 @@ msgstr ""
 msgid "Analyze file"
 msgstr ""
 
+msgid "Another artifact file already uses the generated name."
+msgstr ""
+
 msgid "Any / not applicable"
 msgstr ""
 
@@ -99,6 +105,9 @@ msgid "Architecture status"
 msgstr ""
 
 msgid "Artifact categories"
+msgstr ""
+
+msgid "Artifact name updated."
 msgstr ""
 
 msgid "Artifact status could not be updated."
@@ -302,6 +311,9 @@ msgstr ""
 msgid "Ed25519 signature"
 msgstr ""
 
+msgid "Edit name"
+msgstr ""
+
 msgid "Eligible on this site"
 msgstr ""
 
@@ -315,6 +327,9 @@ msgid "Enable public player"
 msgstr ""
 
 msgid "Enabled"
+msgstr ""
+
+msgid "Enter a valid artifact name."
 msgstr ""
 
 msgid "Enter a valid title and a non-reserved game slug."
@@ -875,6 +890,9 @@ msgstr ""
 msgid "Save laboratory settings"
 msgstr ""
 
+msgid "Save name"
+msgstr ""
+
 msgid "Save player settings"
 msgstr ""
 
@@ -1010,7 +1028,16 @@ msgstr ""
 msgid "The artifact could not be registered."
 msgstr ""
 
+msgid "The artifact file could not be located for relocation."
+msgstr ""
+
+msgid "The artifact file could not be moved into the managed storage directory."
+msgstr ""
+
 msgid "The artifact hash could not be calculated."
+msgstr ""
+
+msgid "The artifact name could not be updated."
 msgstr ""
 
 msgid "The artifact requires a valid SHA-256 fingerprint."
@@ -1070,6 +1097,9 @@ msgstr ""
 msgid "The player package could not be extracted."
 msgstr ""
 
+msgid "The player package directory could not be created for relocation."
+msgstr ""
+
 msgid "The player package has no validated loader entrypoint."
 msgstr ""
 
@@ -1097,10 +1127,19 @@ msgstr ""
 msgid "The relocated ROM path could not be saved."
 msgstr ""
 
+msgid "The relocated artifact path could not be saved."
+msgstr ""
+
 msgid "The requested execution profile does not exist."
 msgstr ""
 
 msgid "The signed update manifest is unavailable."
+msgstr ""
+
+msgid "The stored artifact file could not be found for renaming."
+msgstr ""
+
+msgid "The stored artifact file could not be renamed."
 msgstr ""
 
 msgid "The stored file is missing or no longer matches its SHA-256 fingerprint."

@@ -44,6 +44,7 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		add_action( 'admin_post_geek_cube_analyze_artifact', array( $this, 'analyze_artifact' ) );
 		add_action( 'geek_cube_studio_cleanup_artifact_draft', array( $this, 'cleanup_expired_artifact_draft' ) );
 		add_action( 'admin_post_geek_cube_create_artifact', array( $this, 'create_artifact' ) );
+		add_action( 'admin_post_geek_cube_update_artifact_name', array( $this, 'update_artifact_name' ) );
 		add_action( 'admin_post_geek_cube_artifact_status', array( $this, 'update_artifact_status' ) );
 		add_action( 'admin_post_geek_cube_create_profile', array( $this, 'create_profile' ) );
 		add_action( 'admin_post_geek_cube_record_test', array( $this, 'record_test' ) );
@@ -289,6 +290,18 @@ final class Geek_Cube_Studio_Catalog_Admin {
 		$artifact_type = self::resolve_artifact_type( $_POST );
 		$result        = Geek_Cube_Studio_Repository::update_artifact_status( $artifact_id, $status );
 		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Artifact status updated.', 'geek-cube-studio' ), array( 'artifact_type' => $artifact_type ) );
+	}
+
+	/** Update an artifact name and synchronized stored filename. */
+	public function update_artifact_name() {
+		$this->authorize_action();
+		check_admin_referer( 'geek_cube_update_artifact_name' );
+		$artifact_id   = isset( $_POST['artifact_id'] ) ? absint( wp_unslash( $_POST['artifact_id'] ) ) : 0;
+		$name          = isset( $_POST['name'] ) ? wp_unslash( $_POST['name'] ) : '';
+		$name          = is_scalar( $name ) ? sanitize_text_field( (string) $name ) : '';
+		$artifact_type = self::resolve_artifact_type( $_POST );
+		$result        = Geek_Cube_Studio_Repository::update_artifact_name( $artifact_id, $name );
+		$this->finish( 'geek-cube-studio-artifacts', $result, __( 'Artifact name updated.', 'geek-cube-studio' ), array( 'artifact_type' => $artifact_type ) );
 	}
 
 	/** Handle execution profile creation. */

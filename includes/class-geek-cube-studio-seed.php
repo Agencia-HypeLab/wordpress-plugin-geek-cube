@@ -49,15 +49,20 @@ final class Geek_Cube_Studio_Seed {
 	 * @return array<string,array<string,mixed>>
 	 */
 	public static function register_patch( array $patches ) {
-		$patches['002-seed-initial-nes-catalog'] = array(
+		$patches['002-seed-initial-nes-catalog']  = array(
 			'introduced_in' => '0.1.3',
 			'description'   => 'Register the Falling NES test game and FCEUmm runtime preset.',
 			'callback'      => array( __CLASS__, 'install' ),
 		);
-		$patches['003-relocate-rom-artifacts']   = array(
+		$patches['003-relocate-rom-artifacts']    = array(
 			'introduced_in' => '0.1.11',
 			'description'   => 'Move existing ROM artifacts into the managed platform directory layout.',
 			'callback'      => array( __CLASS__, 'relocate_rom_artifacts' ),
+		);
+		$patches['004-relocate-stored-artifacts'] = array(
+			'introduced_in' => '0.1.13',
+			'description'   => 'Move existing stored artifacts into the managed type and platform directory layout.',
+			'callback'      => array( __CLASS__, 'relocate_stored_artifacts' ),
 		);
 
 		return $patches;
@@ -96,6 +101,47 @@ final class Geek_Cube_Studio_Seed {
 			);
 			if ( false === $updated ) {
 				return new WP_Error( 'geek_cube_relocation_database', __( 'The relocated ROM path could not be saved.', 'geek-cube-studio' ) );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Rehome all imported files that predate the managed artifact layout.
+	 *
+	 * @return true|WP_Error
+	 */
+	public static function relocate_stored_artifacts() {
+		global $wpdb;
+
+		foreach ( Geek_Cube_Studio_Repository::get_artifacts() as $artifact ) {
+			if ( '' === $artifact['relative_path'] ) {
+				continue;
+			}
+
+			$relocation = Geek_Cube_Studio_Artifact_Storage::relocate_legacy_artifact( $artifact );
+			if ( is_wp_error( $relocation ) ) {
+				return $relocation;
+			}
+			if ( $relocation['relative_path'] === $artifact['relative_path'] ) {
+				continue;
+			}
+
+			$updated = $wpdb->update(
+				Geek_Cube_Studio_Schema::table( 'artifacts' ),
+				array(
+					'relative_path'   => $relocation['relative_path'],
+					'entrypoint_path' => $relocation['entrypoint_path'],
+					'updated_at'      => current_time( 'mysql', true ),
+				),
+				array( 'id' => (int) $artifact['id'] ),
+				array( '%s', '%s', '%s' ),
+				array( '%d' )
+			);
+			if ( false === $updated ) {
+				Geek_Cube_Studio_Artifact_Storage::rollback_artifact_relocation( $relocation );
+				return new WP_Error( 'geek_cube_relocation_database', __( 'The relocated artifact path could not be saved.', 'geek-cube-studio' ) );
 			}
 		}
 
