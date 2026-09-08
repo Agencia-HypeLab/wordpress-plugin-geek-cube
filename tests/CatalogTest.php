@@ -25,6 +25,7 @@ final class CatalogTest extends TestCase {
 		$this->assertNotContains( '7z', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
 		$this->assertNotContains( 'zip', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
 		$this->assertContains( 'nes', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'rom' ) );
+		$this->assertContains( 'tgz', Geek_Cube_Studio_Artifact_Storage::allowed_extensions( 'core' ) );
 	}
 
 	public function test_unambiguous_rom_extensions_lock_the_detected_platform(): void {

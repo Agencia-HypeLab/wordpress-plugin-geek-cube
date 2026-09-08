@@ -72,6 +72,19 @@
 		}
 	} );
 
+	const slugify = ( value ) => String( value || '' )
+		.normalize( 'NFD' )
+		.replace( /[\u0300-\u036f]/g, '' )
+		.toLowerCase()
+		.replace( /[^a-z0-9]+/g, '-' )
+		.replace( /^-+|-+$/g, '' );
+
+	document.querySelectorAll( '[data-geek-cube-slug]' ).forEach( ( input ) => {
+		input.addEventListener( 'input', () => {
+			input.value = slugify( input.value );
+		} );
+	} );
+
 	const testForm = document.querySelector( '[data-geek-cube-test-form]' );
 	if ( testForm ) {
 		const labFrame = document.querySelector( '[data-geek-cube-lab-frame]' );

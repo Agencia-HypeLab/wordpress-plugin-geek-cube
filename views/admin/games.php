@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="hidden" name="action" value="geek_cube_create_game">
 					<?php wp_nonce_field( 'geek_cube_create_game' ); ?>
 					<label><span><?php esc_html_e( 'Title', 'geek-cube-studio' ); ?></span><input type="text" name="title" required></label>
-					<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" pattern="[a-z0-9-]+" placeholder="falling-nes"></label>
+					<label><span><?php esc_html_e( 'Canonical slug', 'geek-cube-studio' ); ?></span><input type="text" name="slug" pattern="[a-z0-9-]+" placeholder="falling-nes" data-geek-cube-slug></label>
 					<label><span><?php esc_html_e( 'Platform', 'geek-cube-studio' ); ?></span><select name="platform" required><option value=""><?php esc_html_e( 'Select', 'geek-cube-studio' ); ?></option>
 					<?php
 					foreach ( Geek_Cube_Studio_Repository::PLATFORMS as $platform ) :

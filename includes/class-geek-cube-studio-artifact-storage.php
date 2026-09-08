@@ -33,7 +33,7 @@ final class Geek_Cube_Studio_Artifact_Storage {
 	public static function allowed_extensions( $type ) {
 		$map = array(
 			'player'   => array( 'zip' ),
-			'core'     => array( 'wasm', 'zip' ),
+			'core'     => array( 'wasm', 'zip', 'tgz' ),
 			'rom'      => array( 'nes', 'fds', 'gb', 'gbc', 'gba', 'sfc', 'smc', 'md', 'gen', 'bin', 'chd', 'cue', 'iso' ),
 			'bios'     => array( 'bin', 'rom', 'zip' ),
 			'patch'    => array( 'ips', 'bps', 'ups', 'xdelta' ),
@@ -118,7 +118,16 @@ final class Geek_Cube_Studio_Artifact_Storage {
 		$original_name = sanitize_file_name( (string) $file['name'] );
 		$extension     = strtolower( (string) pathinfo( $original_name, PATHINFO_EXTENSION ) );
 		if ( ! in_array( $extension, self::allowed_extensions( $type ), true ) ) {
-			return new WP_Error( 'geek_cube_extension_blocked', __( 'This file extension is not allowed for the selected artifact type.', 'geek-cube-studio' ) );
+			return new WP_Error(
+				'geek_cube_extension_blocked',
+				sprintf(
+					/* translators: 1: uploaded extension, 2: artifact type, 3: allowed extensions. */
+					__( 'The .%1$s extension is not allowed for the %2$s artifact. Allowed extensions: %3$s.', 'geek-cube-studio' ),
+					$extension,
+					self::artifact_type_label( $type ),
+					implode( ', ', array_map( static fn( $item ) => '.' . $item, self::allowed_extensions( $type ) ) )
+				)
+			);
 		}
 
 		$uploads = wp_upload_dir();
@@ -155,7 +164,7 @@ final class Geek_Cube_Studio_Artifact_Storage {
 			'sha256'                  => $sha256,
 			'file_size'               => (int) filesize( $destination ),
 			'name'                    => isset( $analysis['title'] ) && '' !== $analysis['title'] ? $analysis['title'] : $name,
-			'version'                 => '0.0.0',
+			'version'                 => '0.1.0',
 			'platform'                => $platform,
 			'platform_locked'         => '' !== $platform,
 			'suggested_runtime_key'   => self::suggested_runtime_key( $platform ),
@@ -315,6 +324,27 @@ final class Geek_Cube_Studio_Artifact_Storage {
 		$type        = sanitize_key( (string) $type );
 
 		return isset( $directories[ $type ] ) ? $directories[ $type ] : 'other';
+	}
+
+	/**
+	 * Return a translated artifact type label for administrator feedback.
+	 *
+	 * @param string $type Artifact type.
+	 * @return string
+	 */
+	private static function artifact_type_label( $type ) {
+		$labels = array(
+			'player'   => __( 'Player', 'geek-cube-studio' ),
+			'core'     => __( 'Core', 'geek-cube-studio' ),
+			'rom'      => __( 'ROM', 'geek-cube-studio' ),
+			'bios'     => __( 'BIOS', 'geek-cube-studio' ),
+			'patch'    => __( 'Patch', 'geek-cube-studio' ),
+			'config'   => __( 'Configuration', 'geek-cube-studio' ),
+			'controls' => __( 'Controls', 'geek-cube-studio' ),
+		);
+		$type   = sanitize_key( (string) $type );
+
+		return isset( $labels[ $type ] ) ? $labels[ $type ] : strtoupper( $type );
 	}
 
 	/**

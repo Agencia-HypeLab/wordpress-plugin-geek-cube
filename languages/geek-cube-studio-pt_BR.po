@@ -943,6 +943,9 @@ msgstr "Chave de assinatura"
 msgid "Social providers authenticate users, but WordPress remains the canonical account and save owner."
 msgstr "Provedores sociais autenticam usuários, mas o WordPress permanece a conta e o titular dos saves canônicos."
 
+msgid "Source and rights holder: [identify]. License or authorization: [identify]. Distribution review: [date and evidence]. Required attribution: [identify]."
+msgstr "Fonte e titular dos direitos: [identifique]. Licença ou autorização: [identifique]. Revisão de distribuição: [data e evidência]. Atribuição obrigatória: [identifique]."
+
 msgid "Start after first interaction"
 msgstr "Iniciar após a primeira interação"
 
@@ -978,6 +981,9 @@ msgstr "Teste, aprove e só então promova uma combinação."
 
 msgid "Testing"
 msgstr "Em teste"
+
+msgid "The .%1$s extension is not allowed for the %2$s artifact. Allowed extensions: %3$s."
+msgstr "A extensão .%1$s não é permitida para o artefato %2$s. Extensões aceitas: %3$s."
 
 msgid "The ROM file could not be located for relocation."
 msgstr "Não foi possível localizar o arquivo da ROM para realocação."

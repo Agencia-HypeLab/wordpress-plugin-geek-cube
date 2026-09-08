@@ -938,6 +938,9 @@ msgstr ""
 msgid "Social providers authenticate users, but WordPress remains the canonical account and save owner."
 msgstr ""
 
+msgid "Source and rights holder: [identify]. License or authorization: [identify]. Distribution review: [date and evidence]. Required attribution: [identify]."
+msgstr ""
+
 msgid "Start after first interaction"
 msgstr ""
 
@@ -972,6 +975,9 @@ msgid "Test, approve, and only then promote a combination."
 msgstr ""
 
 msgid "Testing"
+msgstr ""
+
+msgid "The .%1$s extension is not allowed for the %2$s artifact. Allowed extensions: %3$s."
 msgstr ""
 
 msgid "The ROM file could not be located for relocation."
